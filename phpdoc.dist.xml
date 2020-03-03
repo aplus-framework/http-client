@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor>
+    <title>Framework HTTP Client</title>
+    <parser>
+        <target>build/docs-cache</target>
+        <markers>
+            <item>TODO</item>
+            <item>FIXME</item>
+        </markers>
+    </parser>
+    <transformer>
+        <target>build/docs</target>
+    </transformer>
+    <files>
+        <directory>src</directory>
+    </files>
+    <transformations>
+        <template name="clean"/>
+    </transformations>
+</phpdocumentor>
