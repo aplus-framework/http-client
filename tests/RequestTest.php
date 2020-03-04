@@ -145,4 +145,13 @@ class RequestTest extends TestCase
 			$this->request->getHeader('authorization')
 		);
 	}
+
+	public function testUserAgent()
+	{
+		$this->assertEmpty($this->request->getHeader('user-agent'));
+		$this->request->setUserAgent();
+		$this->assertEquals('HTTP Client', $this->request->getHeader('user-agent'));
+		$this->request->setUserAgent('Other');
+		$this->assertEquals('Other', $this->request->getHeader('user-agent'));
+	}
 }

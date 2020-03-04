@@ -217,4 +217,10 @@ class Request extends Message implements RequestInterface
 			'Basic ' . \base64_encode($username . ':' . $password)
 		);
 	}
+
+	public function setUserAgent(string $user_agent = null)
+	{
+		$user_agent ??= 'HTTP Client';
+		return $this->setHeader('User-Agent', $user_agent);
+	}
 }
