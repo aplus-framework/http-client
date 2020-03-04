@@ -3,6 +3,7 @@
 	"type": "library",
 	"description": "The HTTP Client Library",
 	"keywords": [
+		"api",
 		"http",
 		"client",
 		"request",
@@ -19,6 +20,7 @@
 	"require": {
 		"php": ">=7.4",
 		"ext-curl": "*",
+		"ext-json": "*",
 		"natanfelles/http": "^1.4"
 	},
 	"require-dev": {
