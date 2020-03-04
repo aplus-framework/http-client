@@ -135,4 +135,14 @@ class RequestTest extends TestCase
 		);
 		$this->assertEquals('{"a":1}', $this->request->getBody());
 	}
+
+	public function testBasicAuth()
+	{
+		$this->assertEmpty($this->request->getHeader('authorization'));
+		$this->request->setBasicAuth('foo', 'bar');
+		$this->assertEquals(
+			'Basic ' . \base64_encode('foo:bar'),
+			$this->request->getHeader('authorization')
+		);
+	}
 }

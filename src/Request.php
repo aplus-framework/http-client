@@ -209,4 +209,12 @@ class Request extends Message implements RequestInterface
 	{
 		return parent::removeAllHeaders();
 	}
+
+	public function setBasicAuth(string $username, string $password)
+	{
+		return $this->setHeader(
+			'Authorization',
+			'Basic ' . \base64_encode($username . ':' . $password)
+		);
+	}
 }

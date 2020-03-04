@@ -84,6 +84,11 @@ class ClientTest extends TestCase
 		$this->assertEquals('HTTP/2.0', $request->getProtocol());
 		$response = $this->client->run($request);
 		$this->assertEquals('HTTP/2', $response->getProtocol());
+		$this->client->reset();
+		$request->setProtocol('HTTP/1.0');
+		$this->assertEquals('HTTP/1.0', $request->getProtocol());
+		$response = $this->client->run($request);
+		$this->assertEquals('HTTP/1.0', $response->getProtocol());
 	}
 
 	public function testMethods()
