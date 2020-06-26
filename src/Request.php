@@ -4,6 +4,8 @@ use Framework\HTTP\Cookie;
 use Framework\HTTP\Message;
 use Framework\HTTP\RequestInterface;
 use Framework\HTTP\URL;
+use InvalidArgumentException;
+use JsonException;
 
 /**
  * Class Request.
@@ -58,6 +60,11 @@ class Request extends Message implements RequestInterface
 		return parent::setProtocol($protocol);
 	}
 
+	/**
+	 * @param array|string $body
+	 *
+	 * @return Request
+	 */
 	public function setBody($body)
 	{
 		if ( ! \is_scalar($body)) {
@@ -86,7 +93,7 @@ class Request extends Message implements RequestInterface
 	 *                       Set the maximum depth. Must be greater than zero.
 	 *                       </p>
 	 *
-	 * @throws \JsonException if json_encode() fails
+	 * @throws JsonException if json_encode() fails
 	 *
 	 * @return $this
 	 */
@@ -122,7 +129,7 @@ class Request extends Message implements RequestInterface
 	/**
 	 * @param array|string[] $files
 	 *
-	 * @throws \InvalidArgumentException for invalid file path
+	 * @throws InvalidArgumentException for invalid file path
 	 *
 	 * @return $this
 	 */
@@ -133,7 +140,7 @@ class Request extends Message implements RequestInterface
 		$this->files = [];
 		foreach ($files as $file) {
 			if ( ! \is_file($file)) {
-				throw new \InvalidArgumentException('Path does not match a file: ' . $file);
+				throw new InvalidArgumentException('Path does not match a file: ' . $file);
 			}
 			$this->files[] = \curl_file_create($file, \mime_content_type($file));
 		}
