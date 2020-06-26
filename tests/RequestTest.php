@@ -6,10 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
 {
-	/**
-	 * @var Request
-	 */
-	protected $request;
+	protected Request $request;
 
 	protected function setUp() : void
 	{
@@ -43,27 +40,21 @@ class RequestTest extends TestCase
 		$this->assertEquals([], $this->request->getHeaders('foo'));
 		$this->assertNull($this->request->getHeader('Foo'));
 		$this->request->setHeaders([
-			'Foo' => ['Foo'],
+			'Foo' => 'Foo',
 			'content-Type' => 'text/html',
-			'custom' => ['a', 'b', 'c'],
+			'custom' => 'a',
 		]);
 		$this->assertEquals('Foo', $this->request->getHeader('Foo'));
 		$this->assertEquals('text/html', $this->request->getHeader('content-type'));
-		$this->assertEquals('c', $this->request->getHeader('custom'));
-		$this->assertEquals('c', $this->request->getHeader('custom', 2));
-		$this->assertEquals('b', $this->request->getHeader('custom', 1));
+		$this->assertEquals('a', $this->request->getHeader('custom'));
 		$this->request->removeHeader('custom');
-		$this->assertNull($this->request->getHeader('custom', 2));
-		$this->assertEquals('b', $this->request->getHeader('custom'));
-		$this->request->removeHeader('content-type');
-		$this->assertNull($this->request->getHeader('content-type'));
-		$this->request->removeHeaders('Foo');
-		$this->assertNull($this->request->getHeader('Foo'));
+		$this->assertNull($this->request->getHeader('custom'));
 		$this->assertEquals([
-			'custom' => ['a', 'b'],
-		], $this->request->getAllHeaders());
-		$this->request->removeAllHeaders();
-		$this->assertEquals([], $this->request->getAllHeaders());
+			'foo' => 'Foo',
+			'content-type' => 'text/html',
+		], $this->request->getHeaders());
+		$this->request->removeHeaders();
+		$this->assertEquals([], $this->request->getHeaders());
 	}
 
 	public function testCookies()

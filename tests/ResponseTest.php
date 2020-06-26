@@ -5,10 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase
 {
-	/**
-	 * @var Response
-	 */
-	protected $response;
+	protected Response $response;
 
 	protected function setUp() : void
 	{
@@ -17,12 +14,9 @@ class ResponseTest extends TestCase
 			200,
 			'OK',
 			[
-				'Foo' => ['Foo'],
-				'content-Type' => ['text/html'],
-				'set-cookie' => [
-					'session_id=35ab1d7a4955d926a3694ab5990c0eb1; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0; path=/admin; domain=localhost; secure; HttpOnly; SameSite=Strict',
-					'foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
-				],
+				'Foo' => 'Foo',
+				'content-Type' => 'text/html',
+				'set-cookie' => 'foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
 			],
 			'body'
 		);
@@ -46,32 +40,12 @@ class ResponseTest extends TestCase
 	public function testHeaders()
 	{
 		$this->assertEquals([
-			'foo' => ['Foo'],
-			'content-type' => ['text/html'],
-			'set-cookie' => [
-				'session_id=35ab1d7a4955d926a3694ab5990c0eb1; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0; path=/admin; domain=localhost; secure; HttpOnly; SameSite=Strict',
-				'foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
-			],
-		], $this->response->getAllHeaders());
+			'foo' => 'Foo',
+			'content-type' => 'text/html',
+			'set-cookie' => 'foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
+		], $this->response->getHeaders());
 		$this->assertEquals('Foo', $this->response->getHeader('Foo'));
 		$this->assertEquals('text/html', $this->response->getHeader('content-type'));
-		$this->assertEquals([
-			'session_id=35ab1d7a4955d926a3694ab5990c0eb1; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0; path=/admin; domain=localhost; secure; HttpOnly; SameSite=Strict',
-			'foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
-		], $this->response->getHeaders('set-cookie'));
-		$this->assertEquals(
-			'foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
-			$this->response->getHeader('set-cookie')
-		);
-		$this->assertEquals(
-			'foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
-			$this->response->getHeader('set-cookie', 1)
-		);
-		$this->assertEquals(
-			'session_id=35ab1d7a4955d926a3694ab5990c0eb1; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0; path=/admin; domain=localhost; secure; HttpOnly; SameSite=Strict',
-			$this->response->getHeader('set-cookie', 0)
-		);
-		$this->assertNull($this->response->getHeader('set-cookie', 2));
 	}
 
 	public function testBody()
@@ -87,7 +61,7 @@ class ResponseTest extends TestCase
 			'HTTP/1.1',
 			200,
 			'OK',
-			['content-type' => ['application/json']],
+			['content-type' => 'application/json'],
 			'{"a":1}'
 		);
 		$this->assertTrue($this->response->isJSON());

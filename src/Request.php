@@ -192,9 +192,9 @@ class Request extends Message implements RequestInterface
 		return $this->removeHeader('Cookie');
 	}
 
-	public function setHeader(string $name, string ...$values)
+	public function setHeader(string $name, string $value)
 	{
-		return parent::setHeader($name, ...$values);
+		return parent::setHeader($name, $value);
 	}
 
 	public function setHeaders(array $headers)
@@ -202,19 +202,14 @@ class Request extends Message implements RequestInterface
 		return parent::setHeaders($headers);
 	}
 
-	public function removeHeader(string $name, int $index = -1)
+	public function removeHeader(string $name)
 	{
-		return parent::removeHeader($name, $index);
+		return parent::removeHeader($name);
 	}
 
-	public function removeHeaders(string $name)
+	public function removeHeaders()
 	{
-		return parent::removeHeaders($name);
-	}
-
-	public function removeAllHeaders()
-	{
-		return parent::removeAllHeaders();
+		return parent::removeHeaders();
 	}
 
 	public function setBasicAuth(string $username, string $password)

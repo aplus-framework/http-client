@@ -20,8 +20,9 @@
 	"require": {
 		"php": ">=7.4",
 		"ext-curl": "*",
+		"ext-fileinfo": "*",
 		"ext-json": "*",
-		"natanfelles/http": "^1.4"
+		"natanfelles/http": "^2.0"
 	},
 	"require-dev": {
 		"ext-xdebug": "*",

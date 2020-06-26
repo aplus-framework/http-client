@@ -7,10 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
 {
-	/**
-	 * @var Client
-	 */
-	protected $client;
+	protected Client $client;
 
 	protected function setUp() : void
 	{

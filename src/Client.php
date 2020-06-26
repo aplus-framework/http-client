@@ -149,10 +149,8 @@ class Client
 		$this->setOption(\CURLOPT_HEADER, false);
 		$this->setOption(\CURLOPT_URL, $request->getURL()->getURL());
 		$headers = [];
-		foreach ($request->getAllHeaders() as $name => $values) {
-			foreach ($values as $value) {
-				$headers[] = $name . ': ' . $value;
-			}
+		foreach ($request->getHeaders() as $name => $value) {
+			$headers[] = $name . ': ' . $value;
 		}
 		$this->setOption(\CURLOPT_HTTPHEADER, $headers);
 		$this->setOption(\CURLOPT_HEADERFUNCTION, [$this, 'parseHeaderLine']);
@@ -206,7 +204,7 @@ class Client
 		$name = \trim($name);
 		$value = \trim($value);
 		if ($name !== '' && $value !== '') {
-			$this->responseHeaders[\strtolower($name)][] = $value;
+			$this->responseHeaders[\strtolower($name)] = $value;
 		}
 		return \strlen($line);
 	}

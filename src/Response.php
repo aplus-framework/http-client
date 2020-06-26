@@ -23,8 +23,8 @@ class Response extends Message implements ResponseInterface
 		$this->setProtocol($protocol);
 		$this->setStatusCode($status);
 		$this->setStatusReason($reason);
-		foreach ($headers as $name => $h) {
-			$this->setHeader($name, ...$h);
+		foreach ($headers as $name => $value) {
+			$this->setHeader($name, $value);
 		}
 		$this->setBody($body);
 	}
@@ -51,17 +51,15 @@ class Response extends Message implements ResponseInterface
 		return $this;
 	}
 
-	protected function setHeader(string $name, string ...$values)
+	protected function setHeader(string $name, string $value)
 	{
 		if (\strtolower($name) === 'set-cookie') {
-			foreach ($values as $value) {
-				$cookie = Cookie::parse($value);
-				if ($cookie) {
-					$this->setCookie($cookie);
-				}
+			$cookie = Cookie::parse($value);
+			if ($cookie) {
+				$this->setCookie($cookie);
 			}
 		}
-		return parent::setHeader($name, ...$values);
+		return parent::setHeader($name, $value);
 	}
 
 	/**
