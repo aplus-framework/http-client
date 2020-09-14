@@ -63,7 +63,7 @@ class ClientTest extends TestCase
 	{
 		$this->client->setRequestTimeout(10);
 		$this->client->setResponseTimeout(20);
-		$this->assertContains([
+		$this->assertContainsEquals([
 			\CURLOPT_CONNECTTIMEOUT => 10,
 			\CURLOPT_TIMEOUT => 20,
 		], $this->client->getOptions());
