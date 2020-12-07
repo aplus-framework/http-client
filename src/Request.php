@@ -121,6 +121,9 @@ class Request extends Message implements RequestInterface
 		return ! empty($this->files);
 	}
 
+	/**
+	 * @return array|mixed[]
+	 */
 	public function getFiles() : array
 	{
 		return $this->files;
@@ -147,6 +150,12 @@ class Request extends Message implements RequestInterface
 		return $this;
 	}
 
+	/**
+	 * @param string $mime
+	 * @param string $charset
+	 *
+	 * @return $this
+	 */
 	public function setContentType(string $mime, string $charset = 'UTF-8')
 	{
 		$this->setHeader('Content-Type', $mime . ($charset ? '; charset=' . $charset : ''));
@@ -179,6 +188,9 @@ class Request extends Message implements RequestInterface
 		return $this;
 	}
 
+	/**
+	 * @return $this
+	 */
 	protected function setCookieHeader()
 	{
 		$line = [];
@@ -212,6 +224,12 @@ class Request extends Message implements RequestInterface
 		return parent::removeHeaders();
 	}
 
+	/**
+	 * @param string $username
+	 * @param string $password
+	 *
+	 * @return $this
+	 */
 	public function setBasicAuth(string $username, string $password)
 	{
 		return $this->setHeader(
@@ -220,6 +238,11 @@ class Request extends Message implements RequestInterface
 		);
 	}
 
+	/**
+	 * @param string|null $user_agent
+	 *
+	 * @return $this
+	 */
 	public function setUserAgent(string $user_agent = null)
 	{
 		$user_agent ??= 'HTTP Client';

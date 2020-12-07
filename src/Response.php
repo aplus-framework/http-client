@@ -13,6 +13,15 @@ class Response extends Message implements ResponseInterface
 	protected int $statusCode;
 	protected string $statusReason;
 
+	/**
+	 * Response constructor.
+	 *
+	 * @param string         $protocol
+	 * @param int            $status
+	 * @param string         $reason
+	 * @param array|string[] $headers
+	 * @param string         $body
+	 */
 	public function __construct(
 		string $protocol,
 		int $status,
@@ -34,6 +43,11 @@ class Response extends Message implements ResponseInterface
 		return $this->statusCode;
 	}
 
+	/**
+	 * @param int $statusCode
+	 *
+	 * @return $this
+	 */
 	protected function setStatusCode(int $statusCode)
 	{
 		$this->statusCode = $statusCode;
@@ -45,6 +59,11 @@ class Response extends Message implements ResponseInterface
 		return $this->statusReason;
 	}
 
+	/**
+	 * @param string $statusReason
+	 *
+	 * @return $this
+	 */
 	protected function setStatusReason(string $statusReason)
 	{
 		$this->statusReason = $statusReason;
@@ -67,7 +86,7 @@ class Response extends Message implements ResponseInterface
 	 * @param int  $options
 	 * @param int  $depth
 	 *
-	 * @return array|false|object
+	 * @return array|false|mixed[]|object
 	 */
 	public function getJSON(bool $assoc = false, int $options = null, int $depth = 512)
 	{

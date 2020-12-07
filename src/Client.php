@@ -1,5 +1,7 @@
 <?php namespace Framework\HTTP\Client;
 
+use RuntimeException;
+
 /**
  * Class Client.
  */
@@ -13,11 +15,20 @@ class Client
 		\CURLOPT_AUTOREFERER => true,
 		\CURLOPT_RETURNTRANSFER => true,
 	];
+	/**
+	 * @var array|mixed[]
+	 */
 	protected array $options = [];
 	protected ?string $responseProtocol = null;
-	protected ?string $responseCode = null;
+	protected ?int $responseCode = null;
 	protected ?string $responseReason = null;
+	/**
+	 * @var array|string[]
+	 */
 	protected array $responseHeaders = [];
+	/**
+	 * @var array|mixed[]
+	 */
 	protected array $info = [];
 
 	/**
@@ -37,7 +48,7 @@ class Client
 	/**
 	 * Get default options replaced by custom.
 	 *
-	 * @return array
+	 * @return array|mixed[]
 	 */
 	public function getOptions() : array
 	{
@@ -47,7 +58,7 @@ class Client
 	/**
 	 * Get cURL info for the last request.
 	 *
-	 * @return array
+	 * @return array|mixed[]
 	 */
 	public function getInfo() : array
 	{
@@ -108,6 +119,11 @@ class Client
 		$this->info = [];
 	}
 
+	/**
+	 * @param string $version
+	 *
+	 * @return $this
+	 */
 	protected function setHTTPVersion(string $version)
 	{
 		if ($version === 'HTTP/1.0') {
@@ -124,7 +140,7 @@ class Client
 	 *
 	 * @param Request $request
 	 *
-	 * @throws \RuntimeException for curl error
+	 * @throws RuntimeException for curl error
 	 *
 	 * @return Response
 	 */
@@ -158,7 +174,7 @@ class Client
 		\curl_setopt_array($curl, $this->getOptions());
 		$body = \curl_exec($curl);
 		if ($body === false) {
-			throw new \RuntimeException(\curl_error($curl), \curl_errno($curl));
+			throw new RuntimeException(\curl_error($curl), \curl_errno($curl));
 		}
 		if (isset($this->options[\CURLOPT_RETURNTRANSFER])
 			&& $this->options[\CURLOPT_RETURNTRANSFER] === false) {
