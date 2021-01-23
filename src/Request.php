@@ -30,7 +30,7 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @param string|URL $url
 	 */
-	public function __construct($url)
+	public function __construct(URL | string $url)
 	{
 		$this->setURL($url);
 	}
@@ -65,7 +65,7 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @return Request
 	 */
-	public function setBody($body)
+	public function setBody(array | string $body)
 	{
 		if ( ! \is_scalar($body)) {
 			$body = \http_build_query($body);
