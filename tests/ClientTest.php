@@ -52,11 +52,13 @@ class ClientTest extends TestCase
 		$this->assertInstanceOf(Response::class, $response);
 		$this->assertGreaterThan(100, \strlen($response->getBody()));
 		$this->client->setOption(\CURLOPT_RETURNTRANSFER, false);
+		\ob_start(); // Avoid terminal output
 		$response = $this->client->run($request);
 		$this->assertInstanceOf(Response::class, $response);
 		$this->assertEquals('', $response->getBody());
 		$this->assertGreaterThan(100, \strlen(\ob_get_contents()));
 		$this->assertArrayHasKey('connect_time', $this->client->getInfo());
+		\ob_end_clean();
 	}
 
 	public function testTimeout()
