@@ -82,9 +82,11 @@ class Response extends Message implements ResponseInterface
 	}
 
 	/**
-	 * @param bool $assoc
-	 * @param int  $options
-	 * @param int  $depth
+	 * Get body as decoded JSON.
+	 *
+	 * @param bool     $assoc
+	 * @param int|null $options
+	 * @param int      $depth
 	 *
 	 * @return array|false|mixed[]|object
 	 */

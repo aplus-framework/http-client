@@ -7,6 +7,11 @@ use RuntimeException;
  */
 class Client
 {
+	/**
+	 * Client default cURL options.
+	 *
+	 * @var array
+	 */
 	protected array $defaultOptions = [
 		\CURLOPT_CONNECTTIMEOUT => 10,
 		\CURLOPT_TIMEOUT => 60,
@@ -16,17 +21,38 @@ class Client
 		\CURLOPT_RETURNTRANSFER => true,
 	];
 	/**
+	 * Custom cURL options.
+	 *
 	 * @var array|mixed[]
 	 */
 	protected array $options = [];
+	/**
+	 * Response HTTP protocol.
+	 *
+	 * @var string|null
+	 */
 	protected ?string $responseProtocol = null;
+	/**
+	 * Response HTTP status code.
+	 *
+	 * @var int|null
+	 */
 	protected ?int $responseCode = null;
+	/**
+	 * Response HTTP status reason.
+	 *
+	 * @var string|null
+	 */
 	protected ?string $responseReason = null;
 	/**
+	 * Response headers.
+	 *
 	 * @var array|string[]
 	 */
 	protected array $responseHeaders = [];
 	/**
+	 * Response cURL info.
+	 *
 	 * @var array|mixed[]
 	 */
 	protected array $info = [];
@@ -39,7 +65,7 @@ class Client
 	 *
 	 * @return $this
 	 */
-	public function setOption($option, $value)
+	public function setOption(int $option, $value)
 	{
 		$this->options[$option] = $value;
 		return $this;
@@ -64,21 +90,6 @@ class Client
 	{
 		return $this->info;
 	}
-
-	/**
-	 * Set basic auth credentials.
-	 *
-	 * @param string $username
-	 * @param string $password
-	 *
-	 * @return $this
-	 */
-	/*protected function setBasicAuth(string $username, string $password)
-	{
-		$this->setOption(\CURLOPT_USERPWD, $username . ':' . $password);
-		$this->setOption(\CURLOPT_HTTPAUTH, \CURLAUTH_BASIC);
-		return $this;
-	}*/
 
 	/**
 	 * Set cURL timeout.

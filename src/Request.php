@@ -22,6 +22,8 @@ class Request extends Message implements RequestInterface
 	protected URL $url;
 	/**
 	 * POST files.
+	 *
+	 * @var array|\CURLFile[]
 	 */
 	protected array $files = [];
 
@@ -47,7 +49,7 @@ class Request extends Message implements RequestInterface
 
 	public function getMethod() : string
 	{
-		return $this->method;
+		return parent::getMethod();
 	}
 
 	public function setMethod(string $method)
@@ -61,19 +63,23 @@ class Request extends Message implements RequestInterface
 	}
 
 	/**
+	 * Set the request body.
+	 *
 	 * @param array|string $body
 	 *
 	 * @return Request
 	 */
 	public function setBody(array | string $body)
 	{
-		if ( ! \is_scalar($body)) {
+		if (\is_array($body)) {
 			$body = \http_build_query($body);
 		}
 		return parent::setBody($body);
 	}
 
 	/**
+	 * Set body with JSON data.
+	 *
 	 * @param mixed $data
 	 * @param int   $options [optional] <p>
 	 *                       Bitmask consisting of <b>JSON_HEX_QUOT</b>,
@@ -108,6 +114,13 @@ class Request extends Message implements RequestInterface
 		return $this;
 	}
 
+	/**
+	 * Set POST data simulating a browser request.
+	 *
+	 * @param array $data
+	 *
+	 * @return $this
+	 */
 	public function setPOST(array $data)
 	{
 		$this->setMethod('POST');
@@ -122,7 +135,9 @@ class Request extends Message implements RequestInterface
 	}
 
 	/**
-	 * @return array|mixed[]
+	 * Get files for upload.
+	 *
+	 * @return array|\CURLFile[]
 	 */
 	public function getFiles() : array
 	{
@@ -130,7 +145,9 @@ class Request extends Message implements RequestInterface
 	}
 
 	/**
-	 * @param array|string[] $files
+	 * Set files for upload.
+	 *
+	 * @param array|string[] $files Paths of files
 	 *
 	 * @throws InvalidArgumentException for invalid file path
 	 *
@@ -151,6 +168,8 @@ class Request extends Message implements RequestInterface
 	}
 
 	/**
+	 * Set the Content-Type header.
+	 *
 	 * @param string $mime
 	 * @param string $charset
 	 *
@@ -225,8 +244,12 @@ class Request extends Message implements RequestInterface
 	}
 
 	/**
+	 * Set Authorization header with Basic type.
+	 *
 	 * @param string $username
 	 * @param string $password
+	 *
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
 	 *
 	 * @return $this
 	 */
@@ -239,7 +262,11 @@ class Request extends Message implements RequestInterface
 	}
 
 	/**
+	 * Set the User-Agent header.
+	 *
 	 * @param string|null $user_agent
+	 *
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
 	 *
 	 * @return $this
 	 */
