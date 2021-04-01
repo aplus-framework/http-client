@@ -217,8 +217,8 @@ class Client
 		if ($trimmed_line === '') {
 			return \strlen($line);
 		}
-		if (\strpos($trimmed_line, ':') === false) {
-			if (\strpos($trimmed_line, 'HTTP/') === 0) {
+		if ( ! \str_contains($trimmed_line, ':')) {
+			if (\str_starts_with($trimmed_line, 'HTTP/')) {
 				[
 					$this->responseProtocol,
 					$this->responseCode,
