@@ -99,13 +99,13 @@ class RequestTest extends TestCase
 		$this->assertFalse($this->request->hasFiles());
 		$this->assertEquals('GET', $this->request->getMethod());
 		$this->assertEquals([], $this->request->getFiles());
-		$this->request->setFiles([__FILE__]);
+		$this->request->setFiles(['upload' => __FILE__]);
 		$this->assertTrue($this->request->hasFiles());
 		$this->assertEquals('POST', $this->request->getMethod());
-		$this->assertInstanceOf(\CURLFile::class, $this->request->getFiles()[0]);
+		$this->assertInstanceOf(\CURLFile::class, $this->request->getFiles()['upload']);
 		$this->expectException(\InvalidArgumentException::class);
-		$this->expectExceptionMessage('Path does not match a file: /tmp/unknown-00');
-		$this->request->setFiles(['/tmp/unknown-00']);
+		$this->expectExceptionMessage("Field 'foo' does not match a file: /tmp/unknown-00");
+		$this->request->setFiles(['foo' => '/tmp/unknown-00']);
 	}
 
 	public function testPOST()

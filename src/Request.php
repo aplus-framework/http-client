@@ -147,7 +147,7 @@ class Request extends Message implements RequestInterface
 	/**
 	 * Set files for upload.
 	 *
-	 * @param array|string[] $files Paths of files
+	 * @param array|string[] $files Fields as keys, paths of files as values
 	 *
 	 * @throws InvalidArgumentException for invalid file path
 	 *
@@ -158,11 +158,13 @@ class Request extends Message implements RequestInterface
 		$this->setMethod('POST');
 		$this->setHeader('Content-Type', 'multipart/form-data');
 		$this->files = [];
-		foreach ($files as $file) {
+		foreach ($files as $field => $file) {
 			if ( ! \is_file($file)) {
-				throw new InvalidArgumentException('Path does not match a file: ' . $file);
+				throw new InvalidArgumentException(
+					"Field '{$field}' does not match a file: {$file}"
+				);
 			}
-			$this->files[] = \curl_file_create($file, \mime_content_type($file));
+			$this->files[$field] = \curl_file_create($file, \mime_content_type($file));
 		}
 		return $this;
 	}
