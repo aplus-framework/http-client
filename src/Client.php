@@ -174,7 +174,7 @@ class Client
 		}
 		$this->setOption(\CURLOPT_CUSTOMREQUEST, $request->getMethod());
 		$this->setOption(\CURLOPT_HEADER, false);
-		$this->setOption(\CURLOPT_URL, $request->getURL()->getURL());
+		$this->setOption(\CURLOPT_URL, $request->getURL()->getAsString());
 		$headers = [];
 		foreach ($request->getHeaders() as $name => $value) {
 			$headers[] = $name . ': ' . $value;
