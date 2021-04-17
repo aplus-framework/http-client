@@ -147,6 +147,26 @@ class Client
 	}
 
 	/**
+	 * Returns array for Content-Type multipart/form-data and string
+	 * for application/x-www-form-urlencoded.
+	 *
+	 * @see https://www.php.net/manual/en/function.curl-setopt.php CURLOPT_POSTFIELDS
+	 *
+	 * @param \Framework\HTTP\Client\Request $request
+	 *
+	 * @return array|string
+	 */
+	protected function getPostAndFiles(Request $request) : array | string
+	{
+		if ($request->hasFiles()) {
+			$body = $request->getBody();
+			\parse_str($body, $body);
+			return \array_replace_recursive($body, $request->getFiles());
+		}
+		return $request->getBody();
+	}
+
+	/**
 	 * Run the Request.
 	 *
 	 * @param Request $request
@@ -161,10 +181,7 @@ class Client
 		switch ($request->getMethod()) {
 			case 'POST':
 				$this->setOption(\CURLOPT_POST, true);
-				$this->setOption(
-					\CURLOPT_POSTFIELDS,
-					$request->hasFiles() ? $request->getFiles() : $request->getBody()
-				);
+				$this->setOption(\CURLOPT_POSTFIELDS, $this->getPostAndFiles($request));
 				break;
 			case 'PUT':
 			case 'PATCH':

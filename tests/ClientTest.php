@@ -110,4 +110,12 @@ class ClientTest extends TestCase
 		$this->expectExceptionMessage('Could not resolve host: domain.tld');
 		$this->client->run($request);
 	}
+
+	public function testPostAndFiles()
+	{
+		$request = new Request('https://www.google.com');
+		$request->setFiles(['file' => __FILE__]);
+		$this->assertTrue($request->hasFiles());
+		$this->client->run($request);
+	}
 }
