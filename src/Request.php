@@ -124,7 +124,6 @@ class Request extends Message implements RequestInterface
 	public function setPOST(array $data)
 	{
 		$this->setMethod('POST');
-		$this->setContentType('application/x-www-form-urlencoded');
 		$this->setBody($data);
 		return $this;
 	}
@@ -156,7 +155,6 @@ class Request extends Message implements RequestInterface
 	public function setFiles(array $files)
 	{
 		$this->setMethod('POST');
-		$this->setHeader('Content-Type', 'multipart/form-data');
 		$this->files = [];
 		foreach ($files as $field => $file) {
 			if ( ! \is_file($file)) {
