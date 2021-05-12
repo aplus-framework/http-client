@@ -22,7 +22,7 @@
 		"ext-curl": "*",
 		"ext-fileinfo": "*",
 		"ext-json": "*",
-		"natanfelles/http": "^2.0"
+		"natanfelles/http": "^3.0"
 	},
 	"require-dev": {
 		"ext-xdebug": "*",
