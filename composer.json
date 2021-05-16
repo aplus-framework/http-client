@@ -22,7 +22,7 @@
 		"ext-curl": "*",
 		"ext-fileinfo": "*",
 		"ext-json": "*",
-		"natanfelles/http": "^3.0"
+		"natanfelles/http": "^3.2"
 	},
 	"require-dev": {
 		"ext-xdebug": "*",
@@ -31,6 +31,11 @@
 		"phpmd/phpmd": "^2.10",
 		"phpstan/phpstan": "^0.12",
 		"phpunit/phpunit": "^9.5"
+	},
+	"config": {
+		"optimize-autoloader": true,
+		"preferred-install": "dist",
+		"sort-packages": true
 	},
 	"autoload": {
 		"psr-4": {
@@ -44,11 +49,6 @@
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
-	"scripts": {
-		"post-update-cmd": [
-			"composer dump-autoload"
-		]
-	},
 	"support": {
 		"email": "natanfelles@gmail.com",
 		"issues": "https://gitlab.com/the-framework/libraries/http-client/issues",
