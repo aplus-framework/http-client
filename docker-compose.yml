@@ -2,7 +2,8 @@ version: "3"
 services:
   package:
     image: natanfelles/package
-    container_name: http-client
+    container_name: http-client-package
     working_dir: /package
     volumes:
       - .:/package
+    tty: true
