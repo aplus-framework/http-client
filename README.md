@@ -1,4 +1,4 @@
-# Framework HTTP Client Library
+# The Framework HTTP Client Library
 
 - [Homepage](https://the-framework.gitlab.io/libraries/http-client.html)
 - [API Documentation](https://the-framework.gitlab.io/libraries/http-client/docs/)
