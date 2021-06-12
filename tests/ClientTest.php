@@ -5,7 +5,7 @@ use Framework\HTTP\Client\Request;
 use Framework\HTTP\Client\Response;
 use PHPUnit\Framework\TestCase;
 
-class ClientTest extends TestCase
+final class ClientTest extends TestCase
 {
 	protected Client $client;
 
@@ -14,9 +14,9 @@ class ClientTest extends TestCase
 		$this->client = new Client();
 	}
 
-	public function testOptions()
+	public function testOptions() : void
 	{
-		$this->assertEquals([
+		self::assertSame([
 			\CURLOPT_CONNECTTIMEOUT => 10,
 			\CURLOPT_TIMEOUT => 60,
 			\CURLOPT_FOLLOWLOCATION => true,
@@ -25,7 +25,7 @@ class ClientTest extends TestCase
 			\CURLOPT_RETURNTRANSFER => true,
 		], $this->client->getOptions());
 		$this->client->setOption(\CURLOPT_RETURNTRANSFER, false);
-		$this->assertEquals([
+		self::assertSame([
 			\CURLOPT_CONNECTTIMEOUT => 10,
 			\CURLOPT_TIMEOUT => 60,
 			\CURLOPT_FOLLOWLOCATION => true,
@@ -34,7 +34,7 @@ class ClientTest extends TestCase
 			\CURLOPT_RETURNTRANSFER => false,
 		], $this->client->getOptions());
 		$this->client->reset();
-		$this->assertEquals([
+		self::assertSame([
 			\CURLOPT_CONNECTTIMEOUT => 10,
 			\CURLOPT_TIMEOUT => 60,
 			\CURLOPT_FOLLOWLOCATION => true,
@@ -44,66 +44,66 @@ class ClientTest extends TestCase
 		], $this->client->getOptions());
 	}
 
-	public function testRun()
+	public function testRun() : void
 	{
 		$request = new Request('https://www.google.com');
 		$request->setHeader('Content-Type', 'text/html');
 		$response = $this->client->run($request);
-		$this->assertInstanceOf(Response::class, $response);
-		$this->assertGreaterThan(100, \strlen($response->getBody()));
+		self::assertInstanceOf(Response::class, $response);
+		self::assertGreaterThan(100, \strlen($response->getBody()));
 		$this->client->setOption(\CURLOPT_RETURNTRANSFER, false);
 		\ob_start(); // Avoid terminal output
 		$response = $this->client->run($request);
-		$this->assertInstanceOf(Response::class, $response);
-		$this->assertEquals('', $response->getBody());
-		$this->assertGreaterThan(100, \strlen(\ob_get_contents()));
-		$this->assertArrayHasKey('connect_time', $this->client->getInfo());
+		self::assertInstanceOf(Response::class, $response);
+		self::assertSame('', $response->getBody());
+		self::assertGreaterThan(100, \strlen(\ob_get_contents()));
+		self::assertArrayHasKey('connect_time', $this->client->getInfo());
 		\ob_end_clean();
 	}
 
-	public function testTimeout()
+	public function testTimeout() : void
 	{
 		$this->client->setRequestTimeout(10);
 		$this->client->setResponseTimeout(20);
-		$this->assertContainsEquals([
+		self::assertContainsEquals([
 			\CURLOPT_CONNECTTIMEOUT => 10,
 			\CURLOPT_TIMEOUT => 20,
 		], $this->client->getOptions());
 	}
 
-	public function testProtocols()
+	public function testProtocols() : void
 	{
 		$request = new Request('https://www.google.com');
 		$request->setProtocol('HTTP/1.1');
-		$this->assertEquals('HTTP/1.1', $request->getProtocol());
+		self::assertSame('HTTP/1.1', $request->getProtocol());
 		$response = $this->client->run($request);
-		$this->assertEquals('HTTP/1.1', $response->getProtocol());
+		self::assertSame('HTTP/1.1', $response->getProtocol());
 		$this->client->reset();
 		$request->setProtocol('HTTP/2.0');
-		$this->assertEquals('HTTP/2.0', $request->getProtocol());
+		self::assertSame('HTTP/2.0', $request->getProtocol());
 		$response = $this->client->run($request);
-		$this->assertEquals('HTTP/2', $response->getProtocol());
+		self::assertSame('HTTP/2', $response->getProtocol());
 		$this->client->reset();
 		$request->setProtocol('HTTP/1.0');
-		$this->assertEquals('HTTP/1.0', $request->getProtocol());
+		self::assertSame('HTTP/1.0', $request->getProtocol());
 		$response = $this->client->run($request);
-		$this->assertEquals('HTTP/1.0', $response->getProtocol());
+		self::assertSame('HTTP/1.0', $response->getProtocol());
 	}
 
-	public function testMethods()
+	public function testMethods() : void
 	{
 		$request = new Request('https://www.google.com');
 		$request->setMethod('post');
-		$this->assertEquals('POST', $request->getMethod());
+		self::assertSame('POST', $request->getMethod());
 		$response = $this->client->run($request);
-		$this->assertInstanceOf(Response::class, $response);
+		self::assertInstanceOf(Response::class, $response);
 		$request->setMethod('put');
-		$this->assertEquals('PUT', $request->getMethod());
+		self::assertSame('PUT', $request->getMethod());
 		$response = $this->client->run($request);
-		$this->assertInstanceOf(Response::class, $response);
+		self::assertInstanceOf(Response::class, $response);
 	}
 
-	public function testRunError()
+	public function testRunError() : void
 	{
 		$request = new Request('http://domain.tld');
 		$this->expectException(\RuntimeException::class);
@@ -111,11 +111,11 @@ class ClientTest extends TestCase
 		$this->client->run($request);
 	}
 
-	public function testPostAndFiles()
+	public function testPostAndFiles() : void
 	{
 		$request = new Request('https://www.google.com');
 		$request->setFiles(['file' => __FILE__]);
-		$this->assertTrue($request->hasFiles());
+		self::assertTrue($request->hasFiles());
 		$this->client->run($request);
 	}
 }

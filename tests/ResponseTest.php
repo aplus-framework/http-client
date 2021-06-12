@@ -3,7 +3,7 @@
 use Framework\HTTP\Client\Response;
 use PHPUnit\Framework\TestCase;
 
-class ResponseTest extends TestCase
+final class ResponseTest extends TestCase
 {
 	protected Response $response;
 
@@ -22,41 +22,41 @@ class ResponseTest extends TestCase
 		);
 	}
 
-	public function testProtocol()
+	public function testProtocol() : void
 	{
-		$this->assertEquals('HTTP/1.1', $this->response->getProtocol());
+		self::assertSame('HTTP/1.1', $this->response->getProtocol());
 	}
 
-	public function testStatusCode()
+	public function testStatusCode() : void
 	{
-		$this->assertEquals(200, $this->response->getStatusCode());
+		self::assertSame(200, $this->response->getStatusCode());
 	}
 
-	public function testStatusReason()
+	public function testStatusReason() : void
 	{
-		$this->assertEquals('OK', $this->response->getStatusReason());
+		self::assertSame('OK', $this->response->getStatusReason());
 	}
 
-	public function testHeaders()
+	public function testHeaders() : void
 	{
-		$this->assertEquals([
+		self::assertSame([
 			'foo' => 'Foo',
 			'content-type' => 'text/html',
 			'set-cookie' => 'foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
 		], $this->response->getHeaders());
-		$this->assertEquals('Foo', $this->response->getHeader('Foo'));
-		$this->assertEquals('text/html', $this->response->getHeader('content-type'));
+		self::assertSame('Foo', $this->response->getHeader('Foo'));
+		self::assertSame('text/html', $this->response->getHeader('content-type'));
 	}
 
-	public function testBody()
+	public function testBody() : void
 	{
-		$this->assertEquals('body', $this->response->getBody());
+		self::assertSame('body', $this->response->getBody());
 	}
 
-	public function testJson()
+	public function testJson() : void
 	{
-		$this->assertFalse($this->response->isJSON());
-		$this->assertFalse($this->response->getJSON());
+		self::assertFalse($this->response->isJSON());
+		self::assertFalse($this->response->getJSON());
 		$this->response = new Response(
 			'HTTP/1.1',
 			200,
@@ -64,12 +64,12 @@ class ResponseTest extends TestCase
 			['content-type' => 'application/json'],
 			'{"a":1}'
 		);
-		$this->assertTrue($this->response->isJSON());
-		$this->assertIsObject($this->response->getJSON());
+		self::assertTrue($this->response->isJSON());
+		self::assertIsObject($this->response->getJSON());
 	}
 
-	public function testStatusLine()
+	public function testStatusLine() : void
 	{
-		$this->assertEquals('200 OK', $this->response->getStatusLine());
+		self::assertSame('200 OK', $this->response->getStatusLine());
 	}
 }
