@@ -4,7 +4,7 @@ use Framework\HTTP\Client\Request;
 use Framework\HTTP\Cookie;
 use PHPUnit\Framework\TestCase;
 
-class RequestTest extends TestCase
+final class RequestTest extends TestCase
 {
 	protected Request $request;
 
@@ -13,136 +13,136 @@ class RequestTest extends TestCase
 		$this->request = new Request('http://localhost');
 	}
 
-	public function testProtocol()
+	public function testProtocol() : void
 	{
-		$this->assertEquals('HTTP/1.1', $this->request->getProtocol());
+		self::assertSame('HTTP/1.1', $this->request->getProtocol());
 		$this->request->setProtocol('HTTP/2.0');
-		$this->assertEquals('HTTP/2.0', $this->request->getProtocol());
+		self::assertSame('HTTP/2.0', $this->request->getProtocol());
 	}
 
-	public function testMethod()
+	public function testMethod() : void
 	{
-		$this->assertEquals('GET', $this->request->getMethod());
+		self::assertSame('GET', $this->request->getMethod());
 		$this->request->setMethod('post');
-		$this->assertEquals('POST', $this->request->getMethod());
+		self::assertSame('POST', $this->request->getMethod());
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage('Invalid HTTP Request Method: Foo');
 		$this->request->setMethod('Foo');
 	}
 
-	public function testURL()
+	public function testURL() : void
 	{
-		$this->assertEquals('http://localhost/', (string) $this->request->getURL());
+		self::assertSame('http://localhost/', (string) $this->request->getURL());
 	}
 
-	public function testHeaders()
+	public function testHeaders() : void
 	{
-		$this->assertEquals([], $this->request->getHeaders('foo'));
-		$this->assertNull($this->request->getHeader('Foo'));
+		self::assertSame([], $this->request->getHeaders('foo'));
+		self::assertNull($this->request->getHeader('Foo'));
 		$this->request->setHeaders([
 			'Foo' => 'Foo',
 			'content-Type' => 'text/html',
 			'custom' => 'a',
 		]);
-		$this->assertEquals('Foo', $this->request->getHeader('Foo'));
-		$this->assertEquals('text/html', $this->request->getHeader('content-type'));
-		$this->assertEquals('a', $this->request->getHeader('custom'));
+		self::assertSame('Foo', $this->request->getHeader('Foo'));
+		self::assertSame('text/html', $this->request->getHeader('content-type'));
+		self::assertSame('a', $this->request->getHeader('custom'));
 		$this->request->removeHeader('custom');
-		$this->assertNull($this->request->getHeader('custom'));
-		$this->assertEquals([
+		self::assertNull($this->request->getHeader('custom'));
+		self::assertSame([
 			'foo' => 'Foo',
 			'content-type' => 'text/html',
 		], $this->request->getHeaders());
 		$this->request->removeHeaders();
-		$this->assertEquals([], $this->request->getHeaders());
+		self::assertSame([], $this->request->getHeaders());
 	}
 
-	public function testCookies()
+	public function testCookies() : void
 	{
-		$this->assertEmpty($this->request->getCookies());
-		$this->assertNull($this->request->getHeader('cookie'));
+		self::assertEmpty($this->request->getCookies());
+		self::assertNull($this->request->getHeader('cookie'));
 		$this->request->setCookie(new Cookie('session', 'abc123'));
-		$this->assertNotEmpty($this->request->getCookies());
-		$this->assertEquals('session=abc123', $this->request->getHeader('cookie'));
-		$this->assertEquals('abc123', $this->request->getCookie('session')->getValue());
+		self::assertNotEmpty($this->request->getCookies());
+		self::assertSame('session=abc123', $this->request->getHeader('cookie'));
+		self::assertSame('abc123', $this->request->getCookie('session')->getValue());
 		$this->request->setCookie(new Cookie('foo', 'bar'));
-		$this->assertEquals('session=abc123; foo=bar', $this->request->getHeader('cookie'));
+		self::assertSame('session=abc123; foo=bar', $this->request->getHeader('cookie'));
 		$this->request->removeCookie('session');
-		$this->assertEquals('foo=bar', $this->request->getHeader('cookie'));
+		self::assertSame('foo=bar', $this->request->getHeader('cookie'));
 		$this->request->removeCookies(['foo']);
-		$this->assertNull($this->request->getHeader('cookie'));
+		self::assertNull($this->request->getHeader('cookie'));
 		$this->request->setCookies([
 			new Cookie('j', 'jota'),
 			new Cookie('m', 'eme'),
 		]);
-		$this->assertEquals('j=jota; m=eme', $this->request->getHeader('cookie'));
+		self::assertSame('j=jota; m=eme', $this->request->getHeader('cookie'));
 	}
 
-	public function testBody()
+	public function testBody() : void
 	{
-		$this->assertEquals('', $this->request->getBody());
+		self::assertSame('', $this->request->getBody());
 		$this->request->setBody('body');
-		$this->assertEquals('body', $this->request->getBody());
+		self::assertSame('body', $this->request->getBody());
 		$this->request->setBody(['a' => 1]);
-		$this->assertEquals('a=1', $this->request->getBody());
+		self::assertSame('a=1', $this->request->getBody());
 	}
 
-	public function testContentType()
+	public function testContentType() : void
 	{
-		$this->assertNull($this->request->getHeader('content-type'));
+		self::assertNull($this->request->getHeader('content-type'));
 		$this->request->setContentType('text/html');
-		$this->assertEquals('text/html; charset=UTF-8', $this->request->getHeader('content-type'));
+		self::assertSame('text/html; charset=UTF-8', $this->request->getHeader('content-type'));
 	}
 
-	public function testFiles()
+	public function testFiles() : void
 	{
-		$this->assertFalse($this->request->hasFiles());
-		$this->assertEquals('GET', $this->request->getMethod());
-		$this->assertEquals([], $this->request->getFiles());
+		self::assertFalse($this->request->hasFiles());
+		self::assertSame('GET', $this->request->getMethod());
+		self::assertSame([], $this->request->getFiles());
 		$this->request->setFiles(['upload' => __FILE__]);
-		$this->assertTrue($this->request->hasFiles());
-		$this->assertEquals('POST', $this->request->getMethod());
-		$this->assertInstanceOf(\CURLFile::class, $this->request->getFiles()['upload']);
+		self::assertTrue($this->request->hasFiles());
+		self::assertSame('POST', $this->request->getMethod());
+		self::assertInstanceOf(\CURLFile::class, $this->request->getFiles()['upload']);
 		$this->expectException(\InvalidArgumentException::class);
 		$this->expectExceptionMessage("Field 'foo' does not match a file: /tmp/unknown-00");
 		$this->request->setFiles(['foo' => '/tmp/unknown-00']);
 	}
 
-	public function testPOST()
+	public function testPOST() : void
 	{
-		$this->assertEquals('GET', $this->request->getMethod());
+		self::assertSame('GET', $this->request->getMethod());
 		$this->request->setPOST(['a' => 1, 'b' => 2]);
-		$this->assertEquals('POST', $this->request->getMethod());
-		$this->assertEquals('a=1&b=2', $this->request->getBody());
+		self::assertSame('POST', $this->request->getMethod());
+		self::assertSame('a=1&b=2', $this->request->getBody());
 	}
 
-	public function testJSON()
+	public function testJSON() : void
 	{
-		$this->assertNull($this->request->getHeader('content-type'));
+		self::assertNull($this->request->getHeader('content-type'));
 		$this->request->setJSON(['a' => 1]);
-		$this->assertEquals(
+		self::assertSame(
 			'application/json; charset=UTF-8',
 			$this->request->getHeader('content-type')
 		);
-		$this->assertEquals('{"a":1}', $this->request->getBody());
+		self::assertSame('{"a":1}', $this->request->getBody());
 	}
 
-	public function testBasicAuth()
+	public function testBasicAuth() : void
 	{
-		$this->assertEmpty($this->request->getHeader('authorization'));
+		self::assertEmpty($this->request->getHeader('authorization'));
 		$this->request->setBasicAuth('foo', 'bar');
-		$this->assertEquals(
+		self::assertSame(
 			'Basic ' . \base64_encode('foo:bar'),
 			$this->request->getHeader('authorization')
 		);
 	}
 
-	public function testUserAgent()
+	public function testUserAgent() : void
 	{
-		$this->assertEmpty($this->request->getHeader('user-agent'));
+		self::assertEmpty($this->request->getHeader('user-agent'));
 		$this->request->setUserAgent();
-		$this->assertEquals('HTTP Client', $this->request->getHeader('user-agent'));
+		self::assertSame('HTTP Client', $this->request->getHeader('user-agent'));
 		$this->request->setUserAgent('Other');
-		$this->assertEquals('Other', $this->request->getHeader('user-agent'));
+		self::assertSame('Other', $this->request->getHeader('user-agent'));
 	}
 }
