@@ -320,15 +320,15 @@ class Request extends Message implements RequestInterface
 	/**
 	 * Set the User-Agent header.
 	 *
-	 * @param string|null $user_agent
+	 * @param string|null $userAgent
 	 *
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
 	 *
 	 * @return $this
 	 */
-	public function setUserAgent(string $user_agent = null)
+	public function setUserAgent(string $userAgent = null)
 	{
 		$user_agent ??= 'HTTP Client';
-		return $this->setHeader('User-Agent', $user_agent);
+		return $this->setHeader('User-Agent', $userAgent);
 	}
 }
