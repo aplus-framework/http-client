@@ -1,5 +1,6 @@
 <?php namespace Framework\HTTP\Client;
 
+use CURLFile;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\Message;
 use Framework\HTTP\RequestInterface;
@@ -23,7 +24,7 @@ class Request extends Message implements RequestInterface
 	/**
 	 * POST files.
 	 *
-	 * @var array|\CURLFile[]
+	 * @var array<string,CURLFile>
 	 */
 	protected array $files = [];
 
@@ -37,7 +38,12 @@ class Request extends Message implements RequestInterface
 		$this->setURL($url);
 	}
 
-	public function setURL($url)
+	/**
+	 * @param string|URL $url
+	 *
+	 * @return $this
+	 */
+	public function setURL(string | URL $url)
 	{
 		return parent::setURL($url);
 	}
@@ -52,11 +58,21 @@ class Request extends Message implements RequestInterface
 		return parent::getMethod();
 	}
 
+	/**
+	 * @param string $method
+	 *
+	 * @return $this
+	 */
 	public function setMethod(string $method)
 	{
 		return parent::setMethod($method);
 	}
 
+	/**
+	 * @param string $protocol
+	 *
+	 * @return $this
+	 */
 	public function setProtocol(string $protocol)
 	{
 		return parent::setProtocol($protocol);
@@ -65,9 +81,9 @@ class Request extends Message implements RequestInterface
 	/**
 	 * Set the request body.
 	 *
-	 * @param array|string $body
+	 * @param array<string,mixed>|string $body
 	 *
-	 * @return Request
+	 * @return $this
 	 */
 	public function setBody(array | string $body)
 	{
@@ -81,23 +97,21 @@ class Request extends Message implements RequestInterface
 	 * Set body with JSON data.
 	 *
 	 * @param mixed $data
-	 * @param int   $options [optional] <p>
-	 *                       Bitmask consisting of <b>JSON_HEX_QUOT</b>,
-	 *                       <b>JSON_HEX_TAG</b>,
-	 *                       <b>JSON_HEX_AMP</b>,
-	 *                       <b>JSON_HEX_APOS</b>,
-	 *                       <b>JSON_NUMERIC_CHECK</b>,
-	 *                       <b>JSON_PRETTY_PRINT</b>,
-	 *                       <b>JSON_UNESCAPED_SLASHES</b>,
-	 *                       <b>JSON_FORCE_OBJECT</b>,
-	 *                       <b>JSON_UNESCAPED_UNICODE</b>.
-	 *                       <b>JSON_THROW_ON_ERROR</b>
-	 *                       </p>
-	 *                       <p>Default is <b>JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE</b>
-	 *                       when null</p>
-	 * @param int   $depth   [optional] <p>
-	 *                       Set the maximum depth. Must be greater than zero.
-	 *                       </p>
+	 * @param int $options [optional] <p>
+	 * Bitmask consisting of <b>JSON_HEX_QUOT</b>,
+	 * <b>JSON_HEX_TAG</b>,
+	 * <b>JSON_HEX_AMP</b>,
+	 * <b>JSON_HEX_APOS</b>,
+	 * <b>JSON_NUMERIC_CHECK</b>,
+	 * <b>JSON_PRETTY_PRINT</b>,
+	 * <b>JSON_UNESCAPED_SLASHES</b>,
+	 * <b>JSON_FORCE_OBJECT</b>,
+	 * <b>JSON_UNESCAPED_UNICODE</b>.
+	 * <b>JSON_THROW_ON_ERROR</b>
+	 * </p>
+	 * <p>Default is <b>JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE</b>
+	 * when null</p>
+	 * @param int $depth [optional] Set the maximum depth. Must be greater than zero.
 	 *
 	 * @throws JsonException if json_encode() fails
 	 *
@@ -117,7 +131,7 @@ class Request extends Message implements RequestInterface
 	/**
 	 * Set POST data simulating a browser request.
 	 *
-	 * @param array $data
+	 * @param array<string,mixed> $data
 	 *
 	 * @return $this
 	 */
@@ -136,7 +150,7 @@ class Request extends Message implements RequestInterface
 	/**
 	 * Get files for upload.
 	 *
-	 * @return array|\CURLFile[]
+	 * @return array<string,CURLFile>
 	 */
 	public function getFiles() : array
 	{
@@ -146,7 +160,7 @@ class Request extends Message implements RequestInterface
 	/**
 	 * Set files for upload.
 	 *
-	 * @param array|string[] $files Fields as keys, paths of files as values
+	 * @param array<string,string> $files Fields as keys, paths of files as values
 	 *
 	 * @throws InvalidArgumentException for invalid file path
 	 *
@@ -162,7 +176,10 @@ class Request extends Message implements RequestInterface
 					"Field '{$field}' does not match a file: {$file}"
 				);
 			}
-			$this->files[$field] = \curl_file_create($file, \mime_content_type($file));
+			$this->files[$field] = \curl_file_create(
+				$file,
+				\mime_content_type($file) ?: 'application/octet-stream'
+			);
 		}
 		return $this;
 	}
@@ -181,6 +198,11 @@ class Request extends Message implements RequestInterface
 		return $this;
 	}
 
+	/**
+	 * @param Cookie $cookie
+	 *
+	 * @return $this
+	 */
 	public function setCookie(Cookie $cookie)
 	{
 		parent::setCookie($cookie);
@@ -188,11 +210,21 @@ class Request extends Message implements RequestInterface
 		return $this;
 	}
 
+	/**
+	 * @param array<int,Cookie> $cookies
+	 *
+	 * @return $this
+	 */
 	public function setCookies(array $cookies)
 	{
 		return parent::setCookies($cookies);
 	}
 
+	/**
+	 * @param string $name
+	 *
+	 * @return $this
+	 */
 	public function removeCookie(string $name)
 	{
 		parent::removeCookie($name);
@@ -200,6 +232,11 @@ class Request extends Message implements RequestInterface
 		return $this;
 	}
 
+	/**
+	 * @param array<int,string> $names
+	 *
+	 * @return $this
+	 */
 	public function removeCookies(array $names)
 	{
 		parent::removeCookies($names);
@@ -223,21 +260,40 @@ class Request extends Message implements RequestInterface
 		return $this->removeHeader('Cookie');
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $value
+	 *
+	 * @return $this
+	 */
 	public function setHeader(string $name, string $value)
 	{
 		return parent::setHeader($name, $value);
 	}
 
+	/**
+	 * @param array<string,string> $headers
+	 *
+	 * @return $this
+	 */
 	public function setHeaders(array $headers)
 	{
 		return parent::setHeaders($headers);
 	}
 
+	/**
+	 * @param string $name
+	 *
+	 * @return $this
+	 */
 	public function removeHeader(string $name)
 	{
 		return parent::removeHeader($name);
 	}
 
+	/**
+	 * @return $this
+	 */
 	public function removeHeaders()
 	{
 		return parent::removeHeaders();

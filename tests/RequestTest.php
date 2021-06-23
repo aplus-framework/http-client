@@ -37,7 +37,7 @@ final class RequestTest extends TestCase
 
 	public function testHeaders() : void
 	{
-		self::assertSame([], $this->request->getHeaders('foo'));
+		self::assertSame([], $this->request->getHeaders());
 		self::assertNull($this->request->getHeader('Foo'));
 		$this->request->setHeaders([
 			'Foo' => 'Foo',

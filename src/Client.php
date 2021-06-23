@@ -10,7 +10,7 @@ class Client
 	/**
 	 * Client default cURL options.
 	 *
-	 * @var array
+	 * @var array<int,mixed>
 	 */
 	protected array $defaultOptions = [
 		\CURLOPT_CONNECTTIMEOUT => 10,
@@ -23,7 +23,7 @@ class Client
 	/**
 	 * Custom cURL options.
 	 *
-	 * @var array|mixed[]
+	 * @var array<int,mixed>
 	 */
 	protected array $options = [];
 	/**
@@ -47,25 +47,25 @@ class Client
 	/**
 	 * Response headers.
 	 *
-	 * @var array|string[]
+	 * @var array<string,string>
 	 */
 	protected array $responseHeaders = [];
 	/**
 	 * Response cURL info.
 	 *
-	 * @var array|mixed[]
+	 * @var array<string,mixed>
 	 */
 	protected array $info = [];
 
 	/**
 	 * Set cURL options.
 	 *
-	 * @param int   $option cURL CURLOPT_* constant
+	 * @param int $option A cURL CURLOPT_* constant
 	 * @param mixed $value
 	 *
 	 * @return $this
 	 */
-	public function setOption(int $option, $value)
+	public function setOption(int $option, mixed $value)
 	{
 		$this->options[$option] = $value;
 		return $this;
@@ -74,7 +74,7 @@ class Client
 	/**
 	 * Get default options replaced by custom.
 	 *
-	 * @return array|mixed[]
+	 * @return array<int,mixed>
 	 */
 	public function getOptions() : array
 	{
@@ -84,7 +84,7 @@ class Client
 	/**
 	 * Get cURL info for the last request.
 	 *
-	 * @return array|mixed[]
+	 * @return array<string,mixed>
 	 */
 	public function getInfo() : array
 	{
@@ -94,26 +94,28 @@ class Client
 	/**
 	 * Set cURL timeout.
 	 *
-	 * @param int $timeout
+	 * @param int $seconds The maximum number of seconds to allow cURL
+	 * functions to execute
 	 *
 	 * @return $this
 	 */
-	public function setResponseTimeout(int $timeout)
+	public function setResponseTimeout(int $seconds)
 	{
-		$this->setOption(\CURLOPT_TIMEOUT, $timeout);
+		$this->setOption(\CURLOPT_TIMEOUT, $seconds);
 		return $this;
 	}
 
 	/**
 	 * Set cURL connect timeout.
 	 *
-	 * @param int $timeout
+	 * @param int $seconds The number of seconds to wait while trying to connect.
+	 * Use 0 to wait indefinitely.
 	 *
 	 * @return $this
 	 */
-	public function setRequestTimeout(int $timeout)
+	public function setRequestTimeout(int $seconds)
 	{
-		$this->setOption(\CURLOPT_CONNECTTIMEOUT, $timeout);
+		$this->setOption(\CURLOPT_CONNECTTIMEOUT, $seconds);
 		return $this;
 	}
 
@@ -152,9 +154,9 @@ class Client
 	 *
 	 * @see https://www.php.net/manual/en/function.curl-setopt.php CURLOPT_POSTFIELDS
 	 *
-	 * @param \Framework\HTTP\Client\Request $request
+	 * @param Request $request
 	 *
-	 * @return array|string
+	 * @return array<string,mixed>|string
 	 */
 	protected function getPostAndFiles(Request $request) : array | string
 	{
@@ -171,7 +173,7 @@ class Client
 	 *
 	 * @param Request $request
 	 *
-	 * @throws RuntimeException for curl error
+	 * @throws RuntimeException for cURL error
 	 *
 	 * @return Response
 	 */
@@ -216,6 +218,7 @@ class Client
 			$this->responseCode,
 			$this->responseReason,
 			$this->responseHeaders,
+			// @phpstan-ignore-next-line
 			$body
 		);
 	}
@@ -224,7 +227,7 @@ class Client
 	 * Parses Header line.
 	 *
 	 * @param resource $curl
-	 * @param string   $line
+	 * @param string $line
 	 *
 	 * @return int
 	 */

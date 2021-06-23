@@ -1,5 +1,6 @@
 <?php namespace Framework\HTTP\Client;
 
+use Exception;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\Message;
 use Framework\HTTP\ResponseInterface;
@@ -16,11 +17,11 @@ class Response extends Message implements ResponseInterface
 	/**
 	 * Response constructor.
 	 *
-	 * @param string         $protocol
-	 * @param int            $status
-	 * @param string         $reason
-	 * @param array|string[] $headers
-	 * @param string         $body
+	 * @param string $protocol
+	 * @param int $status
+	 * @param string $reason
+	 * @param array<string,string> $headers
+	 * @param string $body
 	 */
 	public function __construct(
 		string $protocol,
@@ -70,6 +71,14 @@ class Response extends Message implements ResponseInterface
 		return $this;
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $value
+	 *
+	 * @throws Exception if Cookie::setExpires fail
+	 *
+	 * @return $this
+	 */
 	protected function setHeader(string $name, string $value)
 	{
 		if (\strtolower($name) === 'set-cookie') {
@@ -84,13 +93,13 @@ class Response extends Message implements ResponseInterface
 	/**
 	 * Get body as decoded JSON.
 	 *
-	 * @param bool     $assoc
+	 * @param bool $assoc
 	 * @param int|null $options
-	 * @param int      $depth
+	 * @param int $depth
 	 *
-	 * @return array|false|mixed[]|object
+	 * @return array<string,mixed>|false|object
 	 */
-	public function getJSON(bool $assoc = false, int $options = null, int $depth = 512)
+	public function getJSON(bool $assoc = false, int $options = null, int $depth = 512) : array | object | false
 	{
 		if ($options === null) {
 			$options = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES;

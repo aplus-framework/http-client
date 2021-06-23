@@ -56,7 +56,7 @@ final class ClientTest extends TestCase
 		$response = $this->client->run($request);
 		self::assertInstanceOf(Response::class, $response);
 		self::assertSame('', $response->getBody());
-		self::assertGreaterThan(100, \strlen(\ob_get_contents()));
+		self::assertGreaterThan(100, \strlen((string) \ob_get_contents()));
 		self::assertArrayHasKey('connect_time', $this->client->getInfo());
 		\ob_end_clean();
 	}
