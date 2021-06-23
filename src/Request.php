@@ -117,7 +117,7 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @return $this
 	 */
-	public function setJSON($data, int $options = null, int $depth = 512)
+	public function setJSON(mixed $data, int $options = null, int $depth = 512)
 	{
 		if ($options === null) {
 			$options = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE;
