@@ -1,4 +1,5 @@
-<?php namespace Framework\HTTP\Client;
+<?php declare(strict_types = 1);
+namespace Framework\HTTP\Client;
 
 use Exception;
 use Framework\HTTP\Cookie;

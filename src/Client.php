@@ -1,4 +1,5 @@
-<?php namespace Framework\HTTP\Client;
+<?php declare(strict_types = 1);
+namespace Framework\HTTP\Client;
 
 use RuntimeException;
 
@@ -239,11 +240,10 @@ class Client
 		}
 		if ( ! \str_contains($trimmed_line, ':')) {
 			if (\str_starts_with($trimmed_line, 'HTTP/')) {
-				[
-					$this->responseProtocol,
-					$this->responseCode,
-					$this->responseReason,
-				] = \array_pad(\explode(' ', $trimmed_line, 3), 3, '');
+				$parts = \explode(' ', $trimmed_line, 3);
+				$this->responseProtocol = $parts[0] ?? 'HTTP/1.1';
+				$this->responseCode = (int) ($parts[1] ?? 200);
+				$this->responseReason = $parts[2] ?? 'OK';
 			}
 			return \strlen($line);
 		}
