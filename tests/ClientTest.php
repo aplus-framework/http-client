@@ -16,32 +16,28 @@ final class ClientTest extends TestCase
 
 	public function testOptions() : void
 	{
-		self::assertSame([
+		$defaultOptions = [
 			\CURLOPT_CONNECTTIMEOUT => 10,
 			\CURLOPT_TIMEOUT => 60,
-			\CURLOPT_FOLLOWLOCATION => true,
+			\CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS | \CURLPROTO_HTTP,
+			\CURLOPT_FOLLOWLOCATION => false,
 			\CURLOPT_MAXREDIRS => 1,
 			\CURLOPT_AUTOREFERER => true,
 			\CURLOPT_RETURNTRANSFER => true,
-		], $this->client->getOptions());
+		];
+		self::assertSame($defaultOptions, $this->client->getOptions());
 		$this->client->setOption(\CURLOPT_RETURNTRANSFER, false);
 		self::assertSame([
 			\CURLOPT_CONNECTTIMEOUT => 10,
 			\CURLOPT_TIMEOUT => 60,
-			\CURLOPT_FOLLOWLOCATION => true,
+			\CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS | \CURLPROTO_HTTP,
+			\CURLOPT_FOLLOWLOCATION => false,
 			\CURLOPT_MAXREDIRS => 1,
 			\CURLOPT_AUTOREFERER => true,
 			\CURLOPT_RETURNTRANSFER => false,
 		], $this->client->getOptions());
 		$this->client->reset();
-		self::assertSame([
-			\CURLOPT_CONNECTTIMEOUT => 10,
-			\CURLOPT_TIMEOUT => 60,
-			\CURLOPT_FOLLOWLOCATION => true,
-			\CURLOPT_MAXREDIRS => 1,
-			\CURLOPT_AUTOREFERER => true,
-			\CURLOPT_RETURNTRANSFER => true,
-		], $this->client->getOptions());
+		self::assertSame($defaultOptions, $this->client->getOptions());
 	}
 
 	public function testRun() : void

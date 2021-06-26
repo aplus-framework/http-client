@@ -11,12 +11,15 @@ class Client
 	/**
 	 * Client default cURL options.
 	 *
+	 * @see https://php.watch/articles/php-curl-security-hardening
+	 *
 	 * @var array<int,mixed>
 	 */
 	protected array $defaultOptions = [
 		\CURLOPT_CONNECTTIMEOUT => 10,
 		\CURLOPT_TIMEOUT => 60,
-		\CURLOPT_FOLLOWLOCATION => true,
+		\CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS | \CURLPROTO_HTTP,
+		\CURLOPT_FOLLOWLOCATION => false,
 		\CURLOPT_MAXREDIRS => 1,
 		\CURLOPT_AUTOREFERER => true,
 		\CURLOPT_RETURNTRANSFER => true,
