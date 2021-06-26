@@ -244,7 +244,7 @@ class Client
 		if ( ! \str_contains($trimmed_line, ':')) {
 			if (\str_starts_with($trimmed_line, 'HTTP/')) {
 				$parts = \explode(' ', $trimmed_line, 3);
-				$this->responseProtocol = $parts[0] ?? 'HTTP/1.1';
+				$this->responseProtocol = $parts[0];
 				$this->responseCode = (int) ($parts[1] ?? 200);
 				$this->responseReason = $parts[2] ?? 'OK';
 			}
