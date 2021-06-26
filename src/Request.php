@@ -42,7 +42,7 @@ class Request extends Message implements RequestInterface
 	/**
 	 * @param string|URL $url
 	 *
-	 * @return $this
+	 * @return static
 	 */
 	public function setURL(string | URL $url)
 	{
@@ -62,9 +62,9 @@ class Request extends Message implements RequestInterface
 	/**
 	 * @param string $method
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setMethod(string $method)
+	public function setMethod(string $method) : static
 	{
 		return parent::setMethod($method);
 	}
@@ -72,9 +72,9 @@ class Request extends Message implements RequestInterface
 	/**
 	 * @param string $protocol
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setProtocol(string $protocol)
+	public function setProtocol(string $protocol) : static
 	{
 		return parent::setProtocol($protocol);
 	}
@@ -84,9 +84,9 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @param array<string,mixed>|string $body
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setBody(array | string $body)
+	public function setBody(array | string $body) : static
 	{
 		if (\is_array($body)) {
 			$body = \http_build_query($body);
@@ -116,9 +116,9 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @throws JsonException if json_encode() fails
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setJSON(mixed $data, int $options = null, int $depth = 512)
+	public function setJSON(mixed $data, int $options = null, int $depth = 512) : static
 	{
 		if ($options === null) {
 			$options = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE;
@@ -134,9 +134,9 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @param array<string,mixed> $data
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setPOST(array $data)
+	public function setPOST(array $data) : static
 	{
 		$this->setMethod('POST');
 		$this->setBody($data);
@@ -165,9 +165,9 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @throws InvalidArgumentException for invalid file path
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setFiles(array $files)
+	public function setFiles(array $files) : static
 	{
 		$this->setMethod('POST');
 		$this->files = [];
@@ -191,9 +191,9 @@ class Request extends Message implements RequestInterface
 	 * @param string $mime
 	 * @param string $charset
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setContentType(string $mime, string $charset = 'UTF-8')
+	public function setContentType(string $mime, string $charset = 'UTF-8') : static
 	{
 		$this->setHeader('Content-Type', $mime . ($charset ? '; charset=' . $charset : ''));
 		return $this;
@@ -202,9 +202,9 @@ class Request extends Message implements RequestInterface
 	/**
 	 * @param Cookie $cookie
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setCookie(Cookie $cookie)
+	public function setCookie(Cookie $cookie) : static
 	{
 		parent::setCookie($cookie);
 		$this->setCookieHeader();
@@ -214,9 +214,9 @@ class Request extends Message implements RequestInterface
 	/**
 	 * @param array<int,Cookie> $cookies
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setCookies(array $cookies)
+	public function setCookies(array $cookies) : static
 	{
 		return parent::setCookies($cookies);
 	}
@@ -224,9 +224,9 @@ class Request extends Message implements RequestInterface
 	/**
 	 * @param string $name
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function removeCookie(string $name)
+	public function removeCookie(string $name) : static
 	{
 		parent::removeCookie($name);
 		$this->setCookieHeader();
@@ -236,9 +236,9 @@ class Request extends Message implements RequestInterface
 	/**
 	 * @param array<int,string> $names
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function removeCookies(array $names)
+	public function removeCookies(array $names) : static
 	{
 		parent::removeCookies($names);
 		$this->setCookieHeader();
@@ -246,9 +246,9 @@ class Request extends Message implements RequestInterface
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	protected function setCookieHeader()
+	protected function setCookieHeader() : static
 	{
 		$line = [];
 		foreach ($this->getCookies() as $cookie) {
@@ -265,9 +265,9 @@ class Request extends Message implements RequestInterface
 	 * @param string $name
 	 * @param string $value
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setHeader(string $name, string $value)
+	public function setHeader(string $name, string $value) : static
 	{
 		return parent::setHeader($name, $value);
 	}
@@ -275,9 +275,9 @@ class Request extends Message implements RequestInterface
 	/**
 	 * @param array<string,string> $headers
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setHeaders(array $headers)
+	public function setHeaders(array $headers) : static
 	{
 		return parent::setHeaders($headers);
 	}
@@ -285,17 +285,17 @@ class Request extends Message implements RequestInterface
 	/**
 	 * @param string $name
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function removeHeader(string $name)
+	public function removeHeader(string $name) : static
 	{
 		return parent::removeHeader($name);
 	}
 
 	/**
-	 * @return $this
+	 * @return static
 	 */
-	public function removeHeaders()
+	public function removeHeaders() : static
 	{
 		return parent::removeHeaders();
 	}
@@ -308,9 +308,9 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setBasicAuth(string $username, string $password)
+	public function setBasicAuth(string $username, string $password) : static
 	{
 		return $this->setHeader(
 			'Authorization',
@@ -325,9 +325,9 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setUserAgent(string $userAgent = null)
+	public function setUserAgent(string $userAgent = null) : static
 	{
 		$userAgent ??= 'HTTP Client';
 		return $this->setHeader('User-Agent', $userAgent);

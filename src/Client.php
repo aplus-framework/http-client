@@ -67,9 +67,9 @@ class Client
 	 * @param int $option A cURL CURLOPT_* constant
 	 * @param mixed $value
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setOption(int $option, mixed $value)
+	public function setOption(int $option, mixed $value) : static
 	{
 		$this->options[$option] = $value;
 		return $this;
@@ -101,9 +101,9 @@ class Client
 	 * @param int $seconds The maximum number of seconds to allow cURL
 	 * functions to execute
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setResponseTimeout(int $seconds)
+	public function setResponseTimeout(int $seconds) : static
 	{
 		$this->setOption(\CURLOPT_TIMEOUT, $seconds);
 		return $this;
@@ -115,9 +115,9 @@ class Client
 	 * @param int $seconds The number of seconds to wait while trying to connect.
 	 * Use 0 to wait indefinitely.
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	public function setRequestTimeout(int $seconds)
+	public function setRequestTimeout(int $seconds) : static
 	{
 		$this->setOption(\CURLOPT_CONNECTTIMEOUT, $seconds);
 		return $this;
@@ -139,9 +139,9 @@ class Client
 	/**
 	 * @param string $version
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setHTTPVersion(string $version)
+	protected function setHTTPVersion(string $version) : static
 	{
 		if ($version === 'HTTP/1.0') {
 			return $this->setOption(\CURLOPT_HTTP_VERSION, \CURL_HTTP_VERSION_1_0);

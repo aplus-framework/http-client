@@ -48,9 +48,9 @@ class Response extends Message implements ResponseInterface
 	/**
 	 * @param int $statusCode
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setStatusCode(int $statusCode)
+	protected function setStatusCode(int $statusCode) : static
 	{
 		$this->statusCode = $statusCode;
 		return $this;
@@ -64,9 +64,9 @@ class Response extends Message implements ResponseInterface
 	/**
 	 * @param string $statusReason
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setStatusReason(string $statusReason)
+	protected function setStatusReason(string $statusReason) : static
 	{
 		$this->statusReason = $statusReason;
 		return $this;
@@ -78,9 +78,9 @@ class Response extends Message implements ResponseInterface
 	 *
 	 * @throws Exception if Cookie::setExpires fail
 	 *
-	 * @return $this
+	 * @return static
 	 */
-	protected function setHeader(string $name, string $value)
+	protected function setHeader(string $name, string $value) : static
 	{
 		if (\strtolower($name) === 'set-cookie') {
 			$cookie = Cookie::parse($value);
