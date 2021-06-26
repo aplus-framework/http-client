@@ -198,11 +198,7 @@ class Client
 		$this->setOption(\CURLOPT_CUSTOMREQUEST, $request->getMethod());
 		$this->setOption(\CURLOPT_HEADER, false);
 		$this->setOption(\CURLOPT_URL, $request->getURL()->getAsString());
-		$headers = [];
-		foreach ($request->getHeaders() as $name => $value) {
-			$headers[] = $name . ': ' . $value;
-		}
-		$this->setOption(\CURLOPT_HTTPHEADER, $headers);
+		$this->setOption(\CURLOPT_HTTPHEADER, $request->getHeaderLines());
 		$this->setOption(\CURLOPT_HEADERFUNCTION, [$this, 'parseHeaderLine']);
 		$curl = \curl_init();
 		\curl_setopt_array($curl, $this->getOptions());
