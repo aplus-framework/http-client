@@ -52,7 +52,7 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @return static
 	 */
-	public function setURL(string | URL $url)
+	public function setURL(string | URL $url) : static
 	{
 		return parent::setURL($url);
 	}
