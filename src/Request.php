@@ -15,6 +15,7 @@ use Framework\HTTP\Message;
 use Framework\HTTP\RequestInterface;
 use Framework\HTTP\URL;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Pure;
 use JsonException;
 
 /**
@@ -57,11 +58,13 @@ class Request extends Message implements RequestInterface
 		return parent::setURL($url);
 	}
 
+	#[Pure]
 	public function getURL() : URL
 	{
 		return parent::getURL();
 	}
 
+	#[Pure]
 	public function getMethod() : string
 	{
 		return parent::getMethod();
@@ -151,6 +154,7 @@ class Request extends Message implements RequestInterface
 		return $this;
 	}
 
+	#[Pure]
 	public function hasFiles() : bool
 	{
 		return ! empty($this->files);
@@ -161,6 +165,7 @@ class Request extends Message implements RequestInterface
 	 *
 	 * @return array<string,CURLFile>
 	 */
+	#[Pure]
 	public function getFiles() : array
 	{
 		return $this->files;

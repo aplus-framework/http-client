@@ -13,6 +13,7 @@ use Exception;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\Message;
 use Framework\HTTP\ResponseInterface;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Class Response.
@@ -48,6 +49,7 @@ class Response extends Message implements ResponseInterface
 		$this->setBody($body);
 	}
 
+	#[Pure]
 	public function getStatusCode() : int
 	{
 		return $this->statusCode;
@@ -64,6 +66,7 @@ class Response extends Message implements ResponseInterface
 		return $this;
 	}
 
+	#[Pure]
 	public function getStatusReason() : string
 	{
 		return $this->statusReason;
@@ -120,11 +123,13 @@ class Response extends Message implements ResponseInterface
 		return $body;
 	}
 
+	#[Pure]
 	public function isJSON() : bool
 	{
 		return $this->parseContentType() === 'application/json';
 	}
 
+	#[Pure]
 	public function getStatusLine() : string
 	{
 		return $this->getStatusCode() . ' ' . $this->getStatusReason();

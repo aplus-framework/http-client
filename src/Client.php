@@ -9,6 +9,7 @@
  */
 namespace Framework\HTTP\Client;
 
+use JetBrains\PhpStorm\Pure;
 use RuntimeException;
 
 /**
@@ -88,6 +89,7 @@ class Client
 	 *
 	 * @return array<int,mixed>
 	 */
+	#[Pure]
 	public function getOptions() : array
 	{
 		return \array_replace($this->defaultOptions, $this->options);
@@ -98,6 +100,7 @@ class Client
 	 *
 	 * @return array<string,mixed>
 	 */
+	#[Pure]
 	public function getInfo() : array
 	{
 		return $this->info;
