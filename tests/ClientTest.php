@@ -33,6 +33,7 @@ final class ClientTest extends TestCase
 			\CURLOPT_MAXREDIRS => 1,
 			\CURLOPT_AUTOREFERER => true,
 			\CURLOPT_RETURNTRANSFER => true,
+			\CURLOPT_HTTP09_ALLOWED => true,
 		];
 		self::assertSame($defaultOptions, $this->client->getOptions());
 		$this->client->setOption(\CURLOPT_RETURNTRANSFER, false);
@@ -44,6 +45,7 @@ final class ClientTest extends TestCase
 			\CURLOPT_MAXREDIRS => 1,
 			\CURLOPT_AUTOREFERER => true,
 			\CURLOPT_RETURNTRANSFER => false,
+			\CURLOPT_HTTP09_ALLOWED => true,
 		], $this->client->getOptions());
 		$this->client->reset();
 		self::assertSame($defaultOptions, $this->client->getOptions());

@@ -20,6 +20,7 @@ class Client
 	/**
 	 * Client default cURL options.
 	 *
+	 * @see https://www.php.net/manual/en/function.curl-setopt.php
 	 * @see https://php.watch/articles/php-curl-security-hardening
 	 *
 	 * @var array<int,mixed>
@@ -32,6 +33,9 @@ class Client
 		\CURLOPT_MAXREDIRS => 1,
 		\CURLOPT_AUTOREFERER => true,
 		\CURLOPT_RETURNTRANSFER => true,
+		// CURLOPT_HTTP09_ALLOWED enabled by default to allow accept custom
+		// Response status without throw an exception
+		\CURLOPT_HTTP09_ALLOWED => true,
 	];
 	/**
 	 * Custom cURL options.
@@ -75,6 +79,8 @@ class Client
 	 *
 	 * @param int $option A cURL CURLOPT_* constant
 	 * @param mixed $value
+	 *
+	 * @see Client::$defaultOptions
 	 *
 	 * @return static
 	 */
