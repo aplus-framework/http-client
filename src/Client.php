@@ -9,6 +9,7 @@
  */
 namespace Framework\HTTP\Client;
 
+use Framework\Helpers\ArraySimple;
 use JetBrains\PhpStorm\Pure;
 use RuntimeException;
 
@@ -184,7 +185,10 @@ class Client
         if ($request->hasFiles()) {
             $body = $request->getBody();
             \parse_str($body, $body);
-            return \array_replace_recursive($body, $request->getFiles());
+            $body = \array_replace_recursive($body, $request->getFiles());
+            // cURL does not understand PHP multi-dimensional arrays
+            // we need to convert the keys to parent[child1][child2] format
+            return ArraySimple::convert($body);
         }
         return $request->getBody();
     }
