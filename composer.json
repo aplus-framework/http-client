@@ -1,7 +1,7 @@
 {
-    "name": "natanfelles/http-client",
+    "name": "aplus/http-client",
     "type": "library",
-    "description": "The HTTP Client Library",
+    "description": "Aplus HTTP Client Library",
     "keywords": [
         "api",
         "http-client",
@@ -11,7 +11,7 @@
         "response",
         "curl"
     ],
-    "homepage": "https://the-framework.gitlab.io/libraries/http-client.html",
+    "homepage": "https://aplus-framework.gitlab.io/docs/http-client",
     "license": "MIT",
     "authors": [
         {
@@ -56,9 +56,9 @@
     "prefer-stable": true,
     "support": {
         "email": "natanfelles@gmail.com",
-        "issues": "https://gitlab.com/the-framework/libraries/http-client/issues",
-        "wiki": "https://gitlab.com/the-framework/libraries/http-client/wikis/home",
-        "source": "https://gitlab.com/the-framework/libraries/http-client",
-        "docs": "https://the-framework.gitlab.io/libraries/http-client/docs/"
+        "issues": "https://gitlab.com/aplus-framework/libraries/http-client/issues",
+        "wiki": "https://gitlab.com/aplus-framework/libraries/http-client/wikis/home",
+        "source": "https://gitlab.com/aplus-framework/libraries/http-client",
+        "docs": "https://aplus-framework.gitlab.io/libraries/http-client/docs/"
     }
 }
