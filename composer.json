@@ -4,10 +4,12 @@
     "description": "The HTTP Client Library",
     "keywords": [
         "api",
+        "http-client",
         "http",
         "client",
         "request",
-        "response"
+        "response",
+        "curl"
     ],
     "homepage": "https://the-framework.gitlab.io/libraries/http-client.html",
     "license": "MIT",
