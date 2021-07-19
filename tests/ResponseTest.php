@@ -81,4 +81,20 @@ final class ResponseTest extends TestCase
     {
         self::assertSame('200 OK', $this->response->getStatus());
     }
+
+    public function testToString() : void
+    {
+        $startLine = 'HTTP/1.1 200 OK';
+        $headerLines = [
+            'foo: Foo',
+            'Content-Type: text/html',
+            'Set-Cookie: foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
+        ];
+        $blankLine = '';
+        $body = 'body';
+        self::assertSame(
+            \implode("\r\n", [$startLine, ...$headerLines, $blankLine, $body]),
+            (string) $this->response
+        );
+    }
 }
