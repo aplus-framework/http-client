@@ -46,7 +46,9 @@ final class RequestTest extends TestCase
 
     public function testHeaders() : void
     {
-        self::assertSame([], $this->request->getHeaders());
+        self::assertSame([
+            'host' => 'localhost',
+        ], $this->request->getHeaders());
         self::assertNull($this->request->getHeader('Foo'));
         $this->request->setHeaders([
             'Foo' => 'Foo',
@@ -59,6 +61,7 @@ final class RequestTest extends TestCase
         $this->request->removeHeader('custom');
         self::assertNull($this->request->getHeader('custom'));
         self::assertSame([
+            'host' => 'localhost',
             'foo' => 'Foo',
             'content-type' => 'text/html',
         ], $this->request->getHeaders());

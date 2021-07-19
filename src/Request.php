@@ -55,6 +55,10 @@ class Request extends Message implements RequestInterface
      */
     public function setUrl(string | URL $url) : static
     {
+        if ( ! $url instanceof URL) {
+            $url = new URL($url);
+        }
+        $this->setHeader(static::HEADER_HOST, $url->getHost());
         return parent::setUrl($url);
     }
 
