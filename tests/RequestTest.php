@@ -157,4 +157,18 @@ final class RequestTest extends TestCase
         $this->request->setUserAgent('Other');
         self::assertSame('Other', $this->request->getHeader('user-agent'));
     }
+
+    public function testToString() : void
+    {
+        $startLine = 'GET / HTTP/1.1';
+        $headerLines = [
+            'Host: localhost',
+        ];
+        $blankLine = '';
+        $body = '';
+        self::assertSame(
+            \implode("\r\n", [$startLine, ...$headerLines, $blankLine, $body]),
+            (string) $this->request
+        );
+    }
 }
