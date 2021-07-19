@@ -77,8 +77,8 @@ final class ResponseTest extends TestCase
         self::assertIsObject($this->response->getJSON());
     }
 
-    public function testStatusLine() : void
+    public function testStatus() : void
     {
-        self::assertSame('200 OK', $this->response->getStatusLine());
+        self::assertSame('200 OK', $this->response->getStatus());
     }
 }

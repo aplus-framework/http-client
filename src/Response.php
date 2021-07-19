@@ -130,7 +130,7 @@ class Response extends Message implements ResponseInterface
     }
 
     #[Pure]
-    public function getStatusLine() : string
+    public function getStatus() : string
     {
         return $this->getStatusCode() . ' ' . $this->getStatusReason();
     }
