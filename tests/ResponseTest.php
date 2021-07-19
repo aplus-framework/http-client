@@ -64,8 +64,8 @@ final class ResponseTest extends TestCase
 
     public function testJson() : void
     {
-        self::assertFalse($this->response->isJSON());
-        self::assertFalse($this->response->getJSON());
+        self::assertFalse($this->response->isJson());
+        self::assertFalse($this->response->getJson());
         $this->response = new Response(
             'HTTP/1.1',
             200,
@@ -73,8 +73,8 @@ final class ResponseTest extends TestCase
             ['content-type' => 'application/json'],
             '{"a":1}'
         );
-        self::assertTrue($this->response->isJSON());
-        self::assertIsObject($this->response->getJSON());
+        self::assertTrue($this->response->isJson());
+        self::assertIsObject($this->response->getJson());
     }
 
     public function testStatus() : void

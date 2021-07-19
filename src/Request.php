@@ -45,7 +45,7 @@ class Request extends Message implements RequestInterface
      */
     public function __construct(URL | string $url)
     {
-        $this->setURL($url);
+        $this->setUrl($url);
     }
 
     /**
@@ -53,15 +53,15 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function setURL(string | URL $url) : static
+    public function setUrl(string | URL $url) : static
     {
-        return parent::setURL($url);
+        return parent::setUrl($url);
     }
 
     #[Pure]
-    public function getURL() : URL
+    public function getUrl() : URL
     {
-        return parent::getURL();
+        return parent::getUrl();
     }
 
     #[Pure]
@@ -129,7 +129,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function setJSON(mixed $data, int $options = null, int $depth = 512) : static
+    public function setJson(mixed $data, int $options = null, int $depth = 512) : static
     {
         if ($options === null) {
             $options = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE;
@@ -147,7 +147,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function setPOST(array $data) : static
+    public function setPost(array $data) : static
     {
         $this->setMethod('POST');
         $this->setBody($data);

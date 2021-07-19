@@ -41,7 +41,7 @@ final class RequestTest extends TestCase
 
     public function testURL() : void
     {
-        self::assertSame('http://localhost/', (string) $this->request->getURL());
+        self::assertSame('http://localhost/', (string) $this->request->getUrl());
     }
 
     public function testHeaders() : void
@@ -120,7 +120,7 @@ final class RequestTest extends TestCase
     public function testPOST() : void
     {
         self::assertSame('GET', $this->request->getMethod());
-        $this->request->setPOST(['a' => 1, 'b' => 2]);
+        $this->request->setPost(['a' => 1, 'b' => 2]);
         self::assertSame('POST', $this->request->getMethod());
         self::assertSame('a=1&b=2', $this->request->getBody());
     }
@@ -128,7 +128,7 @@ final class RequestTest extends TestCase
     public function testJSON() : void
     {
         self::assertNull($this->request->getHeader('content-type'));
-        $this->request->setJSON(['a' => 1]);
+        $this->request->setJson(['a' => 1]);
         self::assertSame(
             'application/json; charset=UTF-8',
             $this->request->getHeader('content-type')

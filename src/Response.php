@@ -111,7 +111,7 @@ class Response extends Message implements ResponseInterface
      *
      * @return array<string,mixed>|false|object
      */
-    public function getJSON(bool $assoc = false, int $options = null, int $depth = 512) : array | object | false
+    public function getJson(bool $assoc = false, int $options = null, int $depth = 512) : array | object | false
     {
         if ($options === null) {
             $options = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES;
@@ -124,7 +124,7 @@ class Response extends Message implements ResponseInterface
     }
 
     #[Pure]
-    public function isJSON() : bool
+    public function isJson() : bool
     {
         return $this->parseContentType() === 'application/json';
     }

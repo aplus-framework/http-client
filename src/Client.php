@@ -159,7 +159,7 @@ class Client
      *
      * @return static
      */
-    protected function setHTTPVersion(string $version) : static
+    protected function setHttpVersion(string $version) : static
     {
         if ($version === 'HTTP/1.0') {
             return $this->setOption(\CURLOPT_HTTP_VERSION, \CURL_HTTP_VERSION_1_0);
@@ -204,7 +204,7 @@ class Client
      */
     public function run(Request $request) : Response
     {
-        $this->setHTTPVersion($request->getProtocol());
+        $this->setHttpVersion($request->getProtocol());
         switch ($request->getMethod()) {
             case 'POST':
                 $this->setOption(\CURLOPT_POST, true);
