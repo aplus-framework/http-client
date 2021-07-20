@@ -9,7 +9,6 @@
  */
 namespace Framework\HTTP\Client;
 
-use CURLFile;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\Message;
 use Framework\HTTP\RequestInterface;
@@ -34,7 +33,7 @@ class Request extends Message implements RequestInterface
     /**
      * POST files.
      *
-     * @var array<string,CURLFile>
+     * @var array<string,array|string>
      */
     protected array $files = [];
 
@@ -167,7 +166,7 @@ class Request extends Message implements RequestInterface
     /**
      * Get files for upload.
      *
-     * @return array<string,CURLFile>
+     * @return array<string,array|string>
      */
     #[Pure]
     public function getFiles() : array
@@ -178,7 +177,8 @@ class Request extends Message implements RequestInterface
     /**
      * Set files for upload.
      *
-     * @param array<string,string> $files Fields as keys, paths of files as values
+     * @param array<string,array|string> $files Fields as keys, paths of files
+     * as values. Multi-dimensional array is allowed.
      *
      * @throws InvalidArgumentException for invalid file path
      *
@@ -187,18 +187,7 @@ class Request extends Message implements RequestInterface
     public function setFiles(array $files) : static
     {
         $this->setMethod('POST');
-        $this->files = [];
-        foreach ($files as $field => $file) {
-            if ( ! \is_file($file)) {
-                throw new InvalidArgumentException(
-                    "Field '{$field}' does not match a file: {$file}"
-                );
-            }
-            $this->files[$field] = \curl_file_create(
-                $file,
-                \mime_content_type($file) ?: 'application/octet-stream'
-            );
-        }
+        $this->files = $files;
         return $this;
     }
 

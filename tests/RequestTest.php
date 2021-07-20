@@ -114,10 +114,6 @@ final class RequestTest extends TestCase
         $this->request->setFiles(['upload' => __FILE__]);
         self::assertTrue($this->request->hasFiles());
         self::assertSame('POST', $this->request->getMethod());
-        self::assertInstanceOf(\CURLFile::class, $this->request->getFiles()['upload']);
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("Field 'foo' does not match a file: /tmp/unknown-00");
-        $this->request->setFiles(['foo' => '/tmp/unknown-00']);
     }
 
     public function testPOST() : void

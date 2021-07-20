@@ -9,7 +9,9 @@
  */
 namespace Framework\HTTP\Client;
 
+use CURLFile;
 use Framework\Helpers\ArraySimple;
+use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
 use RuntimeException;
 
@@ -171,26 +173,49 @@ class Client
     }
 
     /**
-     * Returns array for Content-Type multipart/form-data and string
-     * for application/x-www-form-urlencoded.
+     * Returns string if the Request has not files and cURL will set the
+     * Content-Type header to application/x-www-form-urlencoded. If the Request
+     * has files, returns an array and cURL will set the Content-Type to
+     * multipart/form-data.
+     *
+     * If the Request has files, the $post and $files arrays are converted to
+     * the array_simple format. Because cURL does not understand the PHP
+     * multi-dimensional arrays.
      *
      * @see https://www.php.net/manual/en/function.curl-setopt.php CURLOPT_POSTFIELDS
      *
      * @param Request $request
      *
-     * @return array<string,mixed>|string
+     * @see ArraySimple::convert()
+     *
+     * @return array<string,CURLFile|string>|string
      */
     protected function getPostAndFiles(Request $request) : array | string
     {
-        if ($request->hasFiles()) {
-            $body = $request->getBody();
-            \parse_str($body, $body);
-            $body = \array_replace_recursive($body, $request->getFiles());
-            // cURL does not understand PHP multi-dimensional arrays
-            // we need to convert the keys to parent[child1][child2] format
-            return ArraySimple::convert($body);
+        if ( ! $request->hasFiles()) {
+            return $request->getBody();
         }
-        return $request->getBody();
+        \parse_str($request->getBody(), $post);
+        $post = ArraySimple::convert($post);
+        foreach ($post as &$value) {
+            $value = (string) $value;
+        }
+        unset($value);
+        $files = ArraySimple::convert($request->getFiles());
+        foreach ($files as $field => &$file) {
+            if ( ! \is_file($file)) {
+                throw new InvalidArgumentException(
+                    "Field '{$field}' does not match a file: {$file}"
+                );
+            }
+            $file = new CURLFile(
+                $file,
+                \mime_content_type($file) ?: 'application/octet-stream',
+                \basename($file)
+            );
+        }
+        unset($file);
+        return \array_replace($post, $files);
     }
 
     /**
