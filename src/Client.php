@@ -499,16 +499,15 @@ class Client
         if ($body === false) {
             throw new RuntimeException(\curl_error($curl), \curl_errno($curl));
         }
-        if ($this->options[\CURLOPT_RETURNTRANSFER] === false) {
+        \curl_close($curl);
+        if ($body === true) {
             $body = '';
         }
-        \curl_close($curl);
         return new Response(
             $this->responseProtocol,
             $this->responseCode,
             $this->responseReason,
             $this->responseHeaders,
-            // @phpstan-ignore-next-line
             $body
         );
     }
