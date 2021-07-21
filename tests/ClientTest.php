@@ -28,24 +28,20 @@ final class ClientTest extends TestCase
         $defaultOptions = [
             \CURLOPT_CONNECTTIMEOUT => 10,
             \CURLOPT_TIMEOUT => 60,
-            \CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS | \CURLPROTO_HTTP,
             \CURLOPT_FOLLOWLOCATION => false,
             \CURLOPT_MAXREDIRS => 1,
             \CURLOPT_AUTOREFERER => true,
             \CURLOPT_RETURNTRANSFER => true,
-            \CURLOPT_HTTP09_ALLOWED => true,
         ];
         self::assertSame($defaultOptions, $this->client->getOptions());
         $this->client->setOption(\CURLOPT_RETURNTRANSFER, false);
         self::assertSame([
             \CURLOPT_CONNECTTIMEOUT => 10,
             \CURLOPT_TIMEOUT => 60,
-            \CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS | \CURLPROTO_HTTP,
             \CURLOPT_FOLLOWLOCATION => false,
             \CURLOPT_MAXREDIRS => 1,
             \CURLOPT_AUTOREFERER => true,
             \CURLOPT_RETURNTRANSFER => false,
-            \CURLOPT_HTTP09_ALLOWED => true,
         ], $this->client->getOptions());
         $this->client->reset();
         self::assertSame($defaultOptions, $this->client->getOptions());
