@@ -460,6 +460,7 @@ class Client
      *
      * @param Request $request
      *
+     * @throws InvalidArgumentException for invalid Request Protocol
      * @throws RuntimeException for cURL error
      *
      * @return Response
