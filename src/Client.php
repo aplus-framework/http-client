@@ -488,20 +488,20 @@ class Client
         }
         $this->setOption(\CURLOPT_CUSTOMREQUEST, $request->getMethod());
         $this->setOption(\CURLOPT_HEADER, false);
-        $this->setOption(\CURLOPT_URL, $request->getURL()->getAsString());
+        $this->setOption(\CURLOPT_URL, $request->getUrl()->getAsString());
         $this->setOption(\CURLOPT_HTTPHEADER, $request->getHeaderLines());
         $this->setOption(\CURLOPT_HEADERFUNCTION, [$this, 'parseHeaderLine']);
         $curl = \curl_init();
         \curl_setopt_array($curl, $this->getOptions());
         $body = \curl_exec($curl);
+        $this->info = \curl_getinfo($curl);
+        \ksort($this->info);
         if ($body === false) {
             throw new RuntimeException(\curl_error($curl), \curl_errno($curl));
         }
         if ($this->options[\CURLOPT_RETURNTRANSFER] === false) {
             $body = '';
         }
-        $this->info = \curl_getinfo($curl);
-        \ksort($this->info);
         \curl_close($curl);
         return new Response(
             $this->responseProtocol,
