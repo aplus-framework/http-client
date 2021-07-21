@@ -37,9 +37,6 @@ class Client
         \CURLOPT_MAXREDIRS => 1,
         \CURLOPT_AUTOREFERER => true,
         \CURLOPT_RETURNTRANSFER => true,
-        // CURLOPT_HTTP09_ALLOWED enabled by default to allow accept custom
-        // Response status without throw an exception
-        \CURLOPT_HTTP09_ALLOWED => true,
     ];
     /**
      * Custom cURL options.
