@@ -410,22 +410,6 @@ class Client
     }
 
     /**
-     * @param string $version
-     *
-     * @return static
-     */
-    protected function setHttpVersion(string $version) : static
-    {
-        if ($version === 'HTTP/1.0') {
-            return $this->setOption(\CURLOPT_HTTP_VERSION, \CURL_HTTP_VERSION_1_0);
-        }
-        if ($version === 'HTTP/2.0') {
-            return $this->setOption(\CURLOPT_HTTP_VERSION, \CURL_HTTP_VERSION_2_0);
-        }
-        return $this->setOption(\CURLOPT_HTTP_VERSION, \CURL_HTTP_VERSION_1_1);
-    }
-
-    /**
      * Returns string if the Request has not files and cURL will set the
      * Content-Type header to application/x-www-form-urlencoded. If the Request
      * has files, returns an array and cURL will set the Content-Type to
@@ -483,7 +467,14 @@ class Client
     public function run(Request $request) : Response
     {
         $this->setOption(\CURLOPT_PROTOCOLS, \CURLPROTO_HTTPS | \CURLPROTO_HTTP);
-        $this->setHttpVersion($request->getProtocol());
+        $this->setOption(\CURLOPT_HTTP_VERSION, match ($request->getProtocol()) {
+            'HTTP/1.0' => \CURL_HTTP_VERSION_1_0,
+            'HTTP/1.1' => \CURL_HTTP_VERSION_1_1,
+            'HTTP/2.0' => \CURL_HTTP_VERSION_2_0,
+            default => throw new InvalidArgumentException(
+                'Invalid Request Protocol: ' . $request->getProtocol()
+            )
+        });
         switch ($request->getMethod()) {
             case 'POST':
                 $this->setOption(\CURLOPT_POST, true);
