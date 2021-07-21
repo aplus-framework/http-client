@@ -32,7 +32,6 @@ class Client
     protected array $defaultOptions = [
         \CURLOPT_CONNECTTIMEOUT => 10,
         \CURLOPT_TIMEOUT => 60,
-        \CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS | \CURLPROTO_HTTP,
         \CURLOPT_FOLLOWLOCATION => false,
         \CURLOPT_MAXREDIRS => 1,
         \CURLOPT_AUTOREFERER => true,
@@ -483,6 +482,7 @@ class Client
      */
     public function run(Request $request) : Response
     {
+        $this->setOption(\CURLOPT_PROTOCOLS, \CURLPROTO_HTTPS | \CURLPROTO_HTTP);
         $this->setHttpVersion($request->getProtocol());
         switch ($request->getMethod()) {
             case 'POST':
