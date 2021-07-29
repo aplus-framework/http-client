@@ -18,14 +18,15 @@ use RuntimeException;
 
 /**
  * Class Client.
+ *
+ * @see https://www.php.net/manual/en/function.curl-setopt.php
+ * @see https://curl.se/libcurl/c/curl_easy_setopt.html
+ * @see https://php.watch/articles/php-curl-security-hardening
  */
 class Client
 {
     /**
      * Client default cURL options.
-     *
-     * @see https://www.php.net/manual/en/function.curl-setopt.php
-     * @see https://php.watch/articles/php-curl-security-hardening
      *
      * @var array<int,mixed>
      */
