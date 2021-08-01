@@ -524,20 +524,20 @@ class Client
      */
     protected function parseHeaderLine($curl, string $line) : int
     {
-        $trimmed_line = \trim($line);
-        if ($trimmed_line === '') {
+        $trimmedLine = \trim($line);
+        if ($trimmedLine === '') {
             return \strlen($line);
         }
-        if ( ! \str_contains($trimmed_line, ':')) {
-            if (\str_starts_with($trimmed_line, 'HTTP/')) {
-                $parts = \explode(' ', $trimmed_line, 3);
+        if ( ! \str_contains($trimmedLine, ':')) {
+            if (\str_starts_with($trimmedLine, 'HTTP/')) {
+                $parts = \explode(' ', $trimmedLine, 3);
                 $this->responseProtocol = $parts[0];
                 $this->responseCode = (int) ($parts[1] ?? 200);
                 $this->responseReason = $parts[2] ?? 'OK';
             }
             return \strlen($line);
         }
-        [$name, $value] = \explode(':', $trimmed_line, 2);
+        [$name, $value] = \explode(':', $trimmedLine, 2);
         $name = \trim($name);
         $value = \trim($value);
         if ($name !== '' && $value !== '') {
