@@ -2,31 +2,23 @@
 <ruleset name="Mess Detector">
     <!-- cleancode -->
     <rule ref="rulesets/cleancode.xml">
+        <exclude name="BooleanArgumentFlag"/>
         <exclude name="StaticAccess"/>
     </rule>
     <!-- codesize -->
-    <rule ref="rulesets/codesize.xml/ExcessiveParameterList">
+    <rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
         <properties>
-            <property name="minimum" value="7"/>
-        </properties>
-    </rule>
-    <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
-        <properties>
-            <property name="maxmethods" value="20"/>
+            <property name="minimum" value="300"/>
         </properties>
     </rule>
     <!-- controversial -->
-    <rule ref="rulesets/controversial.xml">
-        <exclude name="CamelCaseVariableName"/>
-    </rule>
+    <rule ref="rulesets/controversial.xml"/>
     <!-- design -->
     <rule ref="rulesets/design.xml"/>
     <!-- naming -->
-    <rule ref="rulesets/naming.xml/ShortVariable">
-        <properties>
-            <property name="minimum" value="2"/>
-        </properties>
-    </rule>
+    <rule ref="rulesets/naming.xml"/>
     <!-- unusedcode -->
-    <rule ref="rulesets/unusedcode.xml"/>
+    <rule ref="rulesets/unusedcode.xml">
+        <exclude name="UnusedFormalParameter"/>
+    </rule>
 </ruleset>
