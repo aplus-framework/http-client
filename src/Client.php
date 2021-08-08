@@ -22,6 +22,8 @@ use RuntimeException;
  * @see https://www.php.net/manual/en/function.curl-setopt.php
  * @see https://curl.se/libcurl/c/curl_easy_setopt.html
  * @see https://php.watch/articles/php-curl-security-hardening
+ *
+ * @package http-client
  */
 class Client
 {
@@ -144,7 +146,7 @@ class Client
                 \CURLOPT_FTP_CREATE_MISSING_DIRS,
                 \CURLOPT_FTPAPPEND,
                 \CURLOPT_TCP_NODELAY,
-                \CURLOPT_FTPASCII,
+                CURLOPT_FTPASCII,
                 \CURLOPT_FTPLISTONLY,
                 \CURLOPT_HEADER,
                 \CURLINFO_HEADER_OUT,
@@ -153,7 +155,7 @@ class Client
                 \CURLOPT_HTTPPROXYTUNNEL,
                 \CURLOPT_HTTP_CONTENT_DECODING,
                 \CURLOPT_KEEP_SENDING_ON_ERROR,
-                \CURLOPT_MUTE,
+                CURLOPT_MUTE,
                 \CURLOPT_NETRC,
                 \CURLOPT_NOBODY,
                 \CURLOPT_NOPROGRESS,
@@ -306,7 +308,7 @@ class Client
             ],
             'function' => [
                 \CURLOPT_HEADERFUNCTION,
-                \CURLOPT_PASSWDFUNCTION,
+                CURLOPT_PASSWDFUNCTION,
                 \CURLOPT_PROGRESSFUNCTION,
                 \CURLOPT_READFUNCTION,
                 \CURLOPT_WRITEFUNCTION,
@@ -394,6 +396,29 @@ class Client
     public function setRequestTimeout(int $seconds) : static
     {
         $this->setOption(\CURLOPT_CONNECTTIMEOUT, $seconds);
+        return $this;
+    }
+
+    /**
+     * Set a callback to write the response body with chunks.
+     *
+     * Used to write data to files, databases, etc...
+     *
+     * NOTE: Using this function makes the Response body, returned in the
+     * {@see Client::run()} method, be set with an empty string.
+     *
+     * @param callable $callback A callback with the response body $data chunk
+     * as first argument. Return is not used, can return void.
+     *
+     * @return static
+     */
+    public function setDownloadFunction(callable $callback) : static
+    {
+        $writeFunction = static function ($curl, string $data) use ($callback) {
+            $callback($data);
+            return \strlen($data);
+        };
+        $this->setOption(\CURLOPT_WRITEFUNCTION, $writeFunction);
         return $this;
     }
 

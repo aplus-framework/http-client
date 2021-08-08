@@ -19,6 +19,8 @@ use JsonException;
 
 /**
  * Class Request.
+ *
+ * @package http-client
  */
 class Request extends Message implements RequestInterface
 {

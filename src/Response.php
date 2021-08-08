@@ -17,6 +17,8 @@ use JetBrains\PhpStorm\Pure;
 
 /**
  * Class Response.
+ *
+ * @package http-client
  */
 class Response extends Message implements ResponseInterface
 {
