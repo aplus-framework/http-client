@@ -11,7 +11,7 @@
         "response",
         "curl"
     ],
-    "homepage": "https://aplus-framework.gitlab.io/docs/http-client",
+    "homepage": "https://docs.aplus-framework.com/guides/libraries/http-client/",
     "license": "MIT",
     "authors": [
         {
@@ -59,6 +59,6 @@
         "issues": "https://gitlab.com/aplus-framework/libraries/http-client/issues",
         "wiki": "https://gitlab.com/aplus-framework/libraries/http-client/wikis/home",
         "source": "https://gitlab.com/aplus-framework/libraries/http-client",
-        "docs": "https://aplus-framework.gitlab.io/libraries/http-client/docs/"
+        "docs": "https://docs.aplus-framework.com/guides/libraries/http-client/"
     }
 }
