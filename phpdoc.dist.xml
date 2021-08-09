@@ -16,7 +16,7 @@
             <source dsn=".">
                 <path>src</path>
             </source>
-            <default-package-name>HTTPClient</default-package-name>
+            <default-package-name>http-client</default-package-name>
             <include-source>true</include-source>
         </api>
         <guide>
