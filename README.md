@@ -1,7 +1,6 @@
 # Aplus Framework HTTP Client Library
 
-- [Homepage](https://aplus-framework.com/docs/http-client)
-- [API Documentation](https://aplus-framework.gitlab.io/libraries/http-client/docs/)
+- [Documentation](https://docs.aplus-framework.com/guides/libraries/http-client/)
 
 [![Pipeline](https://gitlab.com/aplus-framework/libraries/http-client/badges/master/pipeline.svg)](https://gitlab.com/aplus-framework/libraries/http-client/-/pipelines?scope=branches)
 [![Coverage](https://gitlab.com/aplus-framework/libraries/http-client/badges/master/coverage.svg?job=test:php)](https://aplus-framework.gitlab.io/libraries/http-client/coverage/)
