@@ -87,6 +87,11 @@ final class ClientTest extends TestCase
         $response = $this->client->run($request);
         self::assertSame('HTTP/2', $response->getProtocol());
         $this->client->reset();
+        $request->setProtocol('HTTP/2');
+        self::assertSame('HTTP/2', $request->getProtocol());
+        $response = $this->client->run($request);
+        self::assertSame('HTTP/2', $response->getProtocol());
+        $this->client->reset();
         $request->setProtocol('HTTP/1.0');
         self::assertSame('HTTP/1.0', $request->getProtocol());
         $response = $this->client->run($request);
