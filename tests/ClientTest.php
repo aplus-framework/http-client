@@ -231,4 +231,31 @@ final class ClientTest extends TestCase
         );
         $client->setOption(123456, 'foo');
     }
+
+    public function testGetPostAndFiles() : void
+    {
+        $client = new ClientMock();
+        $request = new Request('http://foo.com');
+        self::assertSame('', $client->getPostAndFiles($request));
+        $request->setBody(['foo' => 123]);
+        self::assertSame('foo=123', $client->getPostAndFiles($request));
+        $request->setFiles([
+            'one' => __FILE__,
+            'two' => [
+                'three' => __FILE__,
+            ],
+        ]);
+        $postAndFiles = $client->getPostAndFiles($request);
+        self::assertSame('123', $postAndFiles['foo']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['two[three]']); // @phpstan-ignore-line
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Field 'foo' does not match a file: bar.war"
+        );
+        $request->setFiles([
+            'foo' => 'bar.war',
+        ]);
+        $client->getPostAndFiles($request);
+    }
 }
