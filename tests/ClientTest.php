@@ -126,4 +126,16 @@ final class ClientTest extends TestCase
         self::assertTrue($request->hasFiles());
         $this->client->run($request);
     }
+
+    public function testDownloadFunction() : void
+    {
+        $page = '';
+        $request = new Request('https://www.google.com');
+        $response = $this->client->setDownloadFunction(static function ($data) use (&$page) : void {
+            $page .= $data;
+        })->run($request);
+        self::assertSame('', $response->getBody());
+        self::assertStringContainsString('<!doctype html>', $page);
+        self::assertStringContainsString('</html>', $page);
+    }
 }

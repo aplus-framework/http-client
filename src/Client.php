@@ -414,7 +414,7 @@ class Client
      */
     public function setDownloadFunction(callable $callback) : static
     {
-        $writeFunction = static function ($curl, string $data) use ($callback) {
+        $writeFunction = static function ($curl, string $data) use ($callback) : int {
             $callback($data);
             return \strlen($data);
         };
