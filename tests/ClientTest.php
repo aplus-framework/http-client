@@ -138,4 +138,97 @@ final class ClientTest extends TestCase
         self::assertStringContainsString('<!doctype html>', $page);
         self::assertStringContainsString('</html>', $page);
     }
+
+    public function testCheckOptionBool() : void
+    {
+        $client = $this->client->setCheckOptions();
+        $client->setOption(\CURLOPT_AUTOREFERER, true);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of bool type', \CURLOPT_AUTOREFERER)
+        );
+        $client->setOption(\CURLOPT_AUTOREFERER, 1);
+    }
+
+    public function testCheckOptionInt() : void
+    {
+        $client = $this->client->setCheckOptions();
+        $client->setOption(\CURLOPT_TIMEOUT, 1000);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of int type', \CURLOPT_TIMEOUT)
+        );
+        $client->setOption(\CURLOPT_TIMEOUT, '1000');
+    }
+
+    public function testCheckOptionString() : void
+    {
+        $client = $this->client->setCheckOptions();
+        $client->setOption(\CURLOPT_URL, 'http://foo.com');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of string type', \CURLOPT_URL)
+        );
+        $client->setOption(\CURLOPT_URL, true);
+    }
+
+    public function testCheckOptionArray() : void
+    {
+        $client = $this->client->setCheckOptions();
+        $client->setOption(\CURLOPT_HTTPHEADER, ['Accept: */*']);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of array type', \CURLOPT_HTTPHEADER)
+        );
+        $client->setOption(\CURLOPT_HTTPHEADER, 'Accept: */*');
+    }
+
+    public function testCheckOptionFopen() : void
+    {
+        $client = $this->client->setCheckOptions();
+        $file = \fopen(__FILE__, 'rb');
+        $client->setOption(\CURLOPT_FILE, $file);
+        \fclose($file); // @phpstan-ignore-line
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be a fopen() resource', \CURLOPT_FILE)
+        );
+        $client->setOption(\CURLOPT_FILE, __FILE__);
+    }
+
+    public function testCheckOptionFunction() : void
+    {
+        $client = $this->client->setCheckOptions();
+        $client->setOption(\CURLOPT_HEADERFUNCTION, static function () : void {
+        });
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be a callable', \CURLOPT_HEADERFUNCTION)
+        );
+        $client->setOption(\CURLOPT_HEADERFUNCTION, 23);
+    }
+
+    public function testCheckOptionCurlShareInit() : void
+    {
+        $client = $this->client->setCheckOptions();
+        $client->setOption(\CURLOPT_SHARE, \curl_share_init());
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf(
+                'The value of option %d should be a result of curl_share_init()',
+                \CURLOPT_SHARE
+            )
+        );
+        $client->setOption(\CURLOPT_SHARE, 'foo');
+    }
+
+    public function testCheckOptionInvalidConstant() : void
+    {
+        $client = $this->client->setCheckOptions();
+        $this->expectException(\OutOfBoundsException::class);
+        $this->expectExceptionMessage(
+            'Invalid cURL constant option: 123456'
+        );
+        $client->setOption(123456, 'foo');
+    }
 }
