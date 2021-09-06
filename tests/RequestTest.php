@@ -167,4 +167,39 @@ final class RequestTest extends TestCase
             (string) $this->request
         );
     }
+
+    public function testToStringMultipart() : void
+    {
+        $file = __DIR__ . '/support/foo.txt';
+        $request = new Request('http://localhost');
+        $request->setPost(['location' => ['country' => 'br']]);
+        $request->setFiles([
+            'upload' => $file,
+        ]);
+        $message = (string) $request;
+        self::assertStringContainsString(
+            'Content-Type: multipart/form-data; charset=UTF-8; boundary=',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Length: 299',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Disposition: form-data; name="location[country]"',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Disposition: form-data; name="upload"; filename="foo.txt"',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Type: text/plain',
+            $message
+        );
+        self::assertStringContainsString(
+            \file_get_contents($file), // @phpstan-ignore-line
+            $message
+        );
+    }
 }

@@ -9,6 +9,7 @@
  */
 namespace Framework\HTTP\Client;
 
+use Framework\Helpers\ArraySimple;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\Message;
 use Framework\HTTP\RequestInterface;
@@ -47,6 +48,62 @@ class Request extends Message implements RequestInterface
     public function __construct(URL | string $url)
     {
         $this->setUrl($url);
+    }
+
+    public function __toString() : string
+    {
+        if ($this->parseContentType() === 'multipart/form-data') {
+            $this->setBody($this->getMultipartBody());
+        }
+        return parent::__toString();
+    }
+
+    protected function getMultipartBody() : string
+    {
+        $bodyParts = [];
+        \parse_str($this->getBody(), $post);
+        /**
+         * @var array<string,string> $post
+         */
+        $post = ArraySimple::convert($post);
+        foreach ($post as $field => $value) {
+            $field = \htmlspecialchars($field, \ENT_QUOTES | \ENT_HTML5);
+            $bodyParts[] = \implode("\r\n", [
+                "Content-Disposition: form-data; name=\"{$field}\"",
+                '',
+                $value,
+            ]);
+        }
+        /**
+         * @var array<string,string> $files
+         */
+        $files = ArraySimple::convert($this->getFiles());
+        foreach ($files as $field => $file) {
+            $field = (string) $field;
+            $field = \htmlspecialchars($field, \ENT_QUOTES | \ENT_HTML5);
+            $filename = \htmlspecialchars(\basename($file), \ENT_QUOTES | \ENT_HTML5);
+            $data = \file_get_contents($file);
+            $bodyParts[] = \implode("\r\n", [
+                "Content-Disposition: form-data; name=\"{$field}\"; filename=\"{$filename}\"",
+                'Content-Type: ' . (\mime_content_type($file) ?: 'application/octet-stream'),
+                '',
+                $data,
+            ]);
+        }
+        $boundary = \str_repeat('-', 24) . \substr(\md5(\implode("\r\n", $bodyParts)), 0, 16);
+        $this->setHeader(
+            static::HEADER_CONTENT_TYPE,
+            'multipart/form-data; charset=UTF-8; boundary=' . $boundary
+        );
+        foreach ($bodyParts as &$part) {
+            $part = "--{$boundary}\r\n{$part}";
+        }
+        unset($part);
+        $bodyParts[] = "--{$boundary}--";
+        $bodyParts[] = '';
+        $bodyParts = \implode("\r\n", $bodyParts);
+        $this->setHeader(static::HEADER_CONTENT_LENGTH, (string) \strlen($bodyParts));
+        return $bodyParts;
     }
 
     /**
@@ -189,6 +246,7 @@ class Request extends Message implements RequestInterface
     public function setFiles(array $files) : static
     {
         $this->setMethod('POST');
+        $this->setContentType('multipart/form-data');
         $this->files = $files;
         return $this;
     }
