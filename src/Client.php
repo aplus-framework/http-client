@@ -67,7 +67,7 @@ class Client
     /**
      * Response headers.
      *
-     * @var array<string,string>
+     * @var array<string,array<int,string>>
      */
     protected array $responseHeaders = [];
     /**
@@ -567,7 +567,7 @@ class Client
         $name = \trim($name);
         $value = \trim($value);
         if ($name !== '' && $value !== '') {
-            $this->responseHeaders[\strtolower($name)] = $value;
+            $this->responseHeaders[\strtolower($name)][] = $value;
         }
         return \strlen($line);
     }

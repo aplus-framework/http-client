@@ -23,9 +23,9 @@ final class ResponseTest extends TestCase
             200,
             'OK',
             [
-                'Foo' => 'Foo',
-                'content-Type' => 'text/html',
-                'set-cookie' => 'foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
+                'Foo' => ['Foo'],
+                'content-Type' => ['text/html'],
+                'set-cookie' => ['foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0'],
             ],
             'body'
         );
@@ -70,7 +70,7 @@ final class ResponseTest extends TestCase
             'HTTP/1.1',
             200,
             'OK',
-            ['content-type' => 'application/json'],
+            ['content-type' => ['application/json']],
             '{"a":1}'
         );
         self::assertTrue($this->response->isJson());
@@ -96,5 +96,23 @@ final class ResponseTest extends TestCase
             \implode("\r\n", [$startLine, ...$headerLines, $blankLine, $body]),
             (string) $this->response
         );
+    }
+
+    public function testCookies() : void
+    {
+        $response = new Response(
+            'HTTP/1.1',
+            200,
+            'OK',
+            [
+                'content-type' => ['application/json'],
+                'set-cookie' => [
+                    'foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0',
+                    'baz=baba',
+                ],
+            ],
+            '{"a":1}'
+        );
+        self::assertSame(['foo', 'baz'], \array_keys($response->getCookies()));
     }
 }

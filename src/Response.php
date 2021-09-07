@@ -32,7 +32,7 @@ class Response extends Message implements ResponseInterface
      * @param string $protocol
      * @param int $status
      * @param string $reason
-     * @param array<string,string> $headers
+     * @param array<string,array<int,string>> $headers
      * @param string $body
      */
     public function __construct(
@@ -45,8 +45,10 @@ class Response extends Message implements ResponseInterface
         $this->setProtocol($protocol);
         $this->setStatusCode($status);
         $this->setStatusReason($reason);
-        foreach ($headers as $name => $value) {
-            $this->setHeader($name, $value);
+        foreach ($headers as $name => $values) {
+            foreach ($values as $value) {
+                $this->setHeader($name, $value);
+            }
         }
         $this->setBody($body);
     }
