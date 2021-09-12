@@ -47,7 +47,7 @@ class Response extends Message implements ResponseInterface
         $this->setStatusReason($reason);
         foreach ($headers as $name => $values) {
             foreach ($values as $value) {
-                $this->setHeader($name, $value);
+                $this->appendHeader($name, $value);
             }
         }
         $this->setBody($body);
@@ -98,9 +98,14 @@ class Response extends Message implements ResponseInterface
     protected function setHeader(string $name, string $value) : static
     {
         if (\strtolower($name) === 'set-cookie') {
-            $cookie = Cookie::parse($value);
-            if ($cookie) {
-                $this->setCookie($cookie);
+            $values = \str_contains($value, "\n")
+                ? \explode("\n", $value)
+                : [$value];
+            foreach ($values as $val) {
+                $cookie = Cookie::parse($val);
+                if ($cookie) {
+                    $this->setCookie($cookie);
+                }
             }
         }
         return parent::setHeader($name, $value);
