@@ -30,7 +30,7 @@ class Request extends Message implements RequestInterface
     /**
      * HTTP Request Method.
      */
-    protected string $method = 'GET';
+    protected string $method = RequestInterface::METHOD_GET;
     /**
      * HTTP Request URL.
      */
@@ -125,7 +125,10 @@ class Request extends Message implements RequestInterface
         $bodyParts[] = "--{$boundary}--";
         $bodyParts[] = '';
         $bodyParts = \implode("\r\n", $bodyParts);
-        $this->setHeader(static::HEADER_CONTENT_LENGTH, (string) \strlen($bodyParts));
+        $this->setHeader(
+            static::HEADER_CONTENT_LENGTH,
+            (string) \strlen($bodyParts)
+        );
         return $bodyParts;
     }
 
@@ -234,7 +237,7 @@ class Request extends Message implements RequestInterface
      */
     public function setPost(array $data) : static
     {
-        $this->setMethod('POST');
+        $this->setMethod(static::METHOD_POST);
         $this->setBody($data);
         return $this;
     }
@@ -268,7 +271,7 @@ class Request extends Message implements RequestInterface
      */
     public function setFiles(array $files) : static
     {
-        $this->setMethod('POST');
+        $this->setMethod(static::METHOD_POST);
         $this->setContentType('multipart/form-data');
         $this->files = $files;
         return $this;
@@ -284,7 +287,10 @@ class Request extends Message implements RequestInterface
      */
     public function setContentType(string $mime, string $charset = 'UTF-8') : static
     {
-        $this->setHeader('Content-Type', $mime . ($charset ? '; charset=' . $charset : ''));
+        $this->setHeader(
+            static::HEADER_CONTENT_TYPE,
+            $mime . ($charset ? '; charset=' . $charset : '')
+        );
         return $this;
     }
 
@@ -345,9 +351,9 @@ class Request extends Message implements RequestInterface
         }
         if ($line) {
             $line = \implode('; ', $line);
-            return $this->setHeader('Cookie', $line);
+            return $this->setHeader(static::HEADER_COOKIE, $line);
         }
-        return $this->removeHeader('Cookie');
+        return $this->removeHeader(static::HEADER_COOKIE);
     }
 
     /**
@@ -402,7 +408,7 @@ class Request extends Message implements RequestInterface
     public function setBasicAuth(string $username, string $password) : static
     {
         return $this->setHeader(
-            'Authorization',
+            static::HEADER_AUTHORIZATION,
             'Basic ' . \base64_encode($username . ':' . $password)
         );
     }
@@ -419,7 +425,7 @@ class Request extends Message implements RequestInterface
     public function setUserAgent(string $userAgent = null) : static
     {
         $userAgent ??= 'HTTP Client';
-        return $this->setHeader('User-Agent', $userAgent);
+        return $this->setHeader(static::HEADER_USER_AGENT, $userAgent);
     }
 
     /**
