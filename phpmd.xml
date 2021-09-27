@@ -16,7 +16,11 @@
     <!-- design -->
     <rule ref="rulesets/design.xml"/>
     <!-- naming -->
-    <rule ref="rulesets/naming.xml"/>
+    <rule ref="rulesets/naming.xml/ShortVariable">
+        <properties>
+            <property name="minimum" value="2"/>
+        </properties>
+    </rule>
     <!-- unusedcode -->
     <rule ref="rulesets/unusedcode.xml">
         <exclude name="UnusedFormalParameter"/>
