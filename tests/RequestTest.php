@@ -175,6 +175,9 @@ final class RequestTest extends TestCase
         $request->setPost(['location' => ['country' => 'br']]);
         $request->setFiles([
             'upload' => $file,
+            'foo' => [
+                'bar' => new \CURLFile($file, posted_filename: 'chikorita.ppk'),
+            ],
         ]);
         $message = (string) $request;
         self::assertStringContainsString(
@@ -182,7 +185,7 @@ final class RequestTest extends TestCase
             $message
         );
         self::assertStringContainsString(
-            'Content-Length: 299',
+            'Content-Length: 466',
             $message
         );
         self::assertStringContainsString(
@@ -194,7 +197,15 @@ final class RequestTest extends TestCase
             $message
         );
         self::assertStringContainsString(
+            'Content-Disposition: form-data; name="foo[bar]"; filename="chikorita.ppk"',
+            $message
+        );
+        self::assertStringContainsString(
             'Content-Type: text/plain',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Type: application/octet-stream',
             $message
         );
         self::assertStringContainsString(
@@ -248,11 +259,13 @@ final class RequestTest extends TestCase
             'two' => [
                 'three' => __FILE__,
             ],
+            'four' => new \CURLFile(__FILE__),
         ]);
         $postAndFiles = $request->getPostAndFiles();
         self::assertSame('123', $postAndFiles['foo']); // @phpstan-ignore-line
         self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']); // @phpstan-ignore-line
-        self::assertInstanceOf(\CURLFile::class, $postAndFiles['two[three]']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['four']); // @phpstan-ignore-line
         $request->setFiles([
             'foo' => 'bar.war',
         ]);

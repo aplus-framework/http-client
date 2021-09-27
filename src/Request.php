@@ -16,6 +16,7 @@ use Framework\HTTP\Message;
 use Framework\HTTP\RequestInterface;
 use Framework\HTTP\URL;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
 use OutOfBoundsException;
@@ -98,21 +99,22 @@ class Request extends Message implements RequestInterface
             ]);
         }
         /**
-         * @var array<string,string> $files
+         * @var array<string,CURLFile|string> $files
          */
         $files = ArraySimple::convert($this->getFiles());
         foreach ($files as $field => $file) {
             $field = (string) $field;
             $field = \htmlspecialchars($field, \ENT_QUOTES | \ENT_HTML5);
-            $filename = \htmlspecialchars(\basename($file), \ENT_QUOTES | \ENT_HTML5);
-            $data = \file_get_contents($file);
+            $info = $this->getFileInfo($file);
+            $filename = \htmlspecialchars($info['filename'], \ENT_QUOTES | \ENT_HTML5);
             $bodyParts[] = \implode("\r\n", [
-                "Content-Disposition: form-data; name=\"{$field}\"; filename=\"{$filename}\"",
-                'Content-Type: ' . (\mime_content_type($file) ?: 'application/octet-stream'),
+                'Content-Disposition: form-data; name="' . $field . '"; filename="' . $filename . '"',
+                'Content-Type: ' . $info['mime'],
                 '',
-                $data,
+                $info['data'],
             ]);
         }
+        unset($info);
         $boundary = \str_repeat('-', 24) . \substr(\md5(\implode("\r\n", $bodyParts)), 0, 16);
         $this->setHeader(
             static::HEADER_CONTENT_TYPE,
@@ -130,6 +132,30 @@ class Request extends Message implements RequestInterface
             (string) \strlen($bodyParts)
         );
         return $bodyParts;
+    }
+
+    /**
+     * @param CURLFile|string $file
+     *
+     * @return array<string,string>
+     */
+    #[ArrayShape(['filename' => 'string', 'data' => 'string', 'mime' => 'string'])]
+    protected function getFileInfo(CURLFile | string $file) : array
+    {
+        if ($file instanceof CURLFile
+            // || $file instanceof CURLStringFile
+        ) {
+            return [
+                'filename' => $file->getPostFilename(),
+                'data' => (string) \file_get_contents($file->getFilename()),
+                'mime' => $file->getMimeType() ?: 'application/octet-stream',
+            ];
+        }
+        return [
+            'filename' => \basename($file),
+            'data' => (string) \file_get_contents($file),
+            'mime' => \mime_content_type($file) ?: 'application/octet-stream',
+        ];
     }
 
     /**
@@ -251,7 +277,7 @@ class Request extends Message implements RequestInterface
     /**
      * Get files for upload.
      *
-     * @return array<string,array|string>
+     * @return array<mixed>
      */
     #[Pure]
     public function getFiles() : array
@@ -262,8 +288,9 @@ class Request extends Message implements RequestInterface
     /**
      * Set files for upload.
      *
-     * @param array<string,array|string> $files Fields as keys, paths of files
-     * as values. Multi-dimensional array is allowed.
+     * @param array<mixed> $files Fields as keys, files (CURLFile,
+     * CURLStringFile or string filename) as values.
+     * Multi-dimensional array is allowed.
      *
      * @throws InvalidArgumentException for invalid file path
      *
@@ -519,7 +546,7 @@ class Request extends Message implements RequestInterface
      * @see https://www.php.net/manual/en/function.curl-setopt.php CURLOPT_POSTFIELDS
      * @see ArraySimple::convert()
      *
-     * @return array<string,CURLFile|string>|string
+     * @return array<string,mixed>|string
      */
     public function getPostAndFiles() : array | string
     {
@@ -534,6 +561,11 @@ class Request extends Message implements RequestInterface
         unset($value);
         $files = ArraySimple::convert($this->getFiles());
         foreach ($files as $field => &$file) {
+            if ($file instanceof CURLFile
+                // || $file instanceof CURLStringFile
+            ) {
+                continue;
+            }
             if ( ! \is_file($file)) {
                 throw new InvalidArgumentException(
                     "Field '{$field}' does not match a file: {$file}"
