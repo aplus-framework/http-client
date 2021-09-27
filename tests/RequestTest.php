@@ -202,4 +202,157 @@ final class RequestTest extends TestCase
             $message
         );
     }
+
+    public function testOptions() : void
+    {
+        $options = $this->request->getOptions();
+        self::assertArrayHasKey(\CURLOPT_PROTOCOLS, $options);
+        self::assertArrayHasKey(\CURLOPT_CONNECTTIMEOUT, $options);
+        self::assertArrayHasKey(\CURLOPT_TIMEOUT, $options);
+        self::assertArrayHasKey(\CURLOPT_FOLLOWLOCATION, $options);
+        self::assertArrayHasKey(\CURLOPT_MAXREDIRS, $options);
+        self::assertArrayHasKey(\CURLOPT_AUTOREFERER, $options);
+        self::assertArrayHasKey(\CURLOPT_RETURNTRANSFER, $options);
+        self::assertArrayHasKey(\CURLOPT_HTTP_VERSION, $options);
+        self::assertArrayHasKey(\CURLOPT_CUSTOMREQUEST, $options);
+        self::assertArrayHasKey(\CURLOPT_HEADER, $options);
+        self::assertArrayHasKey(\CURLOPT_URL, $options);
+        self::assertArrayHasKey(\CURLOPT_HTTPHEADER, $options);
+    }
+
+    public function testDownloadFunction() : void
+    {
+        $this->request->setDownloadFunction(static function () : void {
+        });
+        self::assertArrayHasKey(
+            \CURLOPT_WRITEFUNCTION,
+            $this->request->getOptions()
+        );
+    }
+
+    public function testPostAndFiles() : void
+    {
+        $request = new Request('https://www.google.com');
+        $request->setFiles(['file' => __FILE__]);
+        self::assertTrue($request->hasFiles());
+    }
+
+    public function testGetPostAndFiles() : void
+    {
+        $request = new Request('http://foo.com');
+        self::assertSame('', $request->getPostAndFiles());
+        $request->setBody(['foo' => 123]);
+        self::assertSame('foo=123', $request->getPostAndFiles());
+        $request->setFiles([
+            'one' => __FILE__,
+            'two' => [
+                'three' => __FILE__,
+            ],
+        ]);
+        $postAndFiles = $request->getPostAndFiles();
+        self::assertSame('123', $postAndFiles['foo']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['two[three]']); // @phpstan-ignore-line
+        $request->setFiles([
+            'foo' => 'bar.war',
+        ]);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Field 'foo' does not match a file: bar.war"
+        );
+        $request->getPostAndFiles();
+    }
+
+    public function testCheckOptionBool() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_AUTOREFERER, true);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of bool type', \CURLOPT_AUTOREFERER)
+        );
+        $this->request->setOption(\CURLOPT_AUTOREFERER, 1);
+    }
+
+    public function testCheckOptionInt() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_TIMEOUT, 1000);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of int type', \CURLOPT_TIMEOUT)
+        );
+        $this->request->setOption(\CURLOPT_TIMEOUT, '1000');
+    }
+
+    public function testCheckOptionString() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_URL, 'http://foo.com');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of string type', \CURLOPT_URL)
+        );
+        $this->request->setOption(\CURLOPT_URL, true);
+    }
+
+    public function testCheckOptionArray() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_HTTPHEADER, ['Accept: */*']);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of array type', \CURLOPT_HTTPHEADER)
+        );
+        $this->request->setOption(\CURLOPT_HTTPHEADER, 'Accept: */*');
+    }
+
+    public function testCheckOptionFopen() : void
+    {
+        $this->request->setCheckOptions();
+        $file = \fopen(__FILE__, 'rb');
+        $this->request->setOption(\CURLOPT_FILE, $file);
+        \fclose($file); // @phpstan-ignore-line
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be a fopen() resource', \CURLOPT_FILE)
+        );
+        $this->request->setOption(\CURLOPT_FILE, __FILE__);
+    }
+
+    public function testCheckOptionFunction() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_HEADERFUNCTION, static function () : void {
+        });
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be a callable', \CURLOPT_HEADERFUNCTION)
+        );
+        $this->request->setOption(\CURLOPT_HEADERFUNCTION, 23);
+    }
+
+    public function testCheckOptionCurlShareInit() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_SHARE, \curl_share_init());
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf(
+                'The value of option %d should be a result of curl_share_init()',
+                \CURLOPT_SHARE
+            )
+        );
+        $this->request->setOption(\CURLOPT_SHARE, 'foo');
+    }
+
+    public function testCheckOptionInvalidConstant() : void
+    {
+        $this->request->setCheckOptions();
+        $this->expectException(\OutOfBoundsException::class);
+        $this->expectExceptionMessage(
+            'Invalid cURL constant option: 123456'
+        );
+        $this->request->setOption(123456, 'foo');
+    }
 }
