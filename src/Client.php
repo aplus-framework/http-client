@@ -108,6 +108,53 @@ class Client
     }
 
     /**
+     * Run multiple HTTP Requests.
+     *
+     * @param Request[] $requests An associative array of Request instances
+     * with ids as keys
+     *
+     * @return Generator<Response> The Requests ids as keys and its respective
+     * Responses as values
+     */
+    public function runMulti(array $requests) : Generator
+    {
+        $multiHandle = \curl_multi_init();
+        $handles = [];
+        foreach ($requests as $id => $request) {
+            $handle = \curl_init();
+            $options = $request->getOptions();
+            $options[\CURLOPT_HEADERFUNCTION] = [$this, 'parseHeaderLine'];
+            \curl_setopt_array($handle, $options);
+            $handles[$id] = $handle;
+            \curl_multi_add_handle($multiHandle, $handle);
+        }
+        $stillRunning = null;
+        do {
+            $status = \curl_multi_exec($multiHandle, $stillRunning);
+            $message = \curl_multi_info_read($multiHandle);
+            if ($message) {
+                foreach ($handles as $id => $handle) {
+                    if ($message['handle'] === $handle) {
+                        $this->setInfo($id, \curl_getinfo($handle));
+                        $objectId = \spl_object_id($handle);
+                        yield $id => new Response(
+                            $this->parsed[$objectId]['protocol'],
+                            $this->parsed[$objectId]['code'],
+                            $this->parsed[$objectId]['reason'],
+                            $this->parsed[$objectId]['headers'],
+                            (string) \curl_multi_getcontent($message['handle'])
+                        );
+                        unset($this->parsed[$objectId], $handles[$id]);
+                        break;
+                    }
+                }
+                \curl_multi_remove_handle($multiHandle, $message['handle']);
+            }
+        } while ($status === \CURLM_CALL_MULTI_PERFORM || $stillRunning);
+        \curl_multi_close($multiHandle);
+    }
+
+    /**
      * Parses Header line.
      *
      * @param CurlHandle $curlHandle

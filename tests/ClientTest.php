@@ -99,4 +99,55 @@ final class ClientTest extends TestCase
         self::assertStringContainsString('<!doctype html>', $page);
         self::assertStringContainsString('</html>', $page);
     }
+
+    public function testRunMulti() : void
+    {
+        $req1 = new Request('https://www.google.com/search?q=hihi'); // Third to finish
+        $req1->setProtocol(Request::PROTOCOL_HTTP_1_1);
+        $req1->setUserAgent('curl/7.68.0');
+        $req2 = new Request('http://google.com'); // First to finish
+        $req2->setProtocol(Request::PROTOCOL_HTTP_2);
+        $req3 = new Request('http://www.google.com'); // Second to finish
+        $req3->setProtocol(Request::PROTOCOL_HTTP_2);
+        $requests = [
+            'req1' => $req1,
+            'req2' => $req2,
+            'req3' => $req3,
+        ];
+        $finished = [];
+        $responses = $this->client->runMulti($requests);
+        while ($responses->valid()) {
+            $key = $responses->key();
+            self::assertArrayHasKey($key, $requests);
+            $current = $responses->current();
+            self::assertInstanceOf(Response::class, $current);
+            $finished[$key] = $current;
+            $responses->next();
+        }
+        self::assertSame([
+            'req2',
+            'req3',
+            'req1',
+        ], \array_keys($finished));
+        self::assertSame(
+            Response::CODE_FORBIDDEN,
+            $finished['req1']->getStatusCode()
+        );
+        self::assertStringContainsString(
+            'all we know',
+            $finished['req1']->getBody()
+        );
+        self::assertSame(
+            Response::CODE_MOVED_PERMANENTLY,
+            $finished['req2']->getStatusCode()
+        );
+        self::assertSame(
+            'http://www.google.com/',
+            $finished['req2']->getHeader(Response::HEADER_LOCATION)
+        );
+        self::assertSame(
+            Response::CODE_OK,
+            $finished['req3']->getStatusCode()
+        );
+    }
 }
