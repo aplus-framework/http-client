@@ -94,6 +94,7 @@ registerArgumentsSet(
     \CURLOPT_PRE_PROXY,
     \CURLOPT_PRIVATE,
     \CURLOPT_PROGRESSFUNCTION,
+    \CURLOPT_PROTOCOLS,
     \CURLOPT_PROXY,
     \CURLOPT_PROXYAUTH,
     \CURLOPT_PROXYHEADER,
@@ -181,20 +182,20 @@ registerArgumentsSet(
     \CURLOPT_WRITEFUNCTION,
     \CURLOPT_WRITEHEADER,
     \CURLOPT_XOAUTH2_BEARER,
-    // The following options are overwritten in the Client::run()
+    // The following options are overwritten in the Request::getOptions()
     // So, we disable it from code-completion...
     //\CURLOPT_CUSTOMREQUEST,
     //\CURLOPT_HEADER,
-    //\CURLOPT_HEADERFUNCTION,
     //\CURLOPT_HTTPHEADER,
     //\CURLOPT_HTTP_VERSION,
     //\CURLOPT_POST,
     //\CURLOPT_POSTFIELDS,
-    //\CURLOPT_PROTOCOLS,
     //\CURLOPT_URL,
+    // The following are overwritten in the Client:
+    //\CURLOPT_HEADERFUNCTION,
 );
 expectedArguments(
-    \Framework\HTTP\Client\Client::setOption(),
+    \Framework\HTTP\Client\Request::setOption(),
     0,
     argumentsSet('curl_options')
 );
