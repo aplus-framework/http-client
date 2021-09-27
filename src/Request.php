@@ -516,13 +516,13 @@ class Request extends Message implements RequestInterface
             )
         };
         switch ($this->getMethod()) {
-            case 'POST':
+            case static::METHOD_POST:
                 $options[\CURLOPT_POST] = true;
                 $options[\CURLOPT_POSTFIELDS] = $this->getPostAndFiles();
                 break;
-            case 'PUT':
-            case 'PATCH':
-            case 'DELETE':
+            case static::METHOD_DELETE:
+            case static::METHOD_PATCH:
+            case static::METHOD_PUT:
                 $options[\CURLOPT_POSTFIELDS] = $this->getBody();
                 break;
         }
