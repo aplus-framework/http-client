@@ -164,11 +164,12 @@ class Client
      */
     protected function parseHeaderLine(CurlHandle $curlHandle, string $line) : int
     {
-        $id = \spl_object_id($curlHandle);
         $trimmedLine = \trim($line);
+        $lineLength = \strlen($line);
         if ($trimmedLine === '') {
-            return \strlen($line);
+            return $lineLength;
         }
+        $id = \spl_object_id($curlHandle);
         if ( ! \str_contains($trimmedLine, ':')) {
             if (\str_starts_with($trimmedLine, 'HTTP/')) {
                 $parts = \explode(' ', $trimmedLine, 3);
@@ -176,7 +177,7 @@ class Client
                 $this->parsed[$id]['code'] = (int) ($parts[1] ?? 200);
                 $this->parsed[$id]['reason'] = $parts[2] ?? 'OK';
             }
-            return \strlen($line);
+            return $lineLength;
         }
         [$name, $value] = \explode(':', $trimmedLine, 2);
         $name = \trim($name);
@@ -184,6 +185,6 @@ class Client
         if ($name !== '' && $value !== '') {
             $this->parsed[$id]['headers'][\strtolower($name)][] = $value;
         }
-        return \strlen($line);
+        return $lineLength;
     }
 }
