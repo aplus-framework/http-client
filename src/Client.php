@@ -176,7 +176,7 @@ class Client
                 }
                 \curl_multi_remove_handle($multiHandle, $message['handle']);
             }
-        } while ($status === \CURLM_CALL_MULTI_PERFORM || $stillRunning);
+        } while ($stillRunning && $status === \CURLM_OK);
         \curl_multi_close($multiHandle);
     }
 
