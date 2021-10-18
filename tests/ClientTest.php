@@ -42,18 +42,20 @@ final class ClientTest extends TestCase
         \ob_end_clean();
     }
 
-    public function testProtocols() : void
+    public function testProtocolsAndReasons() : void
     {
         $request = new Request('https://www.google.com');
         $request->setProtocol('HTTP/1.1');
         self::assertSame('HTTP/1.1', $request->getProtocol());
         $response = $this->client->run($request);
         self::assertSame('HTTP/1.1', $response->getProtocol());
+        self::assertSame('OK', $response->getStatusReason());
         $this->client->reset();
         $request->setProtocol('HTTP/2.0');
         self::assertSame('HTTP/2.0', $request->getProtocol());
         $response = $this->client->run($request);
         self::assertSame('HTTP/2', $response->getProtocol());
+        self::assertSame('OK', $response->getStatusReason());
         $this->client->reset();
         $request->setProtocol('HTTP/2');
         self::assertSame('HTTP/2', $request->getProtocol());
@@ -64,6 +66,7 @@ final class ClientTest extends TestCase
         self::assertSame('HTTP/1.0', $request->getProtocol());
         $response = $this->client->run($request);
         self::assertSame('HTTP/1.0', $response->getProtocol());
+        self::assertSame('OK', $response->getStatusReason());
     }
 
     public function testMethods() : void

@@ -197,7 +197,8 @@ class Client
                 $parts = \explode(' ', $trimmedLine, 3);
                 $this->parsed[$id]['protocol'] = $parts[0];
                 $this->parsed[$id]['code'] = (int) ($parts[1] ?? 200);
-                $this->parsed[$id]['reason'] = $parts[2] ?? 'OK';
+                $this->parsed[$id]['reason'] = $parts[2]
+                    ?? Response::getReasonByCode($this->parsed[$id]['code'], '');
             }
             return $lineLength;
         }
