@@ -48,7 +48,6 @@ class Request extends Message implements RequestInterface
      * @var array<int,mixed>
      */
     protected array $defaultOptions = [
-        \CURLOPT_PROTOCOLS => \CURLPROTO_HTTPS | \CURLPROTO_HTTP,
         \CURLOPT_CONNECTTIMEOUT => 10,
         \CURLOPT_TIMEOUT => 60,
         \CURLOPT_FOLLOWLOCATION => false,
@@ -506,6 +505,7 @@ class Request extends Message implements RequestInterface
     public function getOptions() : array
     {
         $options = \array_replace($this->defaultOptions, $this->options);
+        $options[\CURLOPT_PROTOCOLS] = \CURLPROTO_HTTPS | \CURLPROTO_HTTP;
         $options[\CURLOPT_HTTP_VERSION] = match ($this->getProtocol()) {
             static::PROTOCOL_HTTP_1_0 => \CURL_HTTP_VERSION_1_0,
             static::PROTOCOL_HTTP_1_1 => \CURL_HTTP_VERSION_1_1,
