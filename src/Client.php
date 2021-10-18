@@ -43,12 +43,12 @@ class Client
      *
      * @param int|string $id
      *
-     * @return array<string,mixed>
+     * @return array<string,mixed>|null
      */
     #[Pure]
-    public function getInfo(int | string $id = '_') : array
+    public function getInfo(int | string $id = '_') : ?array
     {
-        return $this->info[$id];
+        return $this->info[$id] ?? null;
     }
 
     /**
