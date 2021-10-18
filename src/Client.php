@@ -36,6 +36,7 @@ class Client
      * @var array<mixed>
      */
     protected array $info = [];
+    protected bool $isGettingInfo = false;
 
     /**
      * Get cURL info based in a Request id.
@@ -48,6 +49,24 @@ class Client
     public function getInfo(int | string $id = '_') : array
     {
         return $this->info[$id];
+    }
+
+    /**
+     * @return static
+     */
+    public function enableGetInfo() : static
+    {
+        $this->isGettingInfo = true;
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function disableGetInfo() : static
+    {
+        $this->isGettingInfo = false;
+        return $this;
     }
 
     /**
@@ -89,7 +108,9 @@ class Client
         $options[\CURLOPT_HEADERFUNCTION] = [$this, 'parseHeaderLine'];
         \curl_setopt_array($handle, $options);
         $body = \curl_exec($handle);
-        $this->setInfo('_', \curl_getinfo($handle));
+        if ($this->isGettingInfo) {
+            $this->setInfo('_', \curl_getinfo($handle));
+        }
         if ($body === false) {
             throw new RuntimeException(\curl_error($handle), \curl_errno($handle));
         }
@@ -134,7 +155,9 @@ class Client
             if ($message) {
                 foreach ($handles as $id => $handle) {
                     if ($message['handle'] === $handle) {
-                        $this->setInfo($id, \curl_getinfo($handle));
+                        if ($this->isGettingInfo) {
+                            $this->setInfo($id, \curl_getinfo($handle));
+                        }
                         $objectId = \spl_object_id($handle);
                         yield $id => new Response(
                             $this->parsed[$objectId]['protocol'],

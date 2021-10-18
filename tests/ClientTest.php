@@ -32,7 +32,9 @@ final class ClientTest extends TestCase
         self::assertGreaterThan(100, \strlen($response->getBody()));
         $request->setOption(\CURLOPT_RETURNTRANSFER, false);
         \ob_start(); // Avoid terminal output
+        $this->client->enableGetInfo();
         $response = $this->client->run($request);
+        $this->client->disableGetInfo();
         self::assertInstanceOf(Response::class, $response);
         self::assertSame('', $response->getBody());
         self::assertGreaterThan(100, \strlen((string) \ob_get_contents()));
