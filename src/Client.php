@@ -128,7 +128,6 @@ class Client
             $handles[$id] = $handle;
             \curl_multi_add_handle($multiHandle, $handle);
         }
-        $stillRunning = null;
         do {
             $status = \curl_multi_exec($multiHandle, $stillRunning);
             $message = \curl_multi_info_read($multiHandle);
