@@ -155,4 +155,25 @@ final class ClientTest extends TestCase
             $finished['req3']->getStatusCode()
         );
     }
+
+    public function testRunMultiWithResponseNotSet() : void
+    {
+        $requests = [
+            new Request('http://not-exist.tld'),
+            new Request('https://www.google.com'),
+        ];
+        $this->client->enableGetInfo();
+        $responses = $this->client->runMulti($requests);
+        $returned = [];
+        while ($responses->valid()) {
+            $key = $responses->key();
+            $current = $responses->current();
+            $returned[$key] = $current;
+            $responses->next();
+        }
+        self::assertArrayNotHasKey(0, $returned);
+        self::assertArrayHasKey(1, $returned);
+        self::assertSame(0, $this->client->getInfo(0)['http_code']);
+        self::assertSame(200, $this->client->getInfo(1)['http_code']);
+    }
 }

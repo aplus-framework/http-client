@@ -159,6 +159,10 @@ class Client
                             $this->setInfo($id, \curl_getinfo($handle));
                         }
                         $objectId = \spl_object_id($handle);
+                        if ( ! isset($this->parsed[$objectId])) {
+                            unset($handles[$id]);
+                            break;
+                        }
                         yield $id => new Response(
                             $this->parsed[$objectId]['protocol'],
                             $this->parsed[$objectId]['code'],
