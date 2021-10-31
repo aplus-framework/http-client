@@ -54,6 +54,7 @@ class Request extends Message implements RequestInterface
         \CURLOPT_MAXREDIRS => 1,
         \CURLOPT_AUTOREFERER => true,
         \CURLOPT_RETURNTRANSFER => true,
+        \CURLOPT_ENCODING => '',
     ];
     /**
      * Custom curl options.
