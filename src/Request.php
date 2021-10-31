@@ -498,6 +498,21 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Set many curl options.
+     *
+     * @param array<int,mixed> $options Curl constants as keys and their respective values
+     *
+     * @return static
+     */
+    public function setOptions(array $options) : static
+    {
+        foreach ($options as $option => $value) {
+            $this->setOption($option, $value);
+        }
+        return $this;
+    }
+
+    /**
      * Get default options replaced by custom.
      *
      * @return array<int,mixed>
