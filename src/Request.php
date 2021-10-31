@@ -43,7 +43,7 @@ class Request extends Message implements RequestInterface
      */
     protected array $files = [];
     /**
-     * Client default cURL options.
+     * Client default curl options.
      *
      * @var array<int,mixed>
      */
@@ -56,7 +56,7 @@ class Request extends Message implements RequestInterface
         \CURLOPT_RETURNTRANSFER => true,
     ];
     /**
-     * Custom cURL options.
+     * Custom curl options.
      *
      * @var array<int,mixed>
      */
@@ -479,9 +479,9 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Set cURL options.
+     * Set curl options.
      *
-     * @param int $option A cURL constant
+     * @param int $option A curl constant
      * @param mixed $value
      *
      * @see Client::$defaultOptions
@@ -549,13 +549,13 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Returns string if the Request has not files and cURL will set the
+     * Returns string if the Request has not files and curl will set the
      * Content-Type header to application/x-www-form-urlencoded. If the Request
-     * has files, returns an array and cURL will set the Content-Type to
+     * has files, returns an array and curl will set the Content-Type to
      * multipart/form-data.
      *
      * If the Request has files, the $post and $files arrays are converted to
-     * the array_simple format. Because cURL does not understand the PHP
+     * the array_simple format. Because curl does not understand the PHP
      * multi-dimensional arrays.
      *
      * @see https://www.php.net/manual/en/function.curl-setopt.php CURLOPT_POSTFIELDS
@@ -613,8 +613,8 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * @param int $option The cURL option
-     * @param mixed $value The cURL option value
+     * @param int $option The curl option
+     * @param mixed $value The curl option value
      *
      * @throws InvalidArgumentException if the option value does not match the
      * expected type
@@ -845,6 +845,6 @@ class Request extends Message implements RequestInterface
                 throw new InvalidArgumentException(\sprintf($message, $option));
             }
         }
-        throw new OutOfBoundsException('Invalid cURL constant option: ' . $option);
+        throw new OutOfBoundsException('Invalid curl constant option: ' . $option);
     }
 }

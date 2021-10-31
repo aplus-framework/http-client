@@ -374,7 +374,7 @@ final class RequestTest extends TestCase
         $this->request->setCheckOptions();
         $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage(
-            'Invalid cURL constant option: 123456'
+            'Invalid curl constant option: 123456'
         );
         $this->request->setOption(123456, 'foo');
     }

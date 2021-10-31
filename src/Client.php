@@ -31,7 +31,7 @@ class Client
      */
     protected array $parsed = [];
     /**
-     * Response cURL info.
+     * Response curl info.
      *
      * @var array<mixed>
      */
@@ -39,7 +39,7 @@ class Client
     protected bool $isGettingInfo = false;
 
     /**
-     * Get cURL info based in a Request id.
+     * Get curl info based in a Request id.
      *
      * @param int|string $id
      *
@@ -97,7 +97,7 @@ class Client
      * @param Request $request
      *
      * @throws InvalidArgumentException for invalid Request Protocol
-     * @throws RuntimeException for cURL error
+     * @throws RuntimeException for curl error
      *
      * @return Response
      */
