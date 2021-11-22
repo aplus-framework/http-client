@@ -4,7 +4,7 @@ set -e
 commands=(
     "composer install"
     "composer normalize --dry-run --indent-size=4 --indent-style=space"
-    "vendor/bin/php-cs-fixer fix --diff --dry-run --verbose"
+    # "vendor/bin/php-cs-fixer fix --diff --dry-run --verbose"
     "vendor/bin/phpmd src xml phpmd.xml"
     "vendor/bin/phpstan analyse -vvv"
     "vendor/bin/phpunit"
