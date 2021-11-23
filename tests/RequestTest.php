@@ -177,6 +177,7 @@ final class RequestTest extends TestCase
             'upload' => $file,
             'foo' => [
                 'bar' => new \CURLFile($file, posted_filename: 'chikorita.ppk'),
+                'baz' => new \CURLStringFile('eval', 'xxx.php', 'text/plain'),
             ],
         ]);
         $message = (string) $request;
@@ -185,7 +186,7 @@ final class RequestTest extends TestCase
             $message
         );
         self::assertStringContainsString(
-            'Content-Length: 466',
+            'Content-Length: 613',
             $message
         );
         self::assertStringContainsString(
@@ -201,6 +202,10 @@ final class RequestTest extends TestCase
             $message
         );
         self::assertStringContainsString(
+            'Content-Disposition: form-data; name="foo[baz]"; filename="xxx.php"',
+            $message
+        );
+        self::assertStringContainsString(
             'Content-Type: text/plain',
             $message
         );
@@ -210,6 +215,10 @@ final class RequestTest extends TestCase
         );
         self::assertStringContainsString(
             \file_get_contents($file), // @phpstan-ignore-line
+            $message
+        );
+        self::assertStringContainsString(
+            'eval',
             $message
         );
     }
@@ -260,12 +269,18 @@ final class RequestTest extends TestCase
                 'three' => __FILE__,
             ],
             'four' => new \CURLFile(__FILE__),
+            'five' => [
+                'six' => [
+                    new \CURLStringFile('foo', 'foo.txt', 'text/plain'),
+                ],
+            ],
         ]);
         $postAndFiles = $request->getPostAndFiles();
         self::assertSame('123', $postAndFiles['foo']); // @phpstan-ignore-line
         self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']); // @phpstan-ignore-line
-        self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['two[three]']); // @phpstan-ignore-line
         self::assertInstanceOf(\CURLFile::class, $postAndFiles['four']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLStringFile::class, $postAndFiles['five[six][0]']); // @phpstan-ignore-line
         $request->setFiles([
             'foo' => 'bar.war',
         ]);

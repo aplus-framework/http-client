@@ -10,6 +10,7 @@
 namespace Framework\HTTP\Client;
 
 use CURLFile;
+use CURLStringFile;
 use Framework\Helpers\ArraySimple;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\Message;
@@ -135,20 +136,25 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * @param CURLFile|string $file
+     * @param CURLFile|CURLStringFile|string $file
      *
      * @return array<string,string>
      */
     #[ArrayShape(['filename' => 'string', 'data' => 'string', 'mime' => 'string'])]
-    protected function getFileInfo(CURLFile | string $file) : array
+    protected function getFileInfo(CURLFile | CURLStringFile | string $file) : array
     {
-        if ($file instanceof CURLFile
-            // || $file instanceof CURLStringFile
-        ) {
+        if ($file instanceof CURLFile) {
             return [
                 'filename' => $file->getPostFilename(),
                 'data' => (string) \file_get_contents($file->getFilename()),
                 'mime' => $file->getMimeType() ?: 'application/octet-stream',
+            ];
+        }
+        if ($file instanceof CURLStringFile) {
+            return [
+                'filename' => $file->postname,
+                'data' => $file->data,
+                'mime' => $file->mime,
             ];
         }
         return [
@@ -578,7 +584,7 @@ class Request extends Message implements RequestInterface
         $files = ArraySimple::convert($this->getFiles());
         foreach ($files as $field => &$file) {
             if ($file instanceof CURLFile
-                // || $file instanceof CURLStringFile
+                || $file instanceof CURLStringFile
             ) {
                 continue;
             }
