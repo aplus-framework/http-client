@@ -744,6 +744,7 @@ class Request extends Message implements RequestInterface
                 \CURLOPT_DNS_INTERFACE,
                 \CURLOPT_DNS_LOCAL_IP4,
                 \CURLOPT_DNS_LOCAL_IP6,
+                \CURLOPT_DOH_URL,
                 \CURLOPT_EGDSOCKET,
                 \CURLOPT_ENCODING,
                 \CURLOPT_FTPPORT,
