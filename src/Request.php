@@ -193,6 +193,18 @@ class Request extends Message implements RequestInterface
     /**
      * @param string $method
      *
+     * @throws InvalidArgumentException for invalid method
+     *
+     * @return bool
+     */
+    public function hasMethod(string $method) : bool
+    {
+        return parent::hasMethod($method);
+    }
+
+    /**
+     * @param string $method
+     *
      * @return static
      */
     public function setMethod(string $method) : static

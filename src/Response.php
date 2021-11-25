@@ -13,6 +13,7 @@ use Exception;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\Message;
 use Framework\HTTP\ResponseInterface;
+use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
 
 /**
@@ -56,18 +57,19 @@ class Response extends Message implements ResponseInterface
     #[Pure]
     public function getStatusCode() : int
     {
-        return $this->statusCode;
+        return parent::getStatusCode();
     }
 
     /**
-     * @param int $statusCode
+     * @param int $code
      *
-     * @return static
+     * @throws InvalidArgumentException if status code is invalid
+     *
+     * @return bool
      */
-    protected function setStatusCode(int $statusCode) : static
+    public function hasStatusCode(int $code) : bool
     {
-        $this->statusCode = $statusCode;
-        return $this;
+        return parent::hasStatusCode($code);
     }
 
     #[Pure]

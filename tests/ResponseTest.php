@@ -39,6 +39,8 @@ final class ResponseTest extends TestCase
     public function testStatusCode() : void
     {
         self::assertSame(200, $this->response->getStatusCode());
+        self::assertFalse($this->response->hasStatusCode(404));
+        self::assertTrue($this->response->hasStatusCode(200));
     }
 
     public function testStatusReason() : void
