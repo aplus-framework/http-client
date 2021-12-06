@@ -1,7 +1,8 @@
 {
     "name": "aplus/http-client",
-    "type": "library",
     "description": "Aplus HTTP Client Library",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "api",
         "http-client",
@@ -11,13 +12,25 @@
         "response",
         "curl"
     ],
-    "homepage": "https://docs.aplus-framework.com/guides/libraries/http-client/",
-    "license": "MIT",
     "authors": [
         {
             "name": "Natan Felles",
             "email": "natanfelles@gmail.com",
             "homepage": "https://natanfelles.github.io"
+        }
+    ],
+    "homepage": "https://aplus-framework.com/packages/http-client",
+    "support": {
+        "email": "support@aplus-framework.com",
+        "issues": "https://gitlab.com/aplus-framework/libraries/http-client/issues",
+        "forum": "https://aplus-framework.com/forum",
+        "source": "https://gitlab.com/aplus-framework/libraries/http-client",
+        "docs": "https://docs.aplus-framework.com/guides/libraries/http-client/"
+    },
+    "funding": [
+        {
+            "type": "Aplus Sponsor",
+            "url": "https://aplus-framework.com/sponsor"
         }
     ],
     "require": {
@@ -37,11 +50,8 @@
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": "^9.5"
     },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true
-    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Framework\\HTTP\\Client\\": "src/"
@@ -52,19 +62,9 @@
             "Tests\\HTTP\\Client\\": "tests/"
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "support": {
-        "email": "support@aplus-framework.com",
-        "issues": "https://gitlab.com/aplus-framework/libraries/http-client/issues",
-        "wiki": "https://gitlab.com/aplus-framework/libraries/http-client/wikis/home",
-        "source": "https://gitlab.com/aplus-framework/libraries/http-client",
-        "docs": "https://docs.aplus-framework.com/guides/libraries/http-client/"
-    },
-    "funding": [
-        {
-            "type": "other",
-            "url": "https://aplus-framework.com/sponsor"
-        }
-    ]
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
 }
