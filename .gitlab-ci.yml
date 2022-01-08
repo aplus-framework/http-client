@@ -9,15 +9,16 @@ variables:
 
 test:php:
   stage: test
+  timeout: 10 minutes
   cache:
     paths:
       - build/
       - vendor/
   before_script:
-    - composer install
+    - composer update
   script:
     - composer normalize --dry-run --indent-size=4 --indent-style=space
-    # - vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
+    - vendor/bin/php-cs-fixer fix --diff --dry-run --verbose
     - vendor/bin/phpmd src xml phpmd.xml
     - vendor/bin/phpstan analyse -vvv
     - vendor/bin/phpunit --colors=never
@@ -30,6 +31,7 @@ test:php:
 
 pages:
   stage: deploy
+  timeout: 10 minutes
   dependencies:
     - test:php
   environment:
