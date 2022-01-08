@@ -1,6 +1,9 @@
 HTTP Client
 ===========
 
+.. image:: image.png
+    :alt: Aplus Framework HTTP Client Library
+
 Aplus Framework HTTP (HyperText Transfer Protocol) Client Library.
 
 - `Installation`_
