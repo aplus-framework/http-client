@@ -44,7 +44,7 @@ class Request extends Message implements RequestInterface
     /**
      * POST files.
      *
-     * @var array<string,array|string>
+     * @var array<string,array<mixed>|string>
      */
     protected array $files = [];
     /**
@@ -259,7 +259,7 @@ class Request extends Message implements RequestInterface
      * </p>
      * <p>Default is <b>JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE</b>
      * when null</p>
-     * @param int $depth [optional] Set the maximum depth. Must be greater than zero.
+     * @param int<1,max> $depth [optional] Set the maximum depth. Must be greater than zero.
      *
      * @throws JsonException if json_encode() fails
      *

@@ -118,7 +118,7 @@ class Response extends Message implements ResponseInterface
      *
      * @param bool $assoc
      * @param int|null $options
-     * @param int $depth
+     * @param int<1,max> $depth
      *
      * @return array<string,mixed>|false|object
      */
