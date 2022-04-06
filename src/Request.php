@@ -13,7 +13,11 @@ use CURLFile;
 use CURLStringFile;
 use Framework\Helpers\ArraySimple;
 use Framework\HTTP\Cookie;
+use Framework\HTTP\Header;
 use Framework\HTTP\Message;
+use Framework\HTTP\Method;
+use Framework\HTTP\Protocol;
+use Framework\HTTP\RequestHeader;
 use Framework\HTTP\RequestInterface;
 use Framework\HTTP\URL;
 use InvalidArgumentException;
@@ -32,7 +36,7 @@ class Request extends Message implements RequestInterface
     /**
      * HTTP Request Method.
      */
-    protected string $method = RequestInterface::METHOD_GET;
+    protected string $method = Method::GET;
     /**
      * HTTP Request URL.
      */
@@ -118,7 +122,7 @@ class Request extends Message implements RequestInterface
         unset($info);
         $boundary = \str_repeat('-', 24) . \substr(\md5(\implode("\r\n", $bodyParts)), 0, 16);
         $this->setHeader(
-            static::HEADER_CONTENT_TYPE,
+            Header::CONTENT_TYPE,
             'multipart/form-data; charset=UTF-8; boundary=' . $boundary
         );
         foreach ($bodyParts as &$part) {
@@ -129,7 +133,7 @@ class Request extends Message implements RequestInterface
         $bodyParts[] = '';
         $bodyParts = \implode("\r\n", $bodyParts);
         $this->setHeader(
-            static::HEADER_CONTENT_LENGTH,
+            Header::CONTENT_LENGTH,
             (string) \strlen($bodyParts)
         );
         return $bodyParts;
@@ -174,7 +178,7 @@ class Request extends Message implements RequestInterface
         if ( ! $url instanceof URL) {
             $url = new URL($url);
         }
-        $this->setHeader(static::HEADER_HOST, $url->getHost());
+        $this->setHeader(RequestHeader::HOST, $url->getHost());
         return parent::setUrl($url);
     }
 
@@ -281,7 +285,7 @@ class Request extends Message implements RequestInterface
      */
     public function setPost(array $data) : static
     {
-        $this->setMethod(static::METHOD_POST);
+        $this->setMethod(Method::POST);
         $this->setBody($data);
         return $this;
     }
@@ -316,7 +320,7 @@ class Request extends Message implements RequestInterface
      */
     public function setFiles(array $files) : static
     {
-        $this->setMethod(static::METHOD_POST);
+        $this->setMethod(Method::POST);
         $this->setContentType('multipart/form-data');
         $this->files = $files;
         return $this;
@@ -333,7 +337,7 @@ class Request extends Message implements RequestInterface
     public function setContentType(string $mime, string $charset = 'UTF-8') : static
     {
         $this->setHeader(
-            static::HEADER_CONTENT_TYPE,
+            Header::CONTENT_TYPE,
             $mime . ($charset ? '; charset=' . $charset : '')
         );
         return $this;
@@ -396,9 +400,9 @@ class Request extends Message implements RequestInterface
         }
         if ($line) {
             $line = \implode('; ', $line);
-            return $this->setHeader(static::HEADER_COOKIE, $line);
+            return $this->setHeader(RequestHeader::COOKIE, $line);
         }
-        return $this->removeHeader(static::HEADER_COOKIE);
+        return $this->removeHeader(RequestHeader::COOKIE);
     }
 
     /**
@@ -453,7 +457,7 @@ class Request extends Message implements RequestInterface
     public function setBasicAuth(string $username, string $password) : static
     {
         return $this->setHeader(
-            static::HEADER_AUTHORIZATION,
+            RequestHeader::AUTHORIZATION,
             'Basic ' . \base64_encode($username . ':' . $password)
         );
     }
@@ -470,7 +474,7 @@ class Request extends Message implements RequestInterface
     public function setUserAgent(string $userAgent = null) : static
     {
         $userAgent ??= 'Aplus HTTP Client';
-        return $this->setHeader(static::HEADER_USER_AGENT, $userAgent);
+        return $this->setHeader(RequestHeader::USER_AGENT, $userAgent);
     }
 
     /**
@@ -541,22 +545,22 @@ class Request extends Message implements RequestInterface
         $options = \array_replace($this->defaultOptions, $this->options);
         $options[\CURLOPT_PROTOCOLS] = \CURLPROTO_HTTPS | \CURLPROTO_HTTP;
         $options[\CURLOPT_HTTP_VERSION] = match ($this->getProtocol()) {
-            static::PROTOCOL_HTTP_1_0 => \CURL_HTTP_VERSION_1_0,
-            static::PROTOCOL_HTTP_1_1 => \CURL_HTTP_VERSION_1_1,
-            static::PROTOCOL_HTTP_2_0 => \CURL_HTTP_VERSION_2_0,
-            static::PROTOCOL_HTTP_2 => \CURL_HTTP_VERSION_2,
+            Protocol::HTTP_1_0 => \CURL_HTTP_VERSION_1_0,
+            Protocol::HTTP_1_1 => \CURL_HTTP_VERSION_1_1,
+            Protocol::HTTP_2_0 => \CURL_HTTP_VERSION_2_0,
+            Protocol::HTTP_2 => \CURL_HTTP_VERSION_2,
             default => throw new InvalidArgumentException(
                 'Invalid Request Protocol: ' . $this->getProtocol()
             )
         };
         switch ($this->getMethod()) {
-            case static::METHOD_POST:
+            case Method::POST:
                 $options[\CURLOPT_POST] = true;
                 $options[\CURLOPT_POSTFIELDS] = $this->getPostAndFiles();
                 break;
-            case static::METHOD_DELETE:
-            case static::METHOD_PATCH:
-            case static::METHOD_PUT:
+            case Method::DELETE:
+            case Method::PATCH:
+            case Method::PUT:
                 $options[\CURLOPT_POSTFIELDS] = $this->getBody();
                 break;
         }

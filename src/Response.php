@@ -145,10 +145,4 @@ class Response extends Message implements ResponseInterface
     {
         return $this->getStatusCode() . ' ' . $this->getStatusReason();
     }
-
-    #[Pure]
-    public static function getReasonByCode(int $code, string $default = null) : ?string
-    {
-        return parent::getReasonByCode($code, $default);
-    }
 }
