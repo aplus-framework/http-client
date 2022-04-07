@@ -11,6 +11,7 @@ namespace Tests\HTTP\Client;
 
 use Framework\HTTP\Client\Request;
 use Framework\HTTP\Cookie;
+use Framework\HTTP\URL;
 use PHPUnit\Framework\TestCase;
 
 final class RequestTest extends TestCase
@@ -240,6 +241,24 @@ final class RequestTest extends TestCase
         self::assertArrayHasKey(\CURLOPT_HEADER, $options);
         self::assertArrayHasKey(\CURLOPT_URL, $options);
         self::assertArrayHasKey(\CURLOPT_HTTPHEADER, $options);
+    }
+
+    public function testInvalidProtocol() : void
+    {
+        $request = new class() extends Request {
+            public function __construct(URL | string $url = 'http://localhost')
+            {
+                parent::__construct($url);
+            }
+
+            public function getProtocol() : string
+            {
+                return 'HTTP/1.5';
+            }
+        };
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid Request Protocol: HTTP/1.5');
+        $request->getOptions();
     }
 
     public function testDownloadFunction() : void
