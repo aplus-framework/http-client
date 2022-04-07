@@ -31,6 +31,7 @@ final class ClientTest extends TestCase
         $request = new Request('https://www.google.com');
         $request->setHeader('Content-Type', 'text/html');
         $response = $this->client->run($request);
+        self::assertSame($request, $response->getRequest());
         self::assertInstanceOf(Response::class, $response);
         self::assertGreaterThan(100, \strlen($response->getBody()));
         self::assertEmpty($response->getInfo());
@@ -134,6 +135,9 @@ final class ClientTest extends TestCase
             'req3',
             'req1',
         ], \array_keys($finished));
+        self::assertSame($requests['req1'], $finished['req1']->getRequest());
+        self::assertSame($requests['req2'], $finished['req2']->getRequest());
+        self::assertSame($requests['req3'], $finished['req3']->getRequest());
         self::assertSame(
             Status::FORBIDDEN,
             $finished['req1']->getStatusCode()

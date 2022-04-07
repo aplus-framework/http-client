@@ -9,6 +9,7 @@
  */
 namespace Tests\HTTP\Client;
 
+use Framework\HTTP\Client\Request;
 use Framework\HTTP\Client\Response;
 use PHPUnit\Framework\TestCase;
 
@@ -19,6 +20,7 @@ final class ResponseTest extends TestCase
     protected function setUp() : void
     {
         $this->response = new Response(
+            new Request('http://localhost'),
             'HTTP/1.1',
             200,
             'OK',
@@ -69,6 +71,7 @@ final class ResponseTest extends TestCase
         self::assertFalse($this->response->isJson());
         self::assertFalse($this->response->getJson());
         $this->response = new Response(
+            new Request('http://localhost'),
             'HTTP/1.1',
             200,
             'OK',
@@ -103,6 +106,7 @@ final class ResponseTest extends TestCase
     public function testCookies() : void
     {
         $response = new Response(
+            new Request('http://domain.tld'),
             'HTTP/1.1',
             200,
             'OK',

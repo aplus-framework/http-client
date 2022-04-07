@@ -61,6 +61,7 @@ class Client
         }
         $objectId = \spl_object_id($handle);
         $response = new Response(
+            $request,
             $this->parsed[$objectId]['protocol'],
             $this->parsed[$objectId]['code'],
             $this->parsed[$objectId]['reason'],
@@ -109,6 +110,7 @@ class Client
                             break;
                         }
                         yield $id => new Response(
+                            $requests[$id],
                             $this->parsed[$objectId]['protocol'],
                             $this->parsed[$objectId]['code'],
                             $this->parsed[$objectId]['reason'],

@@ -23,6 +23,7 @@ use JetBrains\PhpStorm\Pure;
  */
 class Response extends Message implements ResponseInterface
 {
+    protected Request $request;
     protected string $protocol;
     protected int $statusCode;
     protected string $statusReason;
@@ -36,6 +37,7 @@ class Response extends Message implements ResponseInterface
     /**
      * Response constructor.
      *
+     * @param Request $request
      * @param string $protocol
      * @param int $status
      * @param string $reason
@@ -44,6 +46,7 @@ class Response extends Message implements ResponseInterface
      * @param array<mixed> $info
      */
     public function __construct(
+        Request $request,
         string $protocol,
         int $status,
         string $reason,
@@ -51,6 +54,7 @@ class Response extends Message implements ResponseInterface
         string $body,
         array $info = []
     ) {
+        $this->request = $request;
         $this->setProtocol($protocol);
         $this->setStatusCode($status);
         $this->setStatusReason($reason);
@@ -62,6 +66,11 @@ class Response extends Message implements ResponseInterface
         $this->setBody($body);
         \ksort($info);
         $this->info = $info;
+    }
+
+    public function getRequest() : Request
+    {
+        return $this->request;
     }
 
     /**
