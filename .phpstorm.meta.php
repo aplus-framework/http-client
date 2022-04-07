@@ -196,6 +196,11 @@ registerArgumentsSet(
     //\CURLOPT_HEADERFUNCTION,
 );
 expectedArguments(
+    \Framework\HTTP\Client\Request::getOption(),
+    0,
+    argumentsSet('curl_options')
+);
+expectedArguments(
     \Framework\HTTP\Client\Request::setOption(),
     0,
     argumentsSet('curl_options')

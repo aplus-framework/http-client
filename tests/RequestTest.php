@@ -333,6 +333,19 @@ final class RequestTest extends TestCase
         $request->getPostAndFiles();
     }
 
+    public function testSetAndGetOptions() : void
+    {
+        $this->request->setOptions([
+            \CURLOPT_ENCODING => 'br',
+            \CURLOPT_AUTOREFERER => 1,
+        ]);
+        self::assertSame('br', $this->request->getOptions()[\CURLOPT_ENCODING]);
+        self::assertSame('br', $this->request->getOption(\CURLOPT_ENCODING));
+        self::assertSame(1, $this->request->getOptions()[\CURLOPT_AUTOREFERER]);
+        self::assertSame(1, $this->request->getOption(\CURLOPT_AUTOREFERER));
+        self::assertNull($this->request->getOption(\CURLOPT_BUFFERSIZE));
+    }
+
     public function testSetOptions() : void
     {
         $this->request->setOptions([

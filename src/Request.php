@@ -592,6 +592,11 @@ class Request extends Message implements RequestInterface
         return $options;
     }
 
+    public function getOption(int $option) : mixed
+    {
+        return $this->getOptions()[$option] ?? null;
+    }
+
     /**
      * Returns string if the Request has not files and curl will set the
      * Content-Type header to application/x-www-form-urlencoded. If the Request
