@@ -162,6 +162,8 @@ final class RequestTest extends TestCase
         $startLine = 'GET / HTTP/1.1';
         $headerLines = [
             'Host: localhost',
+            'Accept: */*',
+            'Accept-Encoding: deflate, gzip, br, zstd',
         ];
         $blankLine = '';
         $body = '';
@@ -169,6 +171,25 @@ final class RequestTest extends TestCase
             \implode("\r\n", [$startLine, ...$headerLines, $blankLine, $body]),
             (string) $this->request
         );
+        self::assertNull($this->request->getHeader('Accept-Encoding'));
+    }
+
+    public function testToStringWithCustomEncoding() : void
+    {
+        $startLine = 'GET / HTTP/1.1';
+        $headerLines = [
+            'Host: localhost',
+            'Accept: */*',
+            'Accept-Encoding: gzip',
+        ];
+        $blankLine = '';
+        $body = '';
+        $this->request->setOption(\CURLOPT_ENCODING, 'gzip');
+        self::assertSame(
+            \implode("\r\n", [$startLine, ...$headerLines, $blankLine, $body]),
+            (string) $this->request
+        );
+        self::assertNull($this->request->getHeader('Accept-Encoding'));
     }
 
     public function testToStringMultipart() : void

@@ -84,7 +84,27 @@ class Request extends Message implements RequestInterface
         if ($this->parseContentType() === 'multipart/form-data') {
             $this->setBody($this->getMultipartBody());
         }
-        return parent::__toString();
+        if ( ! $this->hasHeader(RequestHeader::ACCEPT)) {
+            $accept = '*/*';
+            $this->setHeader(RequestHeader::ACCEPT, $accept);
+        }
+        $options = $this->getOptions();
+        if (isset($options[\CURLOPT_ENCODING])
+            && ! $this->hasHeader(RequestHeader::ACCEPT_ENCODING)
+        ) {
+            $encoding = $options[\CURLOPT_ENCODING] === ''
+                ? 'deflate, gzip, br, zstd'
+                : $options[\CURLOPT_ENCODING];
+            $this->setHeader(RequestHeader::ACCEPT_ENCODING, $encoding);
+        }
+        $message = parent::__toString();
+        if (isset($accept)) {
+            $this->removeHeader(RequestHeader::ACCEPT);
+        }
+        if (isset($encoding)) {
+            $this->removeHeader(RequestHeader::ACCEPT_ENCODING);
+        }
+        return $message;
     }
 
     protected function getMultipartBody() : string
