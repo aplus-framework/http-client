@@ -33,16 +33,15 @@ final class ClientTest extends TestCase
         $response = $this->client->run($request);
         self::assertInstanceOf(Response::class, $response);
         self::assertGreaterThan(100, \strlen($response->getBody()));
-        self::assertNull($this->client->getInfo());
+        self::assertEmpty($response->getInfo());
         $request->setOption(\CURLOPT_RETURNTRANSFER, false);
         \ob_start(); // Avoid terminal output
-        $this->client->enableGetInfo();
+        $request->setGetResponseInfo();
         $response = $this->client->run($request);
-        $this->client->disableGetInfo();
         self::assertInstanceOf(Response::class, $response);
         self::assertSame('', $response->getBody());
         self::assertGreaterThan(100, \strlen((string) \ob_get_contents()));
-        self::assertArrayHasKey('connect_time', $this->client->getInfo());
+        self::assertArrayHasKey('connect_time', $response->getInfo());
         \ob_end_clean();
     }
 
@@ -166,7 +165,8 @@ final class ClientTest extends TestCase
             new Request('http://not-exist.tld'),
             new Request('https://www.google.com'),
         ];
-        $this->client->enableGetInfo();
+        $requests[0]->setGetResponseInfo();
+        $requests[1]->setGetResponseInfo();
         $responses = $this->client->runMulti($requests);
         $returned = [];
         while ($responses->valid()) {
@@ -177,7 +177,6 @@ final class ClientTest extends TestCase
         }
         self::assertArrayNotHasKey(0, $returned);
         self::assertArrayHasKey(1, $returned);
-        self::assertSame(0, $this->client->getInfo(0)['http_code']);
-        self::assertSame(200, $this->client->getInfo(1)['http_code']);
+        self::assertSame(200, $returned[1]->getInfo()['http_code']);
     }
 }

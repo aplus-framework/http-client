@@ -13,7 +13,6 @@ use CurlHandle;
 use Framework\HTTP\Status;
 use Generator;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\Pure;
 use RuntimeException;
 
 /**
@@ -31,64 +30,12 @@ class Client
      * @var array<mixed>
      */
     protected array $parsed = [];
-    /**
-     * Response curl info.
-     *
-     * @var array<mixed>
-     */
-    protected array $info = [];
-    protected bool $isGettingInfo = false;
-
-    /**
-     * Get curl info based in a Request id.
-     *
-     * @param int|string $id
-     *
-     * @return array<string,mixed>|null
-     */
-    #[Pure]
-    public function getInfo(int | string $id = '_') : ?array
-    {
-        return $this->info[$id] ?? null;
-    }
-
-    /**
-     * @return static
-     */
-    public function enableGetInfo() : static
-    {
-        $this->isGettingInfo = true;
-        return $this;
-    }
-
-    /**
-     * @return static
-     */
-    public function disableGetInfo() : static
-    {
-        $this->isGettingInfo = false;
-        return $this;
-    }
-
-    /**
-     * @param int|string $id
-     * @param array<string,mixed> $data
-     *
-     * @return static
-     */
-    protected function setInfo(int | string $id, array $data) : static
-    {
-        $this->info[$id] = $data;
-        \ksort($this->info[$id]);
-        return $this;
-    }
 
     /**
      * Reset to default values.
      */
     public function reset() : void
     {
-        $this->info = [];
         $this->parsed = [];
     }
 
@@ -109,8 +56,9 @@ class Client
         $options[\CURLOPT_HEADERFUNCTION] = [$this, 'parseHeaderLine'];
         \curl_setopt_array($handle, $options);
         $body = \curl_exec($handle);
-        if ($this->isGettingInfo) {
-            $this->setInfo('_', \curl_getinfo($handle));
+        $info = [];
+        if ($request->isGettingResponseInfo()) {
+            $info = (array) \curl_getinfo($handle);
         }
         if ($body === false) {
             throw new RuntimeException(\curl_error($handle), \curl_errno($handle));
@@ -125,7 +73,8 @@ class Client
             $this->parsed[$objectId]['code'],
             $this->parsed[$objectId]['reason'],
             $this->parsed[$objectId]['headers'],
-            $body
+            $body,
+            $info
         );
     }
 
@@ -156,8 +105,9 @@ class Client
             if ($message) {
                 foreach ($handles as $id => $handle) {
                     if ($message['handle'] === $handle) {
-                        if ($this->isGettingInfo) {
-                            $this->setInfo($id, \curl_getinfo($handle));
+                        $info = [];
+                        if ($requests[$id]->isGettingResponseInfo()) {
+                            $info = (array) \curl_getinfo($handle);
                         }
                         $objectId = \spl_object_id($handle);
                         if ( ! isset($this->parsed[$objectId])) {
@@ -169,7 +119,8 @@ class Client
                             $this->parsed[$objectId]['code'],
                             $this->parsed[$objectId]['reason'],
                             $this->parsed[$objectId]['headers'],
-                            (string) \curl_multi_getcontent($message['handle'])
+                            (string) \curl_multi_getcontent($message['handle']),
+                            $info
                         );
                         unset($this->parsed[$objectId], $handles[$id]);
                         break;

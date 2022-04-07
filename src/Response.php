@@ -26,6 +26,12 @@ class Response extends Message implements ResponseInterface
     protected string $protocol;
     protected int $statusCode;
     protected string $statusReason;
+    /**
+     * Response curl info.
+     *
+     * @var array<mixed>
+     */
+    protected array $info = [];
 
     /**
      * Response constructor.
@@ -35,13 +41,15 @@ class Response extends Message implements ResponseInterface
      * @param string $reason
      * @param array<string,array<int,string>> $headers
      * @param string $body
+     * @param array<mixed> $info
      */
     public function __construct(
         string $protocol,
         int $status,
         string $reason,
         array $headers,
-        string $body
+        string $body,
+        array $info = []
     ) {
         $this->setProtocol($protocol);
         $this->setStatusCode($status);
@@ -52,6 +60,16 @@ class Response extends Message implements ResponseInterface
             }
         }
         $this->setBody($body);
+        \ksort($info);
+        $this->info = $info;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getInfo() : array
+    {
+        return $this->info;
     }
 
     #[Pure]
