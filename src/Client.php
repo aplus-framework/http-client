@@ -32,14 +32,6 @@ class Client
     protected array $parsed = [];
 
     /**
-     * Reset to default values.
-     */
-    public function reset() : void
-    {
-        $this->parsed = [];
-    }
-
-    /**
      * Run the Request.
      *
      * @param Request $request
@@ -68,7 +60,7 @@ class Client
             $body = '';
         }
         $objectId = \spl_object_id($handle);
-        return new Response(
+        $response = new Response(
             $this->parsed[$objectId]['protocol'],
             $this->parsed[$objectId]['code'],
             $this->parsed[$objectId]['reason'],
@@ -76,6 +68,8 @@ class Client
             $body,
             $info
         );
+        unset($this->parsed[$objectId]);
+        return $response;
     }
 
     /**
