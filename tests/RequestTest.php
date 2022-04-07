@@ -426,6 +426,15 @@ final class RequestTest extends TestCase
         $this->request->setOption(\CURLOPT_SHARE, 'foo');
     }
 
+    public function testCheckOptionNull() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_ENCODING, null);
+        self::assertNull($this->request->getOptions()[\CURLOPT_ENCODING]);
+        $this->request->setOption(\CURLOPT_ENCODING, '');
+        self::assertSame('', $this->request->getOptions()[\CURLOPT_ENCODING]);
+    }
+
     public function testCheckOptionInvalidConstant() : void
     {
         $this->request->setCheckOptions();

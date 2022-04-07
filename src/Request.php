@@ -877,6 +877,9 @@ class Request extends Message implements RequestInterface
                 if ($option !== $constant) {
                     continue;
                 }
+                if ($value === null) {
+                    return;
+                }
                 $valid = match ($type) {
                     'bool' => \is_bool($value),
                     'int' => \is_int($value),
