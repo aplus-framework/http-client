@@ -23,26 +23,38 @@ use JetBrains\PhpStorm\Pure;
  */
 class Response extends Message implements ResponseInterface
 {
+    protected Request $request;
     protected string $protocol;
     protected int $statusCode;
     protected string $statusReason;
+    /**
+     * Response curl info.
+     *
+     * @var array<mixed>
+     */
+    protected array $info = [];
 
     /**
      * Response constructor.
      *
+     * @param Request $request
      * @param string $protocol
      * @param int $status
      * @param string $reason
      * @param array<string,array<int,string>> $headers
      * @param string $body
+     * @param array<mixed> $info
      */
     public function __construct(
+        Request $request,
         string $protocol,
         int $status,
         string $reason,
         array $headers,
-        string $body
+        string $body,
+        array $info = []
     ) {
+        $this->request = $request;
         $this->setProtocol($protocol);
         $this->setStatusCode($status);
         $this->setStatusReason($reason);
@@ -52,6 +64,21 @@ class Response extends Message implements ResponseInterface
             }
         }
         $this->setBody($body);
+        \ksort($info);
+        $this->info = $info;
+    }
+
+    public function getRequest() : Request
+    {
+        return $this->request;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getInfo() : array
+    {
+        return $this->info;
     }
 
     #[Pure]
@@ -67,9 +94,9 @@ class Response extends Message implements ResponseInterface
      *
      * @return bool
      */
-    public function hasStatusCode(int $code) : bool
+    public function isStatusCode(int $code) : bool
     {
-        return parent::hasStatusCode($code);
+        return parent::isStatusCode($code);
     }
 
     #[Pure]
@@ -118,7 +145,7 @@ class Response extends Message implements ResponseInterface
      *
      * @param bool $assoc
      * @param int|null $options
-     * @param int $depth
+     * @param int<1,max> $depth
      *
      * @return array<string,mixed>|false|object
      */

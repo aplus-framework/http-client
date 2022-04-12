@@ -11,6 +11,7 @@ namespace Tests\HTTP\Client;
 
 use Framework\HTTP\Client\Request;
 use Framework\HTTP\Cookie;
+use Framework\HTTP\URL;
 use PHPUnit\Framework\TestCase;
 
 final class RequestTest extends TestCase
@@ -32,12 +33,12 @@ final class RequestTest extends TestCase
     public function testMethod() : void
     {
         self::assertSame('GET', $this->request->getMethod());
-        self::assertFalse($this->request->hasMethod('post'));
+        self::assertFalse($this->request->isMethod('post'));
         $this->request->setMethod('post');
-        self::assertTrue($this->request->hasMethod('post'));
+        self::assertTrue($this->request->isMethod('post'));
         self::assertSame('POST', $this->request->getMethod());
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid HTTP Request Method: Foo');
+        $this->expectExceptionMessage('Invalid request method: Foo');
         $this->request->setMethod('Foo');
     }
 
@@ -151,7 +152,7 @@ final class RequestTest extends TestCase
     {
         self::assertEmpty($this->request->getHeader('user-agent'));
         $this->request->setUserAgent();
-        self::assertSame('HTTP Client', $this->request->getHeader('user-agent'));
+        self::assertSame('Aplus HTTP Client', $this->request->getHeader('user-agent'));
         $this->request->setUserAgent('Other');
         self::assertSame('Other', $this->request->getHeader('user-agent'));
     }
@@ -161,6 +162,8 @@ final class RequestTest extends TestCase
         $startLine = 'GET / HTTP/1.1';
         $headerLines = [
             'Host: localhost',
+            'Accept: */*',
+            'Accept-Encoding: deflate, gzip, br, zstd',
         ];
         $blankLine = '';
         $body = '';
@@ -168,6 +171,25 @@ final class RequestTest extends TestCase
             \implode("\r\n", [$startLine, ...$headerLines, $blankLine, $body]),
             (string) $this->request
         );
+        self::assertNull($this->request->getHeader('Accept-Encoding'));
+    }
+
+    public function testToStringWithCustomEncoding() : void
+    {
+        $startLine = 'GET / HTTP/1.1';
+        $headerLines = [
+            'Host: localhost',
+            'Accept: */*',
+            'Accept-Encoding: gzip',
+        ];
+        $blankLine = '';
+        $body = '';
+        $this->request->setOption(\CURLOPT_ENCODING, 'gzip');
+        self::assertSame(
+            \implode("\r\n", [$startLine, ...$headerLines, $blankLine, $body]),
+            (string) $this->request
+        );
+        self::assertNull($this->request->getHeader('Accept-Encoding'));
     }
 
     public function testToStringMultipart() : void
@@ -177,6 +199,10 @@ final class RequestTest extends TestCase
         $request->setPost(['location' => ['country' => 'br']]);
         $request->setFiles([
             'upload' => $file,
+            'foo' => [
+                'bar' => new \CURLFile($file, posted_filename: 'chikorita.ppk'),
+                'baz' => new \CURLStringFile('eval', 'xxx.php', 'text/plain'),
+            ],
         ]);
         $message = (string) $request;
         self::assertStringContainsString(
@@ -184,7 +210,7 @@ final class RequestTest extends TestCase
             $message
         );
         self::assertStringContainsString(
-            'Content-Length: 299',
+            'Content-Length: 613',
             $message
         );
         self::assertStringContainsString(
@@ -196,12 +222,239 @@ final class RequestTest extends TestCase
             $message
         );
         self::assertStringContainsString(
+            'Content-Disposition: form-data; name="foo[bar]"; filename="chikorita.ppk"',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Disposition: form-data; name="foo[baz]"; filename="xxx.php"',
+            $message
+        );
+        self::assertStringContainsString(
             'Content-Type: text/plain',
+            $message
+        );
+        self::assertStringContainsString(
+            'Content-Type: application/octet-stream',
             $message
         );
         self::assertStringContainsString(
             \file_get_contents($file), // @phpstan-ignore-line
             $message
         );
+        self::assertStringContainsString(
+            'eval',
+            $message
+        );
+    }
+
+    public function testOptions() : void
+    {
+        $options = $this->request->getOptions();
+        self::assertArrayHasKey(\CURLOPT_PROTOCOLS, $options);
+        self::assertArrayHasKey(\CURLOPT_CONNECTTIMEOUT, $options);
+        self::assertArrayHasKey(\CURLOPT_TIMEOUT, $options);
+        self::assertArrayHasKey(\CURLOPT_FOLLOWLOCATION, $options);
+        self::assertArrayHasKey(\CURLOPT_MAXREDIRS, $options);
+        self::assertArrayHasKey(\CURLOPT_AUTOREFERER, $options);
+        self::assertArrayHasKey(\CURLOPT_RETURNTRANSFER, $options);
+        self::assertArrayHasKey(\CURLOPT_HTTP_VERSION, $options);
+        self::assertArrayHasKey(\CURLOPT_CUSTOMREQUEST, $options);
+        self::assertArrayHasKey(\CURLOPT_HEADER, $options);
+        self::assertArrayHasKey(\CURLOPT_URL, $options);
+        self::assertArrayHasKey(\CURLOPT_HTTPHEADER, $options);
+    }
+
+    public function testInvalidProtocol() : void
+    {
+        $request = new class() extends Request {
+            public function __construct(URL | string $url = 'http://localhost')
+            {
+                parent::__construct($url);
+            }
+
+            public function getProtocol() : string
+            {
+                return 'HTTP/1.5';
+            }
+        };
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid Request Protocol: HTTP/1.5');
+        $request->getOptions();
+    }
+
+    public function testDownloadFunction() : void
+    {
+        $this->request->setDownloadFunction(static function () : void {
+        });
+        self::assertArrayHasKey(
+            \CURLOPT_WRITEFUNCTION,
+            $this->request->getOptions()
+        );
+    }
+
+    public function testPostAndFiles() : void
+    {
+        $request = new Request('https://www.google.com');
+        $request->setFiles(['file' => __FILE__]);
+        self::assertTrue($request->hasFiles());
+    }
+
+    public function testGetPostAndFiles() : void
+    {
+        $request = new Request('http://foo.com');
+        self::assertSame('', $request->getPostAndFiles());
+        $request->setBody(['foo' => 123]);
+        self::assertSame('foo=123', $request->getPostAndFiles());
+        $request->setFiles([
+            'one' => __FILE__,
+            'two' => [
+                'three' => __FILE__,
+            ],
+            'four' => new \CURLFile(__FILE__),
+            'five' => [
+                'six' => [
+                    new \CURLStringFile('foo', 'foo.txt', 'text/plain'),
+                ],
+            ],
+        ]);
+        $postAndFiles = $request->getPostAndFiles();
+        self::assertSame('123', $postAndFiles['foo']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['two[three]']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['four']); // @phpstan-ignore-line
+        self::assertInstanceOf(\CURLStringFile::class, $postAndFiles['five[six][0]']); // @phpstan-ignore-line
+        $request->setFiles([
+            'foo' => 'bar.war',
+        ]);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Field 'foo' does not match a file: bar.war"
+        );
+        $request->getPostAndFiles();
+    }
+
+    public function testSetAndGetOptions() : void
+    {
+        $this->request->setOptions([
+            \CURLOPT_ENCODING => 'br',
+            \CURLOPT_AUTOREFERER => 1,
+        ]);
+        self::assertSame('br', $this->request->getOptions()[\CURLOPT_ENCODING]);
+        self::assertSame('br', $this->request->getOption(\CURLOPT_ENCODING));
+        self::assertSame(1, $this->request->getOptions()[\CURLOPT_AUTOREFERER]);
+        self::assertSame(1, $this->request->getOption(\CURLOPT_AUTOREFERER));
+        self::assertNull($this->request->getOption(\CURLOPT_BUFFERSIZE));
+    }
+
+    public function testSetOptions() : void
+    {
+        $this->request->setOptions([
+            \CURLOPT_ENCODING => 'br',
+            \CURLOPT_AUTOREFERER => 1,
+        ]);
+        self::assertSame('br', $this->request->getOptions()[\CURLOPT_ENCODING]);
+        self::assertSame(1, $this->request->getOptions()[\CURLOPT_AUTOREFERER]);
+    }
+
+    public function testCheckOptionBool() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_AUTOREFERER, true);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of bool type', \CURLOPT_AUTOREFERER)
+        );
+        $this->request->setOption(\CURLOPT_AUTOREFERER, 1);
+    }
+
+    public function testCheckOptionInt() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_TIMEOUT, 1000);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of int type', \CURLOPT_TIMEOUT)
+        );
+        $this->request->setOption(\CURLOPT_TIMEOUT, '1000');
+    }
+
+    public function testCheckOptionString() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_URL, 'http://foo.com');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of string type', \CURLOPT_URL)
+        );
+        $this->request->setOption(\CURLOPT_URL, true);
+    }
+
+    public function testCheckOptionArray() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_HTTPHEADER, ['Accept: */*']);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be of array type', \CURLOPT_HTTPHEADER)
+        );
+        $this->request->setOption(\CURLOPT_HTTPHEADER, 'Accept: */*');
+    }
+
+    public function testCheckOptionFopen() : void
+    {
+        $this->request->setCheckOptions();
+        $file = \fopen(__FILE__, 'rb');
+        $this->request->setOption(\CURLOPT_FILE, $file);
+        \fclose($file); // @phpstan-ignore-line
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be a fopen() resource', \CURLOPT_FILE)
+        );
+        $this->request->setOption(\CURLOPT_FILE, __FILE__);
+    }
+
+    public function testCheckOptionFunction() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_HEADERFUNCTION, static function () : void {
+        });
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf('The value of option %d should be a callable', \CURLOPT_HEADERFUNCTION)
+        );
+        $this->request->setOption(\CURLOPT_HEADERFUNCTION, 23);
+    }
+
+    public function testCheckOptionCurlShareInit() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_SHARE, \curl_share_init());
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            \sprintf(
+                'The value of option %d should be a result of curl_share_init()',
+                \CURLOPT_SHARE
+            )
+        );
+        $this->request->setOption(\CURLOPT_SHARE, 'foo');
+    }
+
+    public function testCheckOptionNull() : void
+    {
+        $this->request->setCheckOptions();
+        $this->request->setOption(\CURLOPT_ENCODING, null);
+        self::assertNull($this->request->getOptions()[\CURLOPT_ENCODING]);
+        $this->request->setOption(\CURLOPT_ENCODING, '');
+        self::assertSame('', $this->request->getOptions()[\CURLOPT_ENCODING]);
+    }
+
+    public function testCheckOptionInvalidConstant() : void
+    {
+        $this->request->setCheckOptions();
+        $this->expectException(\OutOfBoundsException::class);
+        $this->expectExceptionMessage(
+            'Invalid curl constant option: 123456'
+        );
+        $this->request->setOption(123456, 'foo');
     }
 }

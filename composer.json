@@ -1,6 +1,6 @@
 {
     "name": "aplus/http-client",
-    "description": "Aplus HTTP Client Library",
+    "description": "Aplus Framework HTTP Client Library",
     "license": "MIT",
     "type": "library",
     "keywords": [
@@ -34,20 +34,20 @@
         }
     ],
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.1",
         "ext-curl": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
-        "aplus/helpers": "^2.2",
-        "aplus/http": "^4.3"
+        "aplus/helpers": "^3.0",
+        "aplus/http": "^5.0"
     },
     "require-dev": {
         "ext-xdebug": "*",
-        "aplus/coding-standard": "^1.9",
-        "ergebnis/composer-normalize": "^2.15",
+        "aplus/coding-standard": "^1.12",
+        "ergebnis/composer-normalize": "^2.25",
         "jetbrains/phpstorm-attributes": "^1.0",
-        "phpmd/phpmd": "^2.10",
-        "phpstan/phpstan": "^0.12",
+        "phpmd/phpmd": "^2.12",
+        "phpstan/phpstan": "^1.5",
         "phpunit/phpunit": "^9.5"
     },
     "minimum-stability": "dev",
@@ -63,6 +63,9 @@
         }
     },
     "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true

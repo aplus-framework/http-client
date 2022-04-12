@@ -9,11 +9,10 @@
  */
 namespace Framework\HTTP\Client;
 
-use CURLFile;
-use Framework\Helpers\ArraySimple;
+use CurlHandle;
+use Framework\HTTP\Status;
+use Generator;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\Pure;
-use OutOfBoundsException;
 use RuntimeException;
 
 /**
@@ -28,458 +27,9 @@ use RuntimeException;
 class Client
 {
     /**
-     * Client default cURL options.
-     *
-     * @var array<int,mixed>
+     * @var array<mixed>
      */
-    protected array $defaultOptions = [
-        \CURLOPT_CONNECTTIMEOUT => 10,
-        \CURLOPT_TIMEOUT => 60,
-        \CURLOPT_FOLLOWLOCATION => false,
-        \CURLOPT_MAXREDIRS => 1,
-        \CURLOPT_AUTOREFERER => true,
-        \CURLOPT_RETURNTRANSFER => true,
-    ];
-    /**
-     * Custom cURL options.
-     *
-     * @var array<int,mixed>
-     */
-    protected array $options = [];
-    /**
-     * Response HTTP protocol.
-     *
-     * @var string|null
-     */
-    protected ?string $responseProtocol = null;
-    /**
-     * Response HTTP status code.
-     *
-     * @var int|null
-     */
-    protected ?int $responseCode = null;
-    /**
-     * Response HTTP status reason.
-     *
-     * @var string|null
-     */
-    protected ?string $responseReason = null;
-    /**
-     * Response headers.
-     *
-     * @var array<string,array<int,string>>
-     */
-    protected array $responseHeaders = [];
-    /**
-     * Response cURL info.
-     *
-     * @var array<string,mixed>
-     */
-    protected array $info = [];
-    protected bool $checkOptions = false;
-
-    /**
-     * Set cURL options.
-     *
-     * @param int $option A cURL constant
-     * @param mixed $value
-     *
-     * @see Client::$defaultOptions
-     *
-     * @return static
-     */
-    public function setOption(int $option, mixed $value) : static
-    {
-        if ($this->isCheckingOptions()) {
-            $this->checkOption($option, $value);
-        }
-        $this->options[$option] = $value;
-        return $this;
-    }
-
-    /**
-     * @param bool $check
-     *
-     * @return static
-     */
-    public function setCheckOptions(bool $check = true) : static
-    {
-        $this->checkOptions = $check;
-        return $this;
-    }
-
-    public function isCheckingOptions() : bool
-    {
-        return $this->checkOptions;
-    }
-
-    /**
-     * @param int $option The cURL option
-     * @param mixed $value The cURL option value
-     *
-     * @throws InvalidArgumentException if the option value does not match the
-     * expected type
-     * @throws OutOfBoundsException if the option is invalid
-     */
-    protected function checkOption(int $option, mixed $value) : void
-    {
-        $types = [
-            'bool' => [
-                \CURLOPT_AUTOREFERER,
-                \CURLOPT_COOKIESESSION,
-                \CURLOPT_CERTINFO,
-                \CURLOPT_CONNECT_ONLY,
-                \CURLOPT_CRLF,
-                \CURLOPT_DISALLOW_USERNAME_IN_URL,
-                \CURLOPT_DNS_SHUFFLE_ADDRESSES,
-                \CURLOPT_HAPROXYPROTOCOL,
-                \CURLOPT_SSH_COMPRESSION,
-                \CURLOPT_DNS_USE_GLOBAL_CACHE,
-                \CURLOPT_FAILONERROR,
-                \CURLOPT_SSL_FALSESTART,
-                \CURLOPT_FILETIME,
-                \CURLOPT_FOLLOWLOCATION,
-                \CURLOPT_FORBID_REUSE,
-                \CURLOPT_FRESH_CONNECT,
-                \CURLOPT_FTP_USE_EPRT,
-                \CURLOPT_FTP_USE_EPSV,
-                \CURLOPT_FTP_CREATE_MISSING_DIRS,
-                \CURLOPT_FTPAPPEND,
-                \CURLOPT_TCP_NODELAY,
-                // CURLOPT_FTPASCII,
-                \CURLOPT_FTPLISTONLY,
-                \CURLOPT_HEADER,
-                \CURLINFO_HEADER_OUT,
-                \CURLOPT_HTTP09_ALLOWED,
-                \CURLOPT_HTTPGET,
-                \CURLOPT_HTTPPROXYTUNNEL,
-                \CURLOPT_HTTP_CONTENT_DECODING,
-                \CURLOPT_KEEP_SENDING_ON_ERROR,
-                // CURLOPT_MUTE,
-                \CURLOPT_NETRC,
-                \CURLOPT_NOBODY,
-                \CURLOPT_NOPROGRESS,
-                \CURLOPT_NOSIGNAL,
-                \CURLOPT_PATH_AS_IS,
-                \CURLOPT_PIPEWAIT,
-                \CURLOPT_POST,
-                \CURLOPT_PUT,
-                \CURLOPT_RETURNTRANSFER,
-                \CURLOPT_SASL_IR,
-                \CURLOPT_SSL_ENABLE_ALPN,
-                \CURLOPT_SSL_ENABLE_NPN,
-                \CURLOPT_SSL_VERIFYPEER,
-                \CURLOPT_SSL_VERIFYSTATUS,
-                \CURLOPT_PROXY_SSL_VERIFYPEER,
-                \CURLOPT_SUPPRESS_CONNECT_HEADERS,
-                \CURLOPT_TCP_FASTOPEN,
-                \CURLOPT_TFTP_NO_OPTIONS,
-                \CURLOPT_TRANSFERTEXT,
-                \CURLOPT_UNRESTRICTED_AUTH,
-                \CURLOPT_UPLOAD,
-                \CURLOPT_VERBOSE,
-            ],
-            'int' => [
-                \CURLOPT_BUFFERSIZE,
-                \CURLOPT_CONNECTTIMEOUT,
-                \CURLOPT_CONNECTTIMEOUT_MS,
-                \CURLOPT_DNS_CACHE_TIMEOUT,
-                \CURLOPT_EXPECT_100_TIMEOUT_MS,
-                \CURLOPT_HAPPY_EYEBALLS_TIMEOUT_MS,
-                \CURLOPT_FTPSSLAUTH,
-                \CURLOPT_HEADEROPT,
-                \CURLOPT_HTTP_VERSION,
-                \CURLOPT_HTTPAUTH,
-                \CURLOPT_INFILESIZE,
-                \CURLOPT_LOW_SPEED_LIMIT,
-                \CURLOPT_LOW_SPEED_TIME,
-                \CURLOPT_MAXCONNECTS,
-                \CURLOPT_MAXREDIRS,
-                \CURLOPT_PORT,
-                \CURLOPT_POSTREDIR,
-                \CURLOPT_PROTOCOLS,
-                \CURLOPT_PROXYAUTH,
-                \CURLOPT_PROXYPORT,
-                \CURLOPT_PROXYTYPE,
-                \CURLOPT_REDIR_PROTOCOLS,
-                \CURLOPT_RESUME_FROM,
-                \CURLOPT_SOCKS5_AUTH,
-                \CURLOPT_SSL_OPTIONS,
-                \CURLOPT_SSL_VERIFYHOST,
-                \CURLOPT_SSLVERSION,
-                \CURLOPT_PROXY_SSL_OPTIONS,
-                \CURLOPT_PROXY_SSL_VERIFYHOST,
-                \CURLOPT_PROXY_SSLVERSION,
-                \CURLOPT_STREAM_WEIGHT,
-                \CURLOPT_TCP_KEEPALIVE,
-                \CURLOPT_TCP_KEEPIDLE,
-                \CURLOPT_TCP_KEEPINTVL,
-                \CURLOPT_TIMECONDITION,
-                \CURLOPT_TIMEOUT,
-                \CURLOPT_TIMEOUT_MS,
-                \CURLOPT_TIMEVALUE,
-                \CURLOPT_TIMEVALUE_LARGE,
-                \CURLOPT_MAX_RECV_SPEED_LARGE,
-                \CURLOPT_MAX_SEND_SPEED_LARGE,
-                \CURLOPT_SSH_AUTH_TYPES,
-                \CURLOPT_IPRESOLVE,
-                \CURLOPT_FTP_FILEMETHOD,
-            ],
-            'string' => [
-                \CURLOPT_ABSTRACT_UNIX_SOCKET,
-                \CURLOPT_CAINFO,
-                \CURLOPT_CAPATH,
-                \CURLOPT_COOKIE,
-                \CURLOPT_COOKIEFILE,
-                \CURLOPT_COOKIEJAR,
-                \CURLOPT_COOKIELIST,
-                \CURLOPT_CUSTOMREQUEST,
-                \CURLOPT_DEFAULT_PROTOCOL,
-                \CURLOPT_DNS_INTERFACE,
-                \CURLOPT_DNS_LOCAL_IP4,
-                \CURLOPT_DNS_LOCAL_IP6,
-                \CURLOPT_EGDSOCKET,
-                \CURLOPT_ENCODING,
-                \CURLOPT_FTPPORT,
-                \CURLOPT_INTERFACE,
-                \CURLOPT_KEYPASSWD,
-                \CURLOPT_KRB4LEVEL,
-                \CURLOPT_LOGIN_OPTIONS,
-                \CURLOPT_PINNEDPUBLICKEY,
-                \CURLOPT_POSTFIELDS,
-                \CURLOPT_PRIVATE,
-                \CURLOPT_PRE_PROXY,
-                \CURLOPT_PROXY,
-                \CURLOPT_PROXY_SERVICE_NAME,
-                \CURLOPT_PROXY_CAINFO,
-                \CURLOPT_PROXY_CAPATH,
-                \CURLOPT_PROXY_CRLFILE,
-                \CURLOPT_PROXY_KEYPASSWD,
-                \CURLOPT_PROXY_PINNEDPUBLICKEY,
-                \CURLOPT_PROXY_SSLCERT,
-                \CURLOPT_PROXY_SSLCERTTYPE,
-                \CURLOPT_PROXY_SSL_CIPHER_LIST,
-                \CURLOPT_PROXY_TLS13_CIPHERS,
-                \CURLOPT_PROXY_SSLKEY,
-                \CURLOPT_PROXY_SSLKEYTYPE,
-                \CURLOPT_PROXY_TLSAUTH_PASSWORD,
-                \CURLOPT_PROXY_TLSAUTH_TYPE,
-                \CURLOPT_PROXY_TLSAUTH_USERNAME,
-                \CURLOPT_PROXYUSERPWD,
-                \CURLOPT_RANDOM_FILE,
-                \CURLOPT_RANGE,
-                \CURLOPT_REFERER,
-                \CURLOPT_SERVICE_NAME,
-                \CURLOPT_SSH_HOST_PUBLIC_KEY_MD5,
-                \CURLOPT_SSH_PUBLIC_KEYFILE,
-                \CURLOPT_SSH_PRIVATE_KEYFILE,
-                \CURLOPT_SSL_CIPHER_LIST,
-                \CURLOPT_SSLCERT,
-                \CURLOPT_SSLCERTPASSWD,
-                \CURLOPT_SSLCERTTYPE,
-                \CURLOPT_SSLENGINE,
-                \CURLOPT_SSLENGINE_DEFAULT,
-                \CURLOPT_SSLKEY,
-                \CURLOPT_SSLKEYPASSWD,
-                \CURLOPT_SSLKEYTYPE,
-                \CURLOPT_TLS13_CIPHERS,
-                \CURLOPT_UNIX_SOCKET_PATH,
-                \CURLOPT_URL,
-                \CURLOPT_USERAGENT,
-                \CURLOPT_USERNAME,
-                \CURLOPT_PASSWORD,
-                \CURLOPT_USERPWD,
-                \CURLOPT_XOAUTH2_BEARER,
-            ],
-            'array' => [
-                \CURLOPT_CONNECT_TO,
-                \CURLOPT_HTTP200ALIASES,
-                \CURLOPT_HTTPHEADER,
-                \CURLOPT_POSTQUOTE,
-                \CURLOPT_PROXYHEADER,
-                \CURLOPT_QUOTE,
-                \CURLOPT_RESOLVE,
-            ],
-            'fopen' => [
-                \CURLOPT_FILE,
-                \CURLOPT_INFILE,
-                \CURLOPT_STDERR,
-                \CURLOPT_WRITEHEADER,
-            ],
-            'function' => [
-                \CURLOPT_HEADERFUNCTION,
-                // CURLOPT_PASSWDFUNCTION,
-                \CURLOPT_PROGRESSFUNCTION,
-                \CURLOPT_READFUNCTION,
-                \CURLOPT_WRITEFUNCTION,
-            ],
-            'curl_share_init' => [
-                \CURLOPT_SHARE,
-            ],
-        ];
-        foreach ($types as $type => $constants) {
-            foreach ($constants as $constant) {
-                if ($option !== $constant) {
-                    continue;
-                }
-                $valid = match ($type) {
-                    'bool' => \is_bool($value),
-                    'int' => \is_int($value),
-                    'string' => \is_string($value),
-                    'array' => \is_array($value),
-                    'fopen' => \is_resource($value),
-                    'function' => \is_callable($value),
-                    'curl_share_init' => $value instanceof \CurlShareHandle
-                };
-                if ($valid) {
-                    return;
-                }
-                $message = match ($type) {
-                    'bool' => 'The value of option %d should be of bool type',
-                    'int' => 'The value of option %d should be of int type',
-                    'string' => 'The value of option %d should be of string type',
-                    'array' => 'The value of option %d should be of array type',
-                    'fopen' => 'The value of option %d should be a fopen() resource',
-                    'function' => 'The value of option %d should be a callable',
-                    'curl_share_init' => 'The value of option %d should be a result of curl_share_init()'
-                };
-                throw new InvalidArgumentException(\sprintf($message, $option));
-            }
-        }
-        throw new OutOfBoundsException('Invalid cURL constant option: ' . $option);
-    }
-
-    /**
-     * Get default options replaced by custom.
-     *
-     * @return array<int,mixed>
-     */
-    #[Pure]
-    public function getOptions() : array
-    {
-        return \array_replace($this->defaultOptions, $this->options);
-    }
-
-    /**
-     * Get cURL info for the last request.
-     *
-     * @return array<string,mixed>
-     */
-    #[Pure]
-    public function getInfo() : array
-    {
-        return $this->info;
-    }
-
-    /**
-     * Set cURL timeout.
-     *
-     * @param int $seconds The maximum number of seconds to allow cURL
-     * functions to execute
-     *
-     * @return static
-     */
-    public function setResponseTimeout(int $seconds) : static
-    {
-        $this->setOption(\CURLOPT_TIMEOUT, $seconds);
-        return $this;
-    }
-
-    /**
-     * Set cURL connect timeout.
-     *
-     * @param int $seconds The number of seconds to wait while trying to connect.
-     * Use 0 to wait indefinitely.
-     *
-     * @return static
-     */
-    public function setRequestTimeout(int $seconds) : static
-    {
-        $this->setOption(\CURLOPT_CONNECTTIMEOUT, $seconds);
-        return $this;
-    }
-
-    /**
-     * Set a callback to write the response body with chunks.
-     *
-     * Used to write data to files, databases, etc...
-     *
-     * NOTE: Using this function makes the Response body, returned in the
-     * {@see Client::run()} method, be set with an empty string.
-     *
-     * @param callable $callback A callback with the response body $data chunk
-     * as first argument. Return is not used, can return void.
-     *
-     * @return static
-     */
-    public function setDownloadFunction(callable $callback) : static
-    {
-        $writeFunction = static function ($curl, string $data) use ($callback) : int {
-            $callback($data);
-            return \strlen($data);
-        };
-        $this->setOption(\CURLOPT_WRITEFUNCTION, $writeFunction);
-        return $this;
-    }
-
-    /**
-     * Reset to default values.
-     */
-    public function reset() : void
-    {
-        $this->options = [];
-        $this->responseProtocol = null;
-        $this->responseCode = null;
-        $this->responseReason = null;
-        $this->responseHeaders = [];
-        $this->info = [];
-    }
-
-    /**
-     * Returns string if the Request has not files and cURL will set the
-     * Content-Type header to application/x-www-form-urlencoded. If the Request
-     * has files, returns an array and cURL will set the Content-Type to
-     * multipart/form-data.
-     *
-     * If the Request has files, the $post and $files arrays are converted to
-     * the array_simple format. Because cURL does not understand the PHP
-     * multi-dimensional arrays.
-     *
-     * @see https://www.php.net/manual/en/function.curl-setopt.php CURLOPT_POSTFIELDS
-     *
-     * @param Request $request
-     *
-     * @see ArraySimple::convert()
-     *
-     * @return array<string,CURLFile|string>|string
-     */
-    protected function getPostAndFiles(Request $request) : array | string
-    {
-        if ( ! $request->hasFiles()) {
-            return $request->getBody();
-        }
-        \parse_str($request->getBody(), $post);
-        $post = ArraySimple::convert($post);
-        foreach ($post as &$value) {
-            $value = (string) $value;
-        }
-        unset($value);
-        $files = ArraySimple::convert($request->getFiles());
-        foreach ($files as $field => &$file) {
-            if ( ! \is_file($file)) {
-                throw new InvalidArgumentException(
-                    "Field '{$field}' does not match a file: {$file}"
-                );
-            }
-            $file = new CURLFile(
-                $file,
-                \mime_content_type($file) ?: 'application/octet-stream',
-                \basename($file)
-            );
-        }
-        unset($file);
-        return \array_replace($post, $files);
-    }
+    protected array $parsed = [];
 
     /**
      * Run the Request.
@@ -487,88 +37,129 @@ class Client
      * @param Request $request
      *
      * @throws InvalidArgumentException for invalid Request Protocol
-     * @throws RuntimeException for cURL error
+     * @throws RuntimeException for curl error
      *
      * @return Response
      */
     public function run(Request $request) : Response
     {
-        $this->setOption(\CURLOPT_PROTOCOLS, \CURLPROTO_HTTPS | \CURLPROTO_HTTP);
-        $this->setOption(\CURLOPT_HTTP_VERSION, match ($request->getProtocol()) {
-            'HTTP/1.0' => \CURL_HTTP_VERSION_1_0,
-            'HTTP/1.1' => \CURL_HTTP_VERSION_1_1,
-            'HTTP/2.0' => \CURL_HTTP_VERSION_2_0,
-            'HTTP/2' => \CURL_HTTP_VERSION_2,
-            default => throw new InvalidArgumentException(
-                'Invalid Request Protocol: ' . $request->getProtocol()
-            )
-        });
-        switch ($request->getMethod()) {
-            case 'POST':
-                $this->setOption(\CURLOPT_POST, true);
-                $this->setOption(\CURLOPT_POSTFIELDS, $this->getPostAndFiles($request));
-                break;
-            case 'PUT':
-            case 'PATCH':
-            case 'DELETE':
-                $this->setOption(\CURLOPT_POSTFIELDS, $request->getBody());
-                break;
+        $handle = \curl_init();
+        $options = $request->getOptions();
+        $options[\CURLOPT_HEADERFUNCTION] = [$this, 'parseHeaderLine'];
+        \curl_setopt_array($handle, $options);
+        $body = \curl_exec($handle);
+        $info = [];
+        if ($request->isGettingResponseInfo()) {
+            $info = (array) \curl_getinfo($handle);
         }
-        $this->setOption(\CURLOPT_CUSTOMREQUEST, $request->getMethod());
-        $this->setOption(\CURLOPT_HEADER, false);
-        $this->setOption(\CURLOPT_URL, $request->getUrl()->getAsString());
-        $this->setOption(\CURLOPT_HTTPHEADER, $request->getHeaderLines());
-        $this->setOption(\CURLOPT_HEADERFUNCTION, [$this, 'parseHeaderLine']);
-        $curl = \curl_init();
-        \curl_setopt_array($curl, $this->getOptions());
-        $body = \curl_exec($curl);
-        $this->info = \curl_getinfo($curl);
-        \ksort($this->info);
         if ($body === false) {
-            throw new RuntimeException(\curl_error($curl), \curl_errno($curl));
+            throw new RuntimeException(\curl_error($handle), \curl_errno($handle));
         }
-        \curl_close($curl);
+        \curl_close($handle);
         if ($body === true) {
             $body = '';
         }
-        return new Response(
-            $this->responseProtocol,
-            $this->responseCode,
-            $this->responseReason,
-            $this->responseHeaders,
-            $body
+        $objectId = \spl_object_id($handle);
+        $response = new Response(
+            $request,
+            $this->parsed[$objectId]['protocol'],
+            $this->parsed[$objectId]['code'],
+            $this->parsed[$objectId]['reason'],
+            $this->parsed[$objectId]['headers'],
+            $body,
+            $info
         );
+        unset($this->parsed[$objectId]);
+        return $response;
+    }
+
+    /**
+     * Run multiple HTTP Requests.
+     *
+     * @param Request[] $requests An associative array of Request instances
+     * with ids as keys
+     *
+     * @return Generator<Response> The Requests ids as keys and its respective
+     * Responses as values
+     */
+    public function runMulti(array $requests) : Generator
+    {
+        $multiHandle = \curl_multi_init();
+        $handles = [];
+        foreach ($requests as $id => $request) {
+            $handle = \curl_init();
+            $options = $request->getOptions();
+            $options[\CURLOPT_HEADERFUNCTION] = [$this, 'parseHeaderLine'];
+            \curl_setopt_array($handle, $options);
+            $handles[$id] = $handle;
+            \curl_multi_add_handle($multiHandle, $handle);
+        }
+        do {
+            $status = \curl_multi_exec($multiHandle, $stillRunning);
+            $message = \curl_multi_info_read($multiHandle);
+            if ($message) {
+                foreach ($handles as $id => $handle) {
+                    if ($message['handle'] === $handle) {
+                        $info = [];
+                        if ($requests[$id]->isGettingResponseInfo()) {
+                            $info = (array) \curl_getinfo($handle);
+                        }
+                        $objectId = \spl_object_id($handle);
+                        if ( ! isset($this->parsed[$objectId])) {
+                            unset($handles[$id]);
+                            break;
+                        }
+                        yield $id => new Response(
+                            $requests[$id],
+                            $this->parsed[$objectId]['protocol'],
+                            $this->parsed[$objectId]['code'],
+                            $this->parsed[$objectId]['reason'],
+                            $this->parsed[$objectId]['headers'],
+                            (string) \curl_multi_getcontent($message['handle']),
+                            $info
+                        );
+                        unset($this->parsed[$objectId], $handles[$id]);
+                        break;
+                    }
+                }
+                \curl_multi_remove_handle($multiHandle, $message['handle']);
+            }
+        } while ($stillRunning && $status === \CURLM_OK);
+        \curl_multi_close($multiHandle);
     }
 
     /**
      * Parses Header line.
      *
-     * @param resource $curl
+     * @param CurlHandle $curlHandle
      * @param string $line
      *
      * @return int
      */
-    protected function parseHeaderLine($curl, string $line) : int
+    protected function parseHeaderLine(CurlHandle $curlHandle, string $line) : int
     {
         $trimmedLine = \trim($line);
+        $lineLength = \strlen($line);
         if ($trimmedLine === '') {
-            return \strlen($line);
+            return $lineLength;
         }
+        $id = \spl_object_id($curlHandle);
         if ( ! \str_contains($trimmedLine, ':')) {
             if (\str_starts_with($trimmedLine, 'HTTP/')) {
                 $parts = \explode(' ', $trimmedLine, 3);
-                $this->responseProtocol = $parts[0];
-                $this->responseCode = (int) ($parts[1] ?? 200);
-                $this->responseReason = $parts[2] ?? 'OK';
+                $this->parsed[$id]['protocol'] = $parts[0];
+                $this->parsed[$id]['code'] = (int) ($parts[1] ?? 200);
+                $this->parsed[$id]['reason'] = $parts[2]
+                    ?? Status::getReason($this->parsed[$id]['code']);
             }
-            return \strlen($line);
+            return $lineLength;
         }
         [$name, $value] = \explode(':', $trimmedLine, 2);
         $name = \trim($name);
         $value = \trim($value);
         if ($name !== '' && $value !== '') {
-            $this->responseHeaders[\strtolower($name)][] = $value;
+            $this->parsed[$id]['headers'][\strtolower($name)][] = $value;
         }
-        return \strlen($line);
+        return $lineLength;
     }
 }
