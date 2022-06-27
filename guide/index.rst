@@ -8,6 +8,9 @@ Aplus Framework HTTP (HyperText Transfer Protocol) Client Library.
 
 - `Installation`_
 - `Usage`_
+- `Request`_
+- `Client`_
+- `Response`_
 - `Conclusion`_
 
 Installation
@@ -41,6 +44,278 @@ The HTTP Client library is very simple and powerful which can be used as follows
     echo $response->getStatus();
     echo $response->getBody();
 
+Request
+-------
+
+To perform the hypertext transfer it is necessary to send a request message.
+
+The HTTP client needs objects of the Request class to connect to a URL address.
+
+The object can be instantiated by passing the URL in the constructor:
+
+.. code-block:: php
+
+    use Framework\HTTP\Client\Request;
+
+    $request = new Request('http://domain.tld');
+
+Request URL
+###########
+
+The URL can be changed using the ``setUrl`` method:
+
+.. code-block:: php
+
+    $request->setUrl('http://domain.tld');
+
+Note that when the URL is changed, the Host header will be as well.
+
+Request Protocol
+################
+
+With the Request object instantiated, it is possible to set the desired HTTP
+protocol, through a string or a constant of the Protocol class:
+
+.. code-block:: php
+
+    use Framework\HTTP\Protocol;
+
+    $request->setProtocol('HTTP/2');
+    $request->setProtocol(Protocol::HTTP_2);
+
+Request Method
+##############
+
+By default, the request method is ``GET``. And, it can be changed through the
+``setMethod`` method, passing a string or a constant from the Method class:
+
+.. code-block:: php
+
+    use Framework\HTTP\Method;
+
+    $request->setMethod('post');
+    $request->setMethod(Method::POST);
+
+Request Headers
+###############
+
+Headers can be passed via the header set methods.
+
+Below we see an example using string and a constant of the Header class:
+
+.. code-block:: php
+
+    use Framework\HTTP\Header;
+
+    $request->setHeader('Content-Type', 'application/json');
+    $request->setHeader(Header::CONTENT_TYPE, 'application/json');
+
+To set the Content-Type it is possible to use a method for this:
+
+.. code-block:: php
+
+    $request->setContentType('application/json');
+
+JSON
+""""
+
+When the request has the Content-Type as ``application/json`` and the body is a
+JSON string, it is possible to set the header and the body at once using the
+``setJson`` method:
+
+.. code-block:: php
+
+    $request->setJson($data);
+
+Authorization
+"""""""""""""
+
+When working with APIs it is very common that a username and password (or token)
+is required to perform authorization.
+
+To set Authorization as ``Basic``, just use the ``setBasicAuth`` method:
+
+.. code-block:: php
+
+    $username = 'johndoe';
+    $password = 'secr3t';
+    $request->setBasicAuth($username, $password);
+
+User-Agent
+""""""""""
+
+The default User-Agent can be set by calling the ``setUserAgent`` method and it
+is also possible to pass a name to it:
+
+.. code-block:: php
+
+    $request->setUserAgent();
+    $request->setUserAgent('Aplus HTTP Client');
+
+Cookies
+"""""""
+
+Cookies can be set by the ``setCookie`` method:
+
+.. code-block:: php
+
+    use Framework\HTTP\Cookie;
+
+    $cookie = new Cookie('session_id', 'abc123');
+    $request->setCookie($cookie);
+
+Post Forms
+##########
+
+To send data to a form you can set an array with the fields and values using the
+``setPost`` method:
+
+.. code-block:: php
+
+    $request->setPost([
+        'name' => 'John Doe',
+        'email' => 'johndoe@foo.com',
+    ]);
+
+Request with Upload
+###################
+
+You can upload files with the ``setFiles`` method.
+
+In it, you set the name of the array keys as field names and the values can be
+the path to a file, an instance of **CURLFile** or **CURLStringFile**:
+
+.. code-block:: php
+
+    $request->setFiles([
+        'invoices' => [
+            __DIR__ . '/foo/invoice-10001.pdf',
+            __DIR__ . '/foo/invoice-10002.pdf',
+        ],
+        'foo' => new CURLStringFile('foo', 'foo.txt', 'text/plain')
+    ]);
+
+Request to Download
+###################
+
+When making requests to download files, define a callback in the
+``setDownloadFunction`` method, with the first parameter receiving the data
+chunk:
+
+.. code-block:: php
+
+    $request->setDownloadFunction(function (string $data) {
+        file_put_contents(__DIR__ . '/video.mp4', $data, FILE_APPEND);
+    });
+
+Note that when this function is set the response body will be set to an
+empty string.
+
+Client
+------
+
+The HTTP client is capable of performing synchronous and asynchronous requests.
+
+Let's see how to instantiate it:
+
+.. code-block:: php
+
+    use Framework\HTTP\Client\Client;
+
+    $client = new Client();
+
+A request can be made by passing a Request instance in the ``run`` method, which
+will return a Response:
+
+.. code-block:: php
+
+    $response = $client->run($request);
+
+To perform asynchronous requests use the ``runMulti`` method, passing an array
+with request identifiers as keys and Requests as values.
+
+The ``runMulti`` method will return a **Generator** with the request id in the
+key and a Response instance as a value.
+
+Responses will be delivered as requests are finalized:
+
+.. code-block:: php
+
+    $requests = [
+        1 => new Request('https://domain.tld/foo'),
+        2 => new Request('https://domain.tld/bar'),
+    ];
+
+    foreach($client->runMulti($requests) as $id => $response) {
+        echo "Request $id responded:";
+        echo '<pre>' . htmlentities((string) $response) . '</pre>';
+    }
+
+Response
+--------
+
+After running a request in the client, it will return an instance of the
+Response class.
+
+Response Protocol
+#################
+
+With it it is possible to obtain the protocol:
+
+.. code-block:: php
+
+    $protocol = $response->getProtocol();
+
+Response Status
+###############
+
+Also, you can get the response status:
+
+.. code-block:: php
+
+    $response->getStatusCode();
+    $response->getStatusReason();
+    $response->getStatus();
+
+Response Headers
+################
+
+It is also possible to get all headers at once:
+
+.. code-block:: php
+
+    $headers = $response->getHeaders();
+
+Or, get the headers individually:
+
+.. code-block:: php
+
+    use Framework\HTTP\Header;
+
+    $response->getHeader('Content-Type');
+    $response->getHeader(Header::CONTENT_TYPE);
+
+Response Body
+#############
+
+The message body, when set, can be obtained with the ``getBody`` method:
+
+.. code-block:: php
+
+    $body = $response->getBody();
+
+JSON Response
+#############
+
+Also, you can check if the response content type is JSON and get the JSON data
+as an object or array in PHP:
+
+.. code-block:: php
+
+    if ($response->isJson()) {
+        $data = $response->getJson();
+    }
+
 Conclusion
 ----------
 
@@ -52,5 +327,5 @@ The more you use it, the more you will learn.
 .. note::
     Did you find something wrong? 
     Be sure to let us know about it with an
-    `issue <https://gitlab.com/aplus-framework/libraries/http-client/issues>`_. 
+    `issue <https://gitlab.com/aplus-framework/libraries/http-client/-/issues>`_. 
     Thank you!
