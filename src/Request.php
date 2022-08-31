@@ -484,6 +484,21 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Set Authorization header with Bearer type.
+     *
+     * @param string $token
+     *
+     * @return static
+     */
+    public function setBearerAuth(string $token) : static
+    {
+        return $this->setHeader(
+            RequestHeader::AUTHORIZATION,
+            'Bearer ' . $token
+        );
+    }
+
+    /**
      * Set the User-Agent header.
      *
      * @param string|null $userAgent

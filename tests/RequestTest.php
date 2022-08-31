@@ -148,6 +148,16 @@ final class RequestTest extends TestCase
         );
     }
 
+    public function testBearerAuth() : void
+    {
+        self::assertEmpty($this->request->getHeader('authorization'));
+        $this->request->setBearerAuth('foobar');
+        self::assertSame(
+            'Bearer foobar',
+            $this->request->getHeader('authorization')
+        );
+    }
+
     public function testUserAgent() : void
     {
         self::assertEmpty($this->request->getHeader('user-agent'));
