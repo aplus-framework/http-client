@@ -87,7 +87,6 @@ final class ClientTest extends TestCase
     {
         $request = new Request('http://domain.tld');
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Could not resolve host: domain.tld');
         $this->client->run($request);
     }
 
