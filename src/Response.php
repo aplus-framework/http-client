@@ -11,6 +11,7 @@ namespace Framework\HTTP\Client;
 
 use Exception;
 use Framework\HTTP\Cookie;
+use Framework\HTTP\Header;
 use Framework\HTTP\Message;
 use Framework\HTTP\ResponseInterface;
 use InvalidArgumentException;
@@ -171,5 +172,49 @@ class Response extends Message implements ResponseInterface
     public function getStatus() : string
     {
         return $this->getStatusCode() . ' ' . $this->getStatusReason();
+    }
+
+    /**
+     * Get parsed Link header as array.
+     *
+     * NOTE: To be parsed, links must be in the GitHub REST API format.
+     *
+     * @see https://docs.github.com/en/rest/overview/resources-in-the-rest-api#link-header
+     * @see https://docs.aplus-framework.com/guides/libraries/pagination/index.html#http-header-link
+     * @see https://datatracker.ietf.org/doc/html/rfc5988
+     *
+     * @return array<string,string> Associative array with rel as keys and links
+     * as values
+     */
+    public function getLinks() : array
+    {
+        $link = $this->getHeader(Header::LINK);
+        if ($link) {
+            $link = $this->parseLinkHeader($link);
+        }
+        return (array) $link; // @phpstan-ignore-line
+    }
+
+    /**
+     * @param string $headerLink
+     *
+     * @return array<string,string>
+     */
+    protected function parseLinkHeader(string $headerLink) : array
+    {
+        $links = [];
+        $parts = \explode(',', $headerLink, 10);
+        foreach ($parts as $part) {
+            $section = \explode(';', $part, 10);
+            if (\count($section) !== 2) {
+                continue;
+            }
+            $url = \preg_replace('#<(.*)>#', '$1', $section[0]);
+            $name = \preg_replace('#rel="(.*)"#', '$1', $section[1]);
+            $url = \trim($url);
+            $name = \trim($name);
+            $links[$name] = $url;
+        }
+        return $links;
     }
 }

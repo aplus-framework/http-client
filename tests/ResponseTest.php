@@ -121,4 +121,69 @@ final class ResponseTest extends TestCase
         );
         self::assertSame(['foo', 'baz'], \array_keys($response->getCookies()));
     }
+
+    /**
+     * @return array<array<mixed>>
+     */
+    public function linksProvider() : array
+    {
+        return [
+            [
+                '<https://domain.tld/search?page=2>; rel="next", ' .
+                '<https://domain.tld/search?page=34>; rel="last"',
+                [
+                    'next' => 'https://domain.tld/search?page=2',
+                    'last' => 'https://domain.tld/search?page=34',
+                ],
+            ],
+            [
+                '<https://domain.tld/search?page=15>; rel="next", ' .
+                '<https://domain.tld/search?page=34>; rel="last", ' .
+                '<https://domain.tld/search?page=1>; rel="first", ' .
+                '<https://domain.tld/search?page=13>; rel="prev"',
+                [
+                    'next' => 'https://domain.tld/search?page=15',
+                    'last' => 'https://domain.tld/search?page=34',
+                    'first' => 'https://domain.tld/search?page=1',
+                    'prev' => 'https://domain.tld/search?page=13',
+                ],
+            ],
+            [
+                '<https://domain.tld/search?page=15>; rel="next", ' .
+                '<https://domain.tld/search?page=34>; rel="last"; rel="error", ' .
+                '<https://domain.tld/search?page=1>; rel="first", ' .
+                '<https://domain.tld/search?page=13>; rel="prev"',
+                [
+                    'next' => 'https://domain.tld/search?page=15',
+                    'first' => 'https://domain.tld/search?page=1',
+                    'prev' => 'https://domain.tld/search?page=13',
+                ],
+            ],
+            [
+                'foo',
+                [],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider linksProvider
+     *
+     * @param string $header
+     * @param array<string,string> $links
+     */
+    public function testLinks(string $header, array $links) : void
+    {
+        $response = new Response(
+            new Request('https://domain.tld'),
+            'HTTP/1.1',
+            200,
+            'OK',
+            [
+                'link' => [$header],
+            ],
+            ''
+        );
+        self::assertSame($links, $response->getLinks());
+    }
 }
