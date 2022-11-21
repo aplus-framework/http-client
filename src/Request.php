@@ -602,7 +602,7 @@ class Request extends Message implements RequestInterface
         }
         $options[\CURLOPT_CUSTOMREQUEST] = $this->getMethod();
         $options[\CURLOPT_HEADER] = false;
-        $options[\CURLOPT_URL] = $this->getUrl()->getAsString();
+        $options[\CURLOPT_URL] = $this->getUrl()->toString();
         $options[\CURLOPT_HTTPHEADER] = $this->getHeaderLines();
         return $options;
     }
