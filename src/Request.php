@@ -25,6 +25,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
 use OutOfBoundsException;
+use SensitiveParameter;
 
 /**
  * Class Request.
@@ -475,8 +476,10 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function setBasicAuth(string $username, string $password) : static
-    {
+    public function setBasicAuth(
+        string $username,
+        #[SensitiveParameter] string $password
+    ) : static {
         return $this->setHeader(
             RequestHeader::AUTHORIZATION,
             'Basic ' . \base64_encode($username . ':' . $password)
@@ -490,7 +493,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function setBearerAuth(string $token) : static
+    public function setBearerAuth(#[SensitiveParameter] string $token) : static
     {
         return $this->setHeader(
             RequestHeader::AUTHORIZATION,
