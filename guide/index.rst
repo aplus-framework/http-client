@@ -264,7 +264,7 @@ With it it is possible to obtain the protocol:
 
 .. code-block:: php
 
-    $protocol = $response->getProtocol();
+    $protocol = $response->getProtocol(); // string
 
 Response Status
 ###############
@@ -273,9 +273,9 @@ Also, you can get the response status:
 
 .. code-block:: php
 
-    $response->getStatusCode();
-    $response->getStatusReason();
-    $response->getStatus();
+    $response->getStatusCode(); // int
+    $response->getStatusReason(); // string
+    $response->getStatus(); // string
 
 Response Headers
 ################
@@ -284,7 +284,7 @@ It is also possible to get all headers at once:
 
 .. code-block:: php
 
-    $headers = $response->getHeaders();
+    $headers = $response->getHeaders(); // array
 
 Or, get the headers individually:
 
@@ -302,7 +302,7 @@ The message body, when set, can be obtained with the ``getBody`` method:
 
 .. code-block:: php
 
-    $body = $response->getBody();
+    $body = $response->getBody(); // string
 
 JSON Response
 #############
@@ -313,7 +313,7 @@ as an object or array in PHP:
 .. code-block:: php
 
     if ($response->isJson()) {
-        $data = $response->getJson();
+        $data = $response->getJson(); // object or false
     }
 
 Conclusion
