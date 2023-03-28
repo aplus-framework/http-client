@@ -35,11 +35,11 @@ The HTTP Client library is very simple and powerful which can be used as follows
     $client = new Client();
 
     $request = new Request('https://domain.tld/profile');
-    $request->setMethod('POST');
-    $request->setBasicAuth('johndoe', 'abc123');
-    $request->setJson(['name' => 'John Doe']);
+    $request->setMethod('POST'); // static
+    $request->setBasicAuth('johndoe', 'abc123'); // static
+    $request->setJson(['name' => 'John Doe']); // static
 
-    $response = $client->run($request);
+    $response = $client->run($request); // Framework\HTTP\Client\Response
 
     echo $response->getStatus();
     echo $response->getBody();
@@ -66,7 +66,7 @@ The URL can be changed using the ``setUrl`` method:
 
 .. code-block:: php
 
-    $request->setUrl('http://domain.tld');
+    $request->setUrl('http://domain.tld'); // static
 
 Note that when the URL is changed, the Host header will be as well.
 
@@ -80,8 +80,8 @@ protocol, through a string or a constant of the Protocol class:
 
     use Framework\HTTP\Protocol;
 
-    $request->setProtocol('HTTP/2');
-    $request->setProtocol(Protocol::HTTP_2);
+    $request->setProtocol('HTTP/2'); // static
+    $request->setProtocol(Protocol::HTTP_2); // static
 
 Request Method
 ##############
@@ -93,8 +93,8 @@ By default, the request method is ``GET``. And, it can be changed through the
 
     use Framework\HTTP\Method;
 
-    $request->setMethod('post');
-    $request->setMethod(Method::POST);
+    $request->setMethod('post'); // static
+    $request->setMethod(Method::POST); // static
 
 Request Headers
 ###############
@@ -107,14 +107,14 @@ Below we see an example using string and a constant of the Header class:
 
     use Framework\HTTP\Header;
 
-    $request->setHeader('Content-Type', 'application/json');
-    $request->setHeader(Header::CONTENT_TYPE, 'application/json');
+    $request->setHeader('Content-Type', 'application/json'); // static
+    $request->setHeader(Header::CONTENT_TYPE, 'application/json'); // static
 
 To set the Content-Type it is possible to use a method for this:
 
 .. code-block:: php
 
-    $request->setContentType('application/json');
+    $request->setContentType('application/json'); // static
 
 JSON
 """"
@@ -125,7 +125,7 @@ JSON string, it is possible to set the header and the body at once using the
 
 .. code-block:: php
 
-    $request->setJson($data);
+    $request->setJson($data); // static
 
 Authorization
 """""""""""""
@@ -139,7 +139,7 @@ To set Authorization as ``Basic``, just use the ``setBasicAuth`` method:
 
     $username = 'johndoe';
     $password = 'secr3t';
-    $request->setBasicAuth($username, $password);
+    $request->setBasicAuth($username, $password); // static
 
 User-Agent
 """"""""""
@@ -149,8 +149,8 @@ is also possible to pass a name to it:
 
 .. code-block:: php
 
-    $request->setUserAgent();
-    $request->setUserAgent('Aplus HTTP Client');
+    $request->setUserAgent(); // static
+    $request->setUserAgent('Aplus HTTP Client'); // static
 
 Cookies
 """""""
@@ -162,7 +162,7 @@ Cookies can be set by the ``setCookie`` method:
     use Framework\HTTP\Cookie;
 
     $cookie = new Cookie('session_id', 'abc123');
-    $request->setCookie($cookie);
+    $request->setCookie($cookie); // static
 
 Post Forms
 ##########
@@ -175,7 +175,7 @@ To send data to a form you can set an array with the fields and values using the
     $request->setPost([
         'name' => 'John Doe',
         'email' => 'johndoe@foo.com',
-    ]);
+    ]); // static
 
 Request with Upload
 ###################
@@ -193,7 +193,7 @@ the path to a file, an instance of **CURLFile** or **CURLStringFile**:
             __DIR__ . '/foo/invoice-10002.pdf',
         ],
         'foo' => new CURLStringFile('foo', 'foo.txt', 'text/plain')
-    ]);
+    ]); // static
 
 Request to Download
 ###################
@@ -206,7 +206,7 @@ chunk:
 
     $request->setDownloadFunction(function (string $data) {
         file_put_contents(__DIR__ . '/video.mp4', $data, FILE_APPEND);
-    });
+    }); // static
 
 Note that when this function is set the response body will be set to an
 empty string.
@@ -229,7 +229,7 @@ will return a Response:
 
 .. code-block:: php
 
-    $response = $client->run($request);
+    $response = $client->run($request); // Framework\HTTP\Client\Response
 
 To perform asynchronous requests use the ``runMulti`` method, passing an array
 with request identifiers as keys and Requests as values.
@@ -292,8 +292,8 @@ Or, get the headers individually:
 
     use Framework\HTTP\Header;
 
-    $response->getHeader('Content-Type');
-    $response->getHeader(Header::CONTENT_TYPE);
+    $response->getHeader('Content-Type'); // string or null
+    $response->getHeader(Header::CONTENT_TYPE); // string or null
 
 Response Body
 #############
@@ -313,7 +313,7 @@ as an object or array in PHP:
 .. code-block:: php
 
     if ($response->isJson()) {
-        $data = $response->getJson(); // object or false
+        $data = $response->getJson(); // object, array or false
     }
 
 Conclusion
