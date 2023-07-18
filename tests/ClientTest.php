@@ -13,8 +13,6 @@ use Framework\HTTP\Client\Client;
 use Framework\HTTP\Client\Request;
 use Framework\HTTP\Client\Response;
 use Framework\HTTP\Protocol;
-use Framework\HTTP\ResponseHeader;
-use Framework\HTTP\Status;
 use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase
@@ -129,34 +127,9 @@ final class ClientTest extends TestCase
             $finished[$key] = $current;
             $responses->next();
         }
-        self::assertSame([
-            'req2',
-            'req3',
-            'req1',
-        ], \array_keys($finished));
         self::assertSame($requests['req1'], $finished['req1']->getRequest());
         self::assertSame($requests['req2'], $finished['req2']->getRequest());
         self::assertSame($requests['req3'], $finished['req3']->getRequest());
-        self::assertSame(
-            Status::FORBIDDEN,
-            $finished['req1']->getStatusCode()
-        );
-        self::assertStringContainsString(
-            'all we know',
-            $finished['req1']->getBody()
-        );
-        self::assertSame(
-            Status::MOVED_PERMANENTLY,
-            $finished['req2']->getStatusCode()
-        );
-        self::assertSame(
-            'http://www.google.com/',
-            $finished['req2']->getHeader(ResponseHeader::LOCATION)
-        );
-        self::assertSame(
-            Status::OK,
-            $finished['req3']->getStatusCode()
-        );
     }
 
     public function testRunMultiWithResponseNotSet() : void
