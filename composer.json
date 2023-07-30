@@ -22,9 +22,9 @@
     "homepage": "https://aplus-framework.com/packages/http-client",
     "support": {
         "email": "support@aplus-framework.com",
-        "issues": "https://gitlab.com/aplus-framework/libraries/http-client/issues",
+        "issues": "https://github.com/aplus-framework/http-client/issues",
         "forum": "https://aplus-framework.com/forum",
-        "source": "https://gitlab.com/aplus-framework/libraries/http-client",
+        "source": "https://github.com/aplus-framework/http-client",
         "docs": "https://docs.aplus-framework.com/guides/libraries/http-client/"
     },
     "funding": [
