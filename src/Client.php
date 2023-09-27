@@ -105,7 +105,7 @@ class Client
                             $info = (array) \curl_getinfo($handle);
                         }
                         $objectId = \spl_object_id($handle);
-                        if ( ! isset($this->parsed[$objectId])) {
+                        if (!isset($this->parsed[$objectId])) {
                             unset($handles[$id]);
                             break;
                         }
@@ -144,7 +144,7 @@ class Client
             return $lineLength;
         }
         $id = \spl_object_id($curlHandle);
-        if ( ! \str_contains($trimmedLine, ':')) {
+        if (!\str_contains($trimmedLine, ':')) {
             if (\str_starts_with($trimmedLine, 'HTTP/')) {
                 $parts = \explode(' ', $trimmedLine, 3);
                 $this->parsed[$id]['protocol'] = $parts[0];
