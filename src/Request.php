@@ -268,7 +268,7 @@ class Request extends Message implements RequestInterface
      * Set body with JSON data.
      *
      * @param mixed $data
-     * @param int $options [optional] <p>
+     * @param int $flags [optional] <p>
      * Bitmask consisting of <b>JSON_HEX_QUOT</b>,
      * <b>JSON_HEX_TAG</b>,
      * <b>JSON_HEX_AMP</b>,
@@ -288,12 +288,12 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function setJson(mixed $data, int $options = null, int $depth = 512) : static
+    public function setJson(mixed $data, int $flags = null, int $depth = 512) : static
     {
-        if ($options === null) {
-            $options = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE;
+        if ($flags === null) {
+            $flags = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE;
         }
-        $data = \json_encode($data, $options | \JSON_THROW_ON_ERROR, $depth);
+        $data = \json_encode($data, $flags | \JSON_THROW_ON_ERROR, $depth);
         $this->setContentType('application/json');
         $this->setBody($data);
         return $this;

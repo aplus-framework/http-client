@@ -145,17 +145,17 @@ class Response extends Message implements ResponseInterface
      * Get body as decoded JSON.
      *
      * @param bool $assoc
-     * @param int|null $options
+     * @param int|null $flags
      * @param int<1,max> $depth
      *
      * @return array<string,mixed>|false|object
      */
-    public function getJson(bool $assoc = false, int $options = null, int $depth = 512) : array | object | false
+    public function getJson(bool $assoc = false, int $flags = null, int $depth = 512) : array | object | false
     {
-        if ($options === null) {
-            $options = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES;
+        if ($flags === null) {
+            $flags = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES;
         }
-        $body = \json_decode($this->getBody(), $assoc, $depth, $options);
+        $body = \json_decode($this->getBody(), $assoc, $depth, $flags);
         if (\json_last_error() !== \JSON_ERROR_NONE) {
             return false;
         }
