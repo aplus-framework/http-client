@@ -86,13 +86,13 @@ class Request extends Message implements RequestInterface
         if ($this->parseContentType() === 'multipart/form-data') {
             $this->setBody($this->getMultipartBody());
         }
-        if ( ! $this->hasHeader(RequestHeader::ACCEPT)) {
+        if (!$this->hasHeader(RequestHeader::ACCEPT)) {
             $accept = '*/*';
             $this->setHeader(RequestHeader::ACCEPT, $accept);
         }
         $options = $this->getOptions();
         if (isset($options[\CURLOPT_ENCODING])
-            && ! $this->hasHeader(RequestHeader::ACCEPT_ENCODING)
+            && !$this->hasHeader(RequestHeader::ACCEPT_ENCODING)
         ) {
             $encoding = $options[\CURLOPT_ENCODING] === ''
                 ? 'deflate, gzip, br, zstd'
@@ -198,7 +198,7 @@ class Request extends Message implements RequestInterface
      */
     public function setUrl(string | URL $url) : static
     {
-        if ( ! $url instanceof URL) {
+        if (!$url instanceof URL) {
             $url = new URL($url);
         }
         $this->setHeader(RequestHeader::HOST, $url->getHost());
@@ -316,7 +316,7 @@ class Request extends Message implements RequestInterface
     #[Pure]
     public function hasFiles() : bool
     {
-        return ! empty($this->files);
+        return !empty($this->files);
     }
 
     /**
@@ -479,7 +479,8 @@ class Request extends Message implements RequestInterface
      */
     public function setBasicAuth(
         string $username,
-        #[SensitiveParameter] string $password
+        #[SensitiveParameter]
+        string $password
     ) : static {
         return $this->setHeader(
             RequestHeader::AUTHORIZATION,
@@ -633,7 +634,7 @@ class Request extends Message implements RequestInterface
      */
     public function getPostAndFiles() : array | string
     {
-        if ( ! $this->hasFiles()) {
+        if (!$this->hasFiles()) {
             return $this->getBody();
         }
         \parse_str($this->getBody(), $post);
@@ -648,7 +649,7 @@ class Request extends Message implements RequestInterface
             if ($file instanceof CURLFile || $file instanceof CURLStringFile) {
                 continue;
             }
-            if ( ! \is_file($file)) {
+            if (!\is_file($file)) {
                 throw new InvalidArgumentException(
                     "Field '{$field}' does not match a file: {$file}"
                 );
