@@ -153,7 +153,7 @@ class Response extends Message implements ResponseInterface
     public function getJson(bool $assoc = false, int $flags = null, int $depth = 512) : array | object | false
     {
         if ($flags === null) {
-            $flags = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES;
+            $flags = $this->getJsonFlags();
         }
         $body = \json_decode($this->getBody(), $assoc, $depth, $flags);
         if (\json_last_error() !== \JSON_ERROR_NONE) {

@@ -138,6 +138,19 @@ final class RequestTest extends TestCase
         self::assertSame('{"a":1}', $this->request->getBody());
     }
 
+    public function testJsonFlags() : void
+    {
+        self::assertSame(
+            \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE,
+            $this->request->getJsonFlags()
+        );
+        $this->request->setJsonFlags(\JSON_FORCE_OBJECT);
+        self::assertSame(
+            \JSON_FORCE_OBJECT,
+            $this->request->getJsonFlags()
+        );
+    }
+
     public function testBasicAuth() : void
     {
         self::assertEmpty($this->request->getHeader('authorization'));

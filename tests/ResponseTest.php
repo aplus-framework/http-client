@@ -82,6 +82,19 @@ final class ResponseTest extends TestCase
         self::assertIsObject($this->response->getJson());
     }
 
+    public function testJsonFlags() : void
+    {
+        self::assertSame(
+            \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE,
+            $this->response->getJsonFlags()
+        );
+        $this->response->setJsonFlags(\JSON_FORCE_OBJECT);
+        self::assertSame(
+            \JSON_FORCE_OBJECT,
+            $this->response->getJsonFlags()
+        );
+    }
+
     public function testStatus() : void
     {
         self::assertSame('200 OK', $this->response->getStatus());

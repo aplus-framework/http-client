@@ -291,7 +291,7 @@ class Request extends Message implements RequestInterface
     public function setJson(mixed $data, int $flags = null, int $depth = 512) : static
     {
         if ($flags === null) {
-            $flags = \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE;
+            $flags = $this->getJsonFlags();
         }
         $data = \json_encode($data, $flags | \JSON_THROW_ON_ERROR, $depth);
         $this->setContentType('application/json');
