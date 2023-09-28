@@ -84,13 +84,10 @@ final class ResponseTest extends TestCase
 
     public function testJsonFlags() : void
     {
+        self::assertSame(0, $this->response->getJsonFlags());
+        $this->response->setJsonFlags(\JSON_BIGINT_AS_STRING);
         self::assertSame(
-            \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE,
-            $this->response->getJsonFlags()
-        );
-        $this->response->setJsonFlags(\JSON_FORCE_OBJECT);
-        self::assertSame(
-            \JSON_FORCE_OBJECT,
+            \JSON_BIGINT_AS_STRING,
             $this->response->getJsonFlags()
         );
     }

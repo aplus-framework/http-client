@@ -34,6 +34,7 @@ class Response extends Message implements ResponseInterface
      * @var array<mixed>
      */
     protected array $info = [];
+    protected int $jsonFlags = 0;
 
     /**
      * Response constructor.
