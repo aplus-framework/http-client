@@ -205,3 +205,49 @@ expectedArguments(
     0,
     argumentsSet('curl_options')
 );
+registerArgumentsSet(
+    'json_decode_flags',
+    \JSON_BIGINT_AS_STRING,
+    \JSON_INVALID_UTF8_IGNORE,
+    \JSON_INVALID_UTF8_SUBSTITUTE,
+    \JSON_OBJECT_AS_ARRAY,
+    \JSON_THROW_ON_ERROR,
+);
+expectedArguments(
+    \Framework\HTTP\Client\Response::getJson(),
+    1,
+    argumentsSet('json_decode_flags')
+);
+expectedArguments(
+    \Framework\HTTP\Client\Response::setJsonFlags(),
+    0,
+    argumentsSet('json_decode_flags')
+);
+registerArgumentsSet(
+    'json_encode_flags',
+    \JSON_FORCE_OBJECT,
+    \JSON_HEX_QUOT,
+    \JSON_HEX_TAG,
+    \JSON_HEX_AMP,
+    \JSON_HEX_APOS,
+    \JSON_INVALID_UTF8_IGNORE,
+    \JSON_INVALID_UTF8_SUBSTITUTE,
+    \JSON_NUMERIC_CHECK,
+    \JSON_PARTIAL_OUTPUT_ON_ERROR,
+    \JSON_PRESERVE_ZERO_FRACTION,
+    \JSON_PRETTY_PRINT,
+    \JSON_UNESCAPED_LINE_TERMINATORS,
+    \JSON_UNESCAPED_SLASHES,
+    \JSON_UNESCAPED_UNICODE,
+    \JSON_THROW_ON_ERROR,
+);
+expectedArguments(
+    \Framework\HTTP\Client\Request::setJson(),
+    1,
+    argumentsSet('json_encode_flags')
+);
+expectedArguments(
+    \Framework\HTTP\Client\Request::setJsonFlags(),
+    0,
+    argumentsSet('json_encode_flags')
+);
