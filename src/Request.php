@@ -268,23 +268,31 @@ class Request extends Message implements RequestInterface
      * Set body with JSON data.
      *
      * @param mixed $data
-     * @param int $flags [optional] <p>
-     * Bitmask consisting of <b>JSON_HEX_QUOT</b>,
+     * @param int|null $flags [optional] <p>
+     * Bitmask consisting of <b>JSON_FORCE_OBJECT</b>,
+     * <b>JSON_HEX_QUOT</b>,
      * <b>JSON_HEX_TAG</b>,
      * <b>JSON_HEX_AMP</b>,
      * <b>JSON_HEX_APOS</b>,
+     * <b>JSON_INVALID_UTF8_IGNORE</b>,
+     * <b>JSON_INVALID_UTF8_SUBSTITUTE</b>,
      * <b>JSON_NUMERIC_CHECK</b>,
+     * <b>JSON_INVALID_UTF8_SUBSTITUTE</b>,
+     * <b>JSON_PARTIAL_OUTPUT_ON_ERROR</b>,
+     * <b>JSON_PRESERVE_ZERO_FRACTION</b>,
      * <b>JSON_PRETTY_PRINT</b>,
+     * <b>JSON_UNESCAPED_LINE_TERMINATORS</b>,
      * <b>JSON_UNESCAPED_SLASHES</b>,
-     * <b>JSON_FORCE_OBJECT</b>,
-     * <b>JSON_UNESCAPED_UNICODE</b>.
-     * <b>JSON_THROW_ON_ERROR</b>
+     * <b>JSON_UNESCAPED_UNICODE</b>,
+     * <b>JSON_THROW_ON_ERROR</b>.
      * </p>
      * <p>Default is <b>JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE</b>
-     * when null</p>
+     * when null. <b>JSON_THROW_ON_ERROR</b> is enforced by default.</p>
      * @param int<1,max> $depth [optional] Set the maximum depth. Must be greater than zero.
      *
      * @throws JsonException if json_encode() fails
+     *
+     * @see https://www.php.net/manual/en/function.json-encode.php
      *
      * @return static
      */

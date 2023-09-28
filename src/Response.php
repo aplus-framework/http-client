@@ -146,8 +146,17 @@ class Response extends Message implements ResponseInterface
      * Get body as decoded JSON.
      *
      * @param bool $assoc
-     * @param int|null $flags
+     * @param int|null $flags [optional] <p>
+     * Bitmask consisting of <b>JSON_BIGINT_AS_STRING</b>,
+     * <b>JSON_INVALID_UTF8_IGNORE</b>,
+     * <b>JSON_INVALID_UTF8_SUBSTITUTE</b>,
+     * <b>JSON_OBJECT_AS_ARRAY</b>,
+     * <b>JSON_THROW_ON_ERROR</b>.
+     * </p>
+     * <p>Default is none when null.</p>
      * @param int<1,max> $depth
+     *
+     * @see https://www.php.net/manual/en/function.json-decode.php
      *
      * @return array<string,mixed>|false|object
      */
