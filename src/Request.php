@@ -293,6 +293,7 @@ class Request extends Message implements RequestInterface
      * @throws JsonException if json_encode() fails
      *
      * @see https://www.php.net/manual/en/function.json-encode.php
+     * @see https://www.php.net/manual/en/json.constants.php
      *
      * @return static
      */

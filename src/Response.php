@@ -157,6 +157,7 @@ class Response extends Message implements ResponseInterface
      * @param int<1,max> $depth
      *
      * @see https://www.php.net/manual/en/function.json-decode.php
+     * @see https://www.php.net/manual/en/json.constants.php
      *
      * @return array<string,mixed>|false|object
      */
