@@ -173,6 +173,10 @@ final class ResponseTest extends TestCase
                 'foo',
                 [],
             ],
+            [
+                '0',
+                [],
+            ],
         ];
     }
 
