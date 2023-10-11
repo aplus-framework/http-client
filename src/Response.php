@@ -189,10 +189,11 @@ class Response extends Message implements ResponseInterface
     public function getLinks() : array
     {
         $link = $this->getHeader(Header::LINK);
+        $result = [];
         if ($link) {
-            $link = $this->parseLinkHeader($link);
+            $result = $this->parseLinkHeader($link);
         }
-        return (array) $link; // @phpstan-ignore-line
+        return $result;
     }
 
     /**
