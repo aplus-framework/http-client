@@ -179,7 +179,7 @@ class Response extends Message implements ResponseInterface
      *
      * NOTE: To be parsed, links must be in the GitHub REST API format.
      *
-     * @see https://docs.github.com/en/rest/overview/resources-in-the-rest-api#link-header
+     * @see https://docs.github.com/en/rest/guides/using-pagination-in-the-rest-api#using-link-headers
      * @see https://docs.aplus-framework.com/guides/libraries/pagination/index.html#http-header-link
      * @see https://datatracker.ietf.org/doc/html/rfc5988
      *
