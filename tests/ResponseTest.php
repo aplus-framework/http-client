@@ -123,9 +123,30 @@ final class ResponseTest extends TestCase
     }
 
     /**
+     * @dataProvider linksProvider
+     *
+     * @param string $header
+     * @param array<string,string> $links
+     */
+    public function testLinks(string $header, array $links) : void
+    {
+        $response = new Response(
+            new Request('https://domain.tld'),
+            'HTTP/1.1',
+            200,
+            'OK',
+            [
+                'link' => [$header],
+            ],
+            ''
+        );
+        self::assertSame($links, $response->getLinks());
+    }
+
+    /**
      * @return array<array<mixed>>
      */
-    public function linksProvider() : array
+    public static function linksProvider() : array
     {
         return [
             [
@@ -168,26 +189,5 @@ final class ResponseTest extends TestCase
                 [],
             ],
         ];
-    }
-
-    /**
-     * @dataProvider linksProvider
-     *
-     * @param string $header
-     * @param array<string,string> $links
-     */
-    public function testLinks(string $header, array $links) : void
-    {
-        $response = new Response(
-            new Request('https://domain.tld'),
-            'HTTP/1.1',
-            200,
-            'OK',
-            [
-                'link' => [$header],
-            ],
-            ''
-        );
-        self::assertSame($links, $response->getLinks());
     }
 }
