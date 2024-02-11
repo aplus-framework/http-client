@@ -39,7 +39,7 @@
         "ext-fileinfo": "*",
         "ext-json": "*",
         "aplus/helpers": "^3.0",
-        "aplus/http": "^5.6"
+        "aplus/http": "6.x-dev"
     },
     "require-dev": {
         "ext-xdebug": "*",
