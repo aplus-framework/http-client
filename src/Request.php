@@ -144,7 +144,7 @@ class Request extends Message implements RequestInterface
         unset($info);
         $boundary = \str_repeat('-', 24) . \substr(\md5(\implode("\r\n", $bodyParts)), 0, 16);
         $this->setHeader(
-            Header::CONTENT_TYPE,
+            RequestHeader::CONTENT_TYPE,
             'multipart/form-data; charset=UTF-8; boundary=' . $boundary
         );
         foreach ($bodyParts as &$part) {
@@ -155,7 +155,7 @@ class Request extends Message implements RequestInterface
         $bodyParts[] = '';
         $bodyParts = \implode("\r\n", $bodyParts);
         $this->setHeader(
-            Header::CONTENT_LENGTH,
+            RequestHeader::CONTENT_LENGTH,
             (string) \strlen($bodyParts)
         );
         return $bodyParts;
@@ -369,7 +369,7 @@ class Request extends Message implements RequestInterface
     public function setContentType(string $mime, string $charset = 'UTF-8') : static
     {
         $this->setHeader(
-            Header::CONTENT_TYPE,
+            RequestHeader::CONTENT_TYPE,
             $mime . ($charset ? '; charset=' . $charset : '')
         );
         return $this;

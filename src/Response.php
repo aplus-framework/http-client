@@ -13,6 +13,7 @@ use Exception;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\Header;
 use Framework\HTTP\Message;
+use Framework\HTTP\ResponseHeader;
 use Framework\HTTP\ResponseInterface;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
@@ -199,7 +200,7 @@ class Response extends Message implements ResponseInterface
      */
     public function getLinks() : array
     {
-        $link = $this->getHeader(Header::LINK);
+        $link = $this->getHeader(ResponseHeader::LINK);
         $result = [];
         if ($link) {
             $result = $this->parseLinkHeader($link);
