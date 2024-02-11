@@ -13,6 +13,7 @@ use Framework\HTTP\Client\Client;
 use Framework\HTTP\Client\Request;
 use Framework\HTTP\Client\Response;
 use Framework\HTTP\Protocol;
+use Framework\HTTP\URL;
 use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase
@@ -22,6 +23,15 @@ final class ClientTest extends TestCase
     protected function setUp() : void
     {
         $this->client = new Client();
+    }
+
+    public function testCreateRequest() : void
+    {
+        $r1 = $this->client->createRequest('http://domain.tld');
+        $r2 = $this->client->createRequest(new URL('http://domain.tld'));
+        self::assertInstanceOf(Request::class, $r1);
+        self::assertInstanceOf(Request::class, $r2);
+        self::assertNotSame($r1, $r2);
     }
 
     public function testRun() : void

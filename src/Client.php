@@ -11,6 +11,7 @@ namespace Framework\HTTP\Client;
 
 use CurlHandle;
 use Framework\HTTP\Status;
+use Framework\HTTP\URL;
 use Generator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -30,6 +31,18 @@ class Client
      * @var array<mixed>
      */
     protected array $parsed = [];
+
+    /**
+     * Create a new Request instance.
+     *
+     * @param string|URL $url
+     *
+     * @return Request
+     */
+    public function createRequest(URL | string $url) : Request
+    {
+        return new Request($url);
+    }
 
     /**
      * Run the Request.
