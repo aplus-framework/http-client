@@ -291,10 +291,10 @@ class Request extends Message implements RequestInterface
      * when null. <b>JSON_THROW_ON_ERROR</b> is enforced by default.</p>
      * @param int<1,max> $depth [optional] Set the maximum depth. Must be greater than zero.
      *
-     * @throws JsonException if json_encode() fails
-     *
      * @see https://www.php.net/manual/en/function.json-encode.php
      * @see https://www.php.net/manual/en/json.constants.php
+     *
+     * @throws JsonException if json_encode() fails
      *
      * @return static
      */
