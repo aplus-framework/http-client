@@ -211,6 +211,14 @@ chunk:
 Note that when this function is set the response body will be set to an
 empty string.
 
+A simpler way is to use the ``setDownloadFile`` function, which requires the
+file path in the first parameter and allows you to overwrite the file in the
+second parameter:
+
+.. code-block:: php
+
+    $request->setDownloadFile(__DIR__ . '/video.mp4'); // static
+
 Client
 ------
 

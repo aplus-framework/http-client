@@ -25,6 +25,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
 use OutOfBoundsException;
+use RuntimeException;
 use SensitiveParameter;
 
 /**
@@ -548,6 +549,31 @@ class Request extends Message implements RequestInterface
             return \strlen($data);
         };
         $this->setOption(\CURLOPT_WRITEFUNCTION, $function);
+        return $this;
+    }
+
+    /**
+     * Set a filename to download the file.
+     *
+     * @param string $filename The filename
+     * @param bool $override Set true to allow override the filename
+     *
+     * @throws RuntimeException if $override is false and the filename exists
+     *
+     * @return static
+     */
+    public function setDownloadFile(string $filename, bool $override = false) : static
+    {
+        $isFile = \is_file($filename);
+        if ($isFile && $override === false) {
+            throw new RuntimeException('File path already exists: ' . $filename);
+        }
+        if ($isFile) {
+            \unlink($filename);
+        }
+        $this->setDownloadFunction(static function (string $data) use ($filename) : void {
+            \file_put_contents($filename, $data, \FILE_APPEND);
+        });
         return $this;
     }
 

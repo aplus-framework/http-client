@@ -9,6 +9,7 @@
  */
 namespace Tests\HTTP\Client;
 
+use Framework\HTTP\Client\Client;
 use Framework\HTTP\Client\Request;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\URL;
@@ -312,6 +313,48 @@ final class RequestTest extends TestCase
         self::assertArrayHasKey(
             \CURLOPT_WRITEFUNCTION,
             $this->request->getOptions()
+        );
+    }
+
+    public function testDownloadFileAlreadyExists() : void
+    {
+        $request = new Request('https://aplus-framework.com');
+        $filename = \sys_get_temp_dir() . '/index.html';
+        \touch($filename);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('File path already exists: ' . $filename);
+        $request->setDownloadFile($filename);
+    }
+
+    public function testDownloadFileAlreadyExistsOverride() : void
+    {
+        $request = new Request('https://aplus-framework.com');
+        $filename = \sys_get_temp_dir() . '/index.html';
+        \touch($filename);
+        $request->setDownloadFile($filename, true);
+        self::assertFileDoesNotExist($filename);
+        $client = new Client();
+        $client->run($request);
+        self::assertFileExists($filename);
+        self::assertStringContainsString(
+            'Aplus Framework',
+            (string) \file_get_contents($filename)
+        );
+    }
+
+    public function testDownloadFile() : void
+    {
+        $request = new Request('https://aplus-framework.com');
+        $filename = \sys_get_temp_dir() . '/index.html';
+        @\unlink($filename);
+        $request->setDownloadFile($filename);
+        self::assertFileDoesNotExist($filename);
+        $client = new Client();
+        $client->run($request);
+        self::assertFileExists($filename);
+        self::assertStringContainsString(
+            'Aplus Framework',
+            (string) \file_get_contents($filename)
         );
     }
 
