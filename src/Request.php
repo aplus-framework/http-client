@@ -556,16 +556,16 @@ class Request extends Message implements RequestInterface
      * Set a filename to download the file.
      *
      * @param string $filename The filename
-     * @param bool $override Set true to allow override the filename
+     * @param bool $overwrite Set true to allow to overwrite the file
      *
-     * @throws RuntimeException if $override is false and the filename exists
+     * @throws RuntimeException if $overwrite is false and the file exists
      *
      * @return static
      */
-    public function setDownloadFile(string $filename, bool $override = false) : static
+    public function setDownloadFile(string $filename, bool $overwrite = false) : static
     {
         $isFile = \is_file($filename);
-        if ($isFile && $override === false) {
+        if ($isFile && $overwrite === false) {
             throw new RuntimeException('File path already exists: ' . $filename);
         }
         if ($isFile) {

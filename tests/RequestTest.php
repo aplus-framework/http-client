@@ -326,7 +326,7 @@ final class RequestTest extends TestCase
         $request->setDownloadFile($filename);
     }
 
-    public function testDownloadFileAlreadyExistsOverride() : void
+    public function testDownloadFileAlreadyExistsOverwrite() : void
     {
         $request = new Request('https://aplus-framework.com');
         $filename = \sys_get_temp_dir() . '/index.html';
