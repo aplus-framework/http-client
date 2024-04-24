@@ -38,7 +38,7 @@
         "ext-curl": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
-        "aplus/helpers": "^3.0",
+        "aplus/helpers": "^4.0",
         "aplus/http": "^6.0"
     },
     "require-dev": {
