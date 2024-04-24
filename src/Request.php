@@ -25,6 +25,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
 use OutOfBoundsException;
+use Override;
 use RuntimeException;
 use SensitiveParameter;
 
@@ -82,6 +83,7 @@ class Request extends Message implements RequestInterface
         $this->setUrl($url);
     }
 
+    #[Override]
     public function __toString() : string
     {
         if ($this->parseContentType() === 'multipart/form-data') {
@@ -197,6 +199,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function setUrl(string | URL $url) : static
     {
         if (!$url instanceof URL) {
@@ -206,12 +209,14 @@ class Request extends Message implements RequestInterface
         return parent::setUrl($url);
     }
 
+    #[Override]
     #[Pure]
     public function getUrl() : URL
     {
         return parent::getUrl();
     }
 
+    #[Override]
     #[Pure]
     public function getMethod() : string
     {
@@ -225,6 +230,7 @@ class Request extends Message implements RequestInterface
      *
      * @return bool
      */
+    #[Override]
     public function isMethod(string $method) : bool
     {
         return parent::isMethod($method);
@@ -235,6 +241,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function setMethod(string $method) : static
     {
         return parent::setMethod($method);
@@ -245,6 +252,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function setProtocol(string $protocol) : static
     {
         return parent::setProtocol($protocol);
@@ -257,6 +265,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function setBody(array | string $body) : static
     {
         if (\is_array($body)) {
@@ -381,6 +390,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function setCookie(Cookie $cookie) : static
     {
         parent::setCookie($cookie);
@@ -393,6 +403,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function setCookies(array $cookies) : static
     {
         return parent::setCookies($cookies);
@@ -403,6 +414,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function removeCookie(string $name) : static
     {
         parent::removeCookie($name);
@@ -415,6 +427,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function removeCookies(array $names) : static
     {
         parent::removeCookies($names);
@@ -444,6 +457,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function setHeader(string $name, string $value) : static
     {
         return parent::setHeader($name, $value);
@@ -454,6 +468,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function setHeaders(array $headers) : static
     {
         return parent::setHeaders($headers);
@@ -464,6 +479,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
+    #[Override]
     public function removeHeader(string $name) : static
     {
         return parent::removeHeader($name);
@@ -472,6 +488,7 @@ class Request extends Message implements RequestInterface
     /**
      * @return static
      */
+    #[Override]
     public function removeHeaders() : static
     {
         return parent::removeHeaders();

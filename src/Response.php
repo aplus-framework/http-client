@@ -17,6 +17,7 @@ use Framework\HTTP\ResponseHeader;
 use Framework\HTTP\ResponseInterface;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
+use Override;
 
 /**
  * Class Response.
@@ -84,6 +85,7 @@ class Response extends Message implements ResponseInterface
         return $this->info;
     }
 
+    #[Override]
     #[Pure]
     public function getStatusCode() : int
     {
@@ -97,6 +99,7 @@ class Response extends Message implements ResponseInterface
      *
      * @return bool
      */
+    #[Override]
     public function isStatusCode(int $code) : bool
     {
         return parent::isStatusCode($code);
@@ -127,6 +130,7 @@ class Response extends Message implements ResponseInterface
      *
      * @return static
      */
+    #[Override]
     protected function setHeader(string $name, string $value) : static
     {
         if (\strtolower($name) === 'set-cookie') {
