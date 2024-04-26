@@ -92,8 +92,8 @@ class Client
      * @param Request[] $requests An associative array of Request instances
      * with ids as keys
      *
-     * @return Generator<Response> The Requests ids as keys and its respective
-     * Responses as values
+     * @return Generator<Response|ResponseError> The Requests ids as keys and
+     * its respective Response or ResponseError as values
      */
     public function runMulti(array $requests) : Generator
     {
@@ -119,6 +119,12 @@ class Client
                         }
                         $objectId = \spl_object_id($handle);
                         if (!isset($this->parsed[$objectId])) {
+                            yield $id => new ResponseError(
+                                $requests[$id],
+                                \curl_error($handle),
+                                \curl_errno($handle),
+                                $info
+                            );
                             unset($handles[$id]);
                             break;
                         }

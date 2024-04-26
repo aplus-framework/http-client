@@ -12,6 +12,7 @@ namespace Tests\HTTP\Client;
 use Framework\HTTP\Client\Client;
 use Framework\HTTP\Client\Request;
 use Framework\HTTP\Client\Response;
+use Framework\HTTP\Client\ResponseError;
 use Framework\HTTP\Protocol;
 use Framework\HTTP\URL;
 use PHPUnit\Framework\TestCase;
@@ -142,7 +143,7 @@ final class ClientTest extends TestCase
         self::assertSame($requests['req3'], $finished['req3']->getRequest());
     }
 
-    public function testRunMultiWithResponseNotSet() : void
+    public function testRunMultiGettingResponseInfo() : void
     {
         $requests = [
             new Request('http://not-exist.tld'),
@@ -158,8 +159,34 @@ final class ClientTest extends TestCase
             $returned[$key] = $current;
             $responses->next();
         }
-        self::assertArrayNotHasKey(0, $returned);
+        self::assertArrayHasKey(0, $returned);
+        self::assertInstanceOf(ResponseError::class, $returned[0]);
+        self::assertSame(0, $returned[0]->getInfo()['http_code']);
         self::assertArrayHasKey(1, $returned);
+        self::assertInstanceOf(Response::class, $returned[1]);
         self::assertSame(200, $returned[1]->getInfo()['http_code']);
+    }
+
+    public function testResponseError() : void
+    {
+        $requests = [
+            1 => new Request('https://aplus-framework.com'),
+            2 => new Request('https://aplus-framework.tld'),
+            3 => new Request('https://aplus-framework.com/xxx'),
+        ];
+        $responses = [];
+        foreach ($this->client->runMulti($requests) as $id => $response) {
+            $responses[$id] = $response;
+        }
+        self::assertInstanceOf(Response::class, $responses[1]);
+        self::assertInstanceOf(ResponseError::class, $responses[2]);
+        self::assertInstanceOf(Response::class, $responses[3]);
+        self::assertSame($requests[2], $responses[2]->getRequest());
+        self::assertSame(
+            'Could not resolve host: aplus-framework.tld',
+            $responses[2]->getError()
+        );
+        self::assertSame(6, $responses[2]->getErrorNumber());
+        self::assertSame([], $responses[2]->getInfo());
     }
 }
