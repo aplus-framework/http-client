@@ -9,6 +9,8 @@
  */
 namespace Framework\HTTP\Client;
 
+use JetBrains\PhpStorm\ArrayShape;
+
 /**
  * Class ResponseError.
  *
@@ -60,6 +62,46 @@ class ResponseError
     /**
      * @return array<mixed>
      */
+    #[ArrayShape([
+        'appconnect_time_us' => 'int',
+        'certinfo' => 'array',
+        'connect_time' => 'float',
+        'connect_time_us' => 'int',
+        'content_type' => 'string',
+        'download_content_length' => 'float',
+        'effective_method' => 'string',
+        'filetime' => 'int',
+        'header_size' => 'int',
+        'http_code' => 'int',
+        'http_version' => 'int',
+        'local_ip' => 'string',
+        'local_port' => 'int',
+        'namelookup_time' => 'float',
+        'namelookup_time_us' => 'int',
+        'pretransfer_time' => 'float',
+        'pretransfer_time_us' => 'int',
+        'primary_ip' => 'string',
+        'primary_port' => 'int',
+        'protocol' => 'int',
+        'redirect_count' => 'int',
+        'redirect_time' => 'float',
+        'redirect_time_us' => 'int',
+        'redirect_url' => 'string',
+        'request_size' => 'int',
+        'scheme' => 'string',
+        'size_download' => 'float',
+        'size_upload' => 'float',
+        'speed_download' => 'float',
+        'speed_upload' => 'float',
+        'ssl_verify_result' => 'int',
+        'ssl_verifyresult' => 'int',
+        'starttransfer_time' => 'float',
+        'starttransfer_time_us' => 'int',
+        'total_time' => 'float',
+        'total_time_us' => 'int',
+        'upload_content_length' => 'float',
+        'url' => 'string',
+    ])]
     public function getInfo() : array
     {
         return $this->info;
