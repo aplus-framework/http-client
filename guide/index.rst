@@ -59,6 +59,12 @@ The object can be instantiated by passing the URL in the constructor:
 
     $request = new Request('http://domain.tld');
 
+Another way is using the ``createRequest`` method of the Client class:
+
+.. code-block:: php
+
+    $request = $client->createRequest('http://domain.tld');
+
 Request URL
 ###########
 
@@ -141,6 +147,13 @@ To set Authorization as ``Basic``, just use the ``setBasicAuth`` method:
     $password = 'secr3t';
     $request->setBasicAuth($username, $password); // static
 
+To set Authorization as ``Bearer``, just use the ``setBearerAuth`` method:
+
+.. code-block:: php
+
+    $token = 'abc123';
+    $request->setBearerAuth($token); // static
+
 User-Agent
 """"""""""
 
@@ -208,9 +221,6 @@ chunk:
         file_put_contents(__DIR__ . '/video.mp4', $data, FILE_APPEND);
     }); // static
 
-Note that when this function is set the response body will be set to an
-empty string.
-
 A simpler way is to use the ``setDownloadFile`` function, which requires the
 file path in the first parameter and allows you to overwrite the file in the
 second parameter:
@@ -218,6 +228,9 @@ second parameter:
 .. code-block:: php
 
     $request->setDownloadFile(__DIR__ . '/video.mp4'); // static
+
+Note that when these functions are set the Response body will be set as an empty
+string.
 
 Client
 ------
@@ -232,38 +245,60 @@ Let's see how to instantiate it:
 
     $client = new Client();
 
+Synchronous Requests
+####################
+
 A request can be made by passing a Request instance in the ``run`` method, which
-will return a Response:
+will return a `Response`_ or throw an exception if it fails:
 
 .. code-block:: php
 
     $response = $client->run($request); // Framework\HTTP\Client\Response
 
+Asynchronous Requests
+#####################
+
 To perform asynchronous requests use the ``runMulti`` method, passing an array
 with request identifiers as keys and Requests as values.
 
-The ``runMulti`` method will return a **Generator** with the request id in the
-key and a Response instance as a value.
+The ``runMulti`` method will return a
+`Generator <https://www.php.net/manual/en/language.generators.php>`_ with the
+request id in the key and a `Response`_, or `Response Error`_, instance as a value.
 
 Responses will be delivered as requests are finalized:
 
 .. code-block:: php
 
+    use Framework\HTTP\Client\Request;
+    use Framework\HTTP\Client\ResponseError;
+    
     $requests = [
-        1 => new Request('https://domain.tld/foo'),
-        2 => new Request('https://domain.tld/bar'),
+        1 => new Request('https://aplus-framework.com'),
+        2 => new Request('https://aplus-framework.tld'),
     ];
 
     foreach($client->runMulti($requests) as $id => $response) {
+        if ($response instanceof ResponseError) {
+            echo "Request $id has error:";
+            echo '- ' . $response->getError() . '<br>';
+            continue;
+        }
         echo "Request $id responded:";
         echo '<pre>' . htmlentities((string) $response) . '</pre>';
     }
 
+In the ``run`` method, an exception is thrown if the connection fails. On the
+other hand, the ``runMulti`` method does not throw exceptions so that requests
+are not interrupted.
+
+To find out if a request failed, perform a check similar to the code example
+above.
+
 Response
 --------
 
-After running a request in the client, it will return an instance of the
-Response class.
+After running a Request in the Client, it may return an instance of the Response
+class.
 
 Response Protocol
 #################
@@ -323,6 +358,33 @@ as an object or array in PHP:
     if ($response->isJson()) {
         $data = $response->getJson(); // object, array or false
     }
+
+Response Links
+##############
+
+The ``getLinks`` method get parsed Link header as array.
+
+To be parsed, links must be in the
+`GitHub REST API <https://docs.github.com/en/rest/guides/using-pagination-in-the-rest-api#using-link-headers>`_
+format and it is compatible with the
+`Pagination HTTP Header Link <https://docs.aplus-framework.com/guides/libraries/pagination/index.html#http-header-link>`_.
+
+.. code-block:: php
+
+    $links = $response->getLinks(); // array
+
+Response Error
+--------------
+
+The ``Framework\HTTP\Client\ResponseError`` class is used when there is an
+error on the connection.
+
+With it is possible to obtain the instance of the Request that ran it with the
+``getRequest`` method and the error with the ``getError`` method.
+
+If the Request is getting info from the response, it is possible to obtain more
+information with the ``getInfo`` method. 
+
 
 Conclusion
 ----------
