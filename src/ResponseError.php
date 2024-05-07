@@ -10,13 +10,14 @@
 namespace Framework\HTTP\Client;
 
 use JetBrains\PhpStorm\ArrayShape;
+use Stringable;
 
 /**
  * Class ResponseError.
  *
  * @package http-client
  */
-class ResponseError
+class ResponseError implements Stringable
 {
     protected Request $request;
     protected string $error;
@@ -42,6 +43,11 @@ class ResponseError
         $this->error = $error;
         $this->errorNumber = $errorNumber;
         $this->info = $info;
+    }
+
+    public function __toString() : string
+    {
+        return 'Error ' . $this->getErrorNumber() . ': ' . $this->getError();
     }
 
     public function getRequest() : Request

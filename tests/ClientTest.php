@@ -189,4 +189,18 @@ final class ClientTest extends TestCase
         self::assertSame(6, $responses[2]->getErrorNumber());
         self::assertSame([], $responses[2]->getInfo());
     }
+
+    public function testResponseErrorToString() : void
+    {
+        $requests = [
+            new Request('https://aplus-framework.tld'),
+        ];
+        foreach ($this->client->runMulti($requests) as $response) {
+            self::assertInstanceOf(ResponseError::class, $response);
+            self::assertSame(
+                'Error 6: Could not resolve host: aplus-framework.tld',
+                (string) $response
+            );
+        }
+    }
 }
