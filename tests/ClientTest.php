@@ -99,11 +99,19 @@ final class ClientTest extends TestCase
         try {
             $this->client->run($request);
         } catch (RequestException $exception) {
-            self::assertSame(
+            $expected = \str_starts_with($exception->getMessage(), 'Could')
+                ? 0
+                : 1;
+            $messages = [
+                'Could not resolve host: domain.tld',
                 'Failed to connect to domain.tld port 80: No route to host',
-                $exception->getMessage()
-            );
-            self::assertSame(7, $exception->getCode());
+            ];
+            $codes = [
+                6,
+                7,
+            ];
+            self::assertSame($messages[$expected], $exception->getMessage());
+            self::assertSame($codes[$expected], $exception->getCode());
             self::assertEmpty($exception->getInfo());
         }
     }
