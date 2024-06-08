@@ -71,7 +71,7 @@ class Request extends Message implements RequestInterface
      */
     protected array $options = [];
     protected bool $checkOptions = false;
-    protected bool $getResponseInfo = false;
+    protected bool $getInfo = false;
 
     /**
      * Request constructor.
@@ -716,15 +716,15 @@ class Request extends Message implements RequestInterface
         return \array_replace($post, $files);
     }
 
-    public function setGetResponseInfo(bool $get = true) : static
+    public function setGetInfo(bool $get = true) : static
     {
-        $this->getResponseInfo = $get;
+        $this->getInfo = $get;
         return $this;
     }
 
-    public function isGettingResponseInfo() : bool
+    public function isGettingInfo() : bool
     {
-        return $this->getResponseInfo;
+        return $this->getInfo;
     }
 
     /**

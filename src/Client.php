@@ -61,7 +61,7 @@ class Client
         \curl_setopt_array($handle, $options);
         $body = \curl_exec($handle);
         $info = [];
-        if ($request->isGettingResponseInfo()) {
+        if ($request->isGettingInfo()) {
             $info = (array) \curl_getinfo($handle);
         }
         if ($body === false) {
@@ -117,7 +117,7 @@ class Client
                 foreach ($handles as $id => $handle) {
                     if ($message['handle'] === $handle) {
                         $info = [];
-                        if ($requests[$id]->isGettingResponseInfo()) {
+                        if ($requests[$id]->isGettingInfo()) {
                             $info = (array) \curl_getinfo($handle);
                         }
                         $objectId = \spl_object_id($handle);
