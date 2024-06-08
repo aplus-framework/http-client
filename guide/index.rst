@@ -249,11 +249,26 @@ Synchronous Requests
 ####################
 
 A request can be made by passing a Request instance in the ``run`` method, which
-will return a `Response`_ or throw an exception if it fails:
+will return a `Response`_ or throw an ``Framework\HTTP\Client\RequestException``
+if it fails:
 
 .. code-block:: php
 
     $response = $client->run($request); // Framework\HTTP\Client\Response
+
+If you call the Request's ``setGetInfo`` method, it will be possible to obtain
+information from curl through the exception's ``getInfo`` method:
+
+.. code-block:: php
+    
+    $request->setGetInfo();
+    
+    try {
+        $response = $client->run($request); // Framework\HTTP\Client\Response
+    } catch (Framework\HTTP\Client\RequestException $exception) {
+        echo $exception->getMessage(); // string
+        var_dump($exception->getInfo(); // array
+    }
 
 Asynchronous Requests
 #####################
@@ -287,9 +302,9 @@ Responses will be delivered as requests are finalized:
         echo '<pre>' . htmlentities((string) $response) . '</pre>';
     }
 
-In the ``run`` method, an exception is thrown if the connection fails. On the
-other hand, the ``runMulti`` method does not throw exceptions so that requests
-are not interrupted.
+In the ``run`` method, the ``Framework\HTTP\Client\RequestException`` exception
+is thrown if the connection fails. On the other hand, the ``runMulti`` method
+does not throw exceptions so that requests are not interrupted.
 
 To find out if a request failed, perform a check similar to the code example
 above.
@@ -382,8 +397,8 @@ error on the connection.
 With it is possible to obtain the instance of the Request that ran it with the
 ``getRequest`` method and the error with the ``getError`` method.
 
-If the Request is getting info from the response, it is possible to obtain more
-information with the ``getInfo`` method. 
+If the Request is getting info, it is possible to obtain more information with
+the ``getInfo`` method.
 
 
 Conclusion
