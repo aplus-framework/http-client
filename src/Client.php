@@ -14,7 +14,6 @@ use Framework\HTTP\Status;
 use Framework\HTTP\URL;
 use Generator;
 use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * Class Client.
@@ -50,7 +49,7 @@ class Client
      * @param Request $request
      *
      * @throws InvalidArgumentException for invalid Request Protocol
-     * @throws RuntimeException for curl error
+     * @throws RequestException for curl error
      *
      * @return Response
      */
@@ -66,7 +65,11 @@ class Client
             $info = (array) \curl_getinfo($handle);
         }
         if ($body === false) {
-            throw new RuntimeException(\curl_error($handle), \curl_errno($handle));
+            throw new RequestException(
+                \curl_error($handle),
+                \curl_errno($handle),
+                info: $info
+            );
         }
         \curl_close($handle);
         if ($body === true) {

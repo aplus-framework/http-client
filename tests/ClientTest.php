@@ -11,6 +11,7 @@ namespace Tests\HTTP\Client;
 
 use Framework\HTTP\Client\Client;
 use Framework\HTTP\Client\Request;
+use Framework\HTTP\Client\RequestException;
 use Framework\HTTP\Client\Response;
 use Framework\HTTP\Client\ResponseError;
 use Framework\HTTP\Protocol;
@@ -95,8 +96,27 @@ final class ClientTest extends TestCase
     public function testRunError() : void
     {
         $request = new Request('http://domain.tld');
-        $this->expectException(\RuntimeException::class);
-        $this->client->run($request);
+        try {
+            $this->client->run($request);
+        } catch (RequestException $exception) {
+            self::assertSame(
+                'Failed to connect to domain.tld port 80: No route to host',
+                $exception->getMessage()
+            );
+            self::assertSame(7, $exception->getCode());
+            self::assertEmpty($exception->getInfo());
+        }
+    }
+
+    public function testRunErrorWithInfo() : void
+    {
+        $request = new Request('http://domain.tld');
+        $request->setGetResponseInfo();
+        try {
+            $this->client->run($request);
+        } catch (RequestException $exception) {
+            self::assertSame(0, $exception->getInfo()['http_code']);
+        }
     }
 
     public function testRunWithRequestDownloadFunction() : void
