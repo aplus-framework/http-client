@@ -107,14 +107,14 @@ Request Headers
 
 Headers can be passed via the header set methods.
 
-Below we see an example using string and a constant of the Header class:
+Below we see an example using string and a constant of the RequestHeader class:
 
 .. code-block:: php
 
-    use Framework\HTTP\Header;
+    use Framework\HTTP\RequestHeader;
 
     $request->setHeader('Content-Type', 'application/json'); // static
-    $request->setHeader(Header::CONTENT_TYPE, 'application/json'); // static
+    $request->setHeader(RequestHeader::CONTENT_TYPE, 'application/json'); // static
 
 To set the Content-Type it is possible to use a method for this:
 
@@ -180,7 +180,7 @@ Cookies can be set by the ``setCookie`` method:
 Post Forms
 ##########
 
-To send data to a form you can set an array with the fields and values using the
+To send data as a form you can set an array with fields and values using the
 ``setPost`` method:
 
 .. code-block:: php
@@ -257,7 +257,7 @@ if it fails:
     $response = $client->run($request); // Framework\HTTP\Client\Response
 
 If you call the Request's ``setGetInfo`` method, it will be possible to obtain
-information from curl through the exception's ``getInfo`` method:
+information from Curl through the exception's ``getInfo`` method:
 
 .. code-block:: php
     
@@ -267,7 +267,7 @@ information from curl through the exception's ``getInfo`` method:
         $response = $client->run($request); // Framework\HTTP\Client\Response
     } catch (Framework\HTTP\Client\RequestException $exception) {
         echo $exception->getMessage(); // string
-        var_dump($exception->getInfo(); // array
+        var_dump($exception->getInfo()); // array
     }
 
 Asynchronous Requests
@@ -284,8 +284,11 @@ Responses will be delivered as requests are finalized:
 
 .. code-block:: php
 
+    use Framework\HTTP\Client\Client;
     use Framework\HTTP\Client\Request;
     use Framework\HTTP\Client\ResponseError;
+    
+    $client = new Client();
     
     $requests = [
         1 => new Request('https://aplus-framework.com'),
@@ -294,8 +297,8 @@ Responses will be delivered as requests are finalized:
 
     foreach($client->runMulti($requests) as $id => $response) {
         if ($response instanceof ResponseError) {
-            echo "Request $id has error:";
-            echo '- ' . $response->getError() . '<br>';
+            echo "Request $id has error: ";
+            echo $response->getError() . '.<br>';
             continue;
         }
         echo "Request $id responded:";
@@ -348,10 +351,10 @@ Or, get the headers individually:
 
 .. code-block:: php
 
-    use Framework\HTTP\Header;
+    use Framework\HTTP\ResponseHeader;
 
     $response->getHeader('Content-Type'); // string or null
-    $response->getHeader(Header::CONTENT_TYPE); // string or null
+    $response->getHeader(ResponseHeader::CONTENT_TYPE); // string or null
 
 Response Body
 #############
@@ -399,7 +402,6 @@ With it is possible to obtain the instance of the Request that ran it with the
 
 If the Request is getting info, it is possible to obtain more information with
 the ``getInfo`` method.
-
 
 Conclusion
 ----------
