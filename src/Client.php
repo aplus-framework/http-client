@@ -34,7 +34,7 @@ class Client
     /**
      * Create a new Request instance.
      *
-     * @param string|URL $url
+     * @param URL|string $url
      *
      * @return Request
      */

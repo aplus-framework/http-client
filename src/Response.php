@@ -207,7 +207,7 @@ class Response extends Message implements ResponseInterface
      *
      * @return array<string,mixed>|false|object
      */
-    public function getJson(bool $assoc = false, int $flags = null, int $depth = 512) : array | object | false
+    public function getJson(bool $assoc = false, ?int $flags = null, int $depth = 512) : array | false | object
     {
         if ($flags === null) {
             $flags = $this->getJsonFlags();

@@ -76,7 +76,7 @@ class Request extends Message implements RequestInterface
     /**
      * Request constructor.
      *
-     * @param string|URL $url
+     * @param URL|string $url
      */
     public function __construct(URL | string $url)
     {
@@ -195,12 +195,12 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * @param string|URL $url
+     * @param URL|string $url
      *
      * @return static
      */
     #[Override]
-    public function setUrl(string | URL $url) : static
+    public function setUrl(URL | string $url) : static
     {
         if (!$url instanceof URL) {
             $url = new URL($url);
@@ -307,7 +307,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function setJson(mixed $data, int $flags = null, int $depth = 512) : static
+    public function setJson(mixed $data, ?int $flags = null, int $depth = 512) : static
     {
         if ($flags === null) {
             $flags = $this->getJsonFlags();
@@ -539,7 +539,7 @@ class Request extends Message implements RequestInterface
      *
      * @return static
      */
-    public function setUserAgent(string $userAgent = null) : static
+    public function setUserAgent(?string $userAgent = null) : static
     {
         $userAgent ??= 'Aplus HTTP Client';
         return $this->setHeader(RequestHeader::USER_AGENT, $userAgent);
