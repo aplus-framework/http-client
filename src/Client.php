@@ -67,7 +67,7 @@ class Client
         if ($body === false) {
             $error = \curl_error($handle);
             $errno = \curl_errno($handle);
-            @\curl_close($handle);
+            \curl_close($handle);
             throw new RequestException(
                 $error,
                 $errno,
