@@ -65,9 +65,12 @@ class Client
             $info = (array) \curl_getinfo($handle);
         }
         if ($body === false) {
+            $error = \curl_error($handle);
+            $errno = \curl_errno($handle);
+            @\curl_close($handle);
             throw new RequestException(
-                \curl_error($handle),
-                \curl_errno($handle),
+                $error,
+                $errno,
                 info: $info
             );
         }
