@@ -13,7 +13,6 @@ use CURLFile;
 use CURLStringFile;
 use Framework\Helpers\ArraySimple;
 use Framework\HTTP\Cookie;
-use Framework\HTTP\Header;
 use Framework\HTTP\Message;
 use Framework\HTTP\Method;
 use Framework\HTTP\Protocol;
