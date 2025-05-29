@@ -116,39 +116,41 @@ class Client
         do {
             $status = \curl_multi_exec($multiHandle, $stillRunning);
             $message = \curl_multi_info_read($multiHandle);
-            if ($message) {
-                foreach ($handles as $id => $handle) {
-                    if ($message['handle'] === $handle) {
-                        $info = [];
-                        if ($requests[$id]->isGettingInfo()) {
-                            $info = (array) \curl_getinfo($handle);
-                        }
-                        $objectId = \spl_object_id($handle);
-                        if (!isset($this->parsed[$objectId])) {
-                            yield $id => new ResponseError(
-                                $requests[$id],
-                                \curl_error($handle),
-                                \curl_errno($handle),
-                                $info
-                            );
-                            unset($handles[$id]);
-                            break;
-                        }
-                        yield $id => new Response(
-                            $requests[$id],
-                            $this->parsed[$objectId]['protocol'],
-                            $this->parsed[$objectId]['code'],
-                            $this->parsed[$objectId]['reason'],
-                            $this->parsed[$objectId]['headers'],
-                            (string) \curl_multi_getcontent($message['handle']),
-                            $info
-                        );
-                        unset($this->parsed[$objectId], $handles[$id]);
-                        break;
-                    }
-                }
-                \curl_multi_remove_handle($multiHandle, $message['handle']);
+            if ($message === false) {
+                continue;
             }
+            foreach ($handles as $id => $handle) {
+                if ($message['handle'] !== $handle) {
+                    continue;
+                }
+                $info = [];
+                if ($requests[$id]->isGettingInfo()) {
+                    $info = (array) \curl_getinfo($handle);
+                }
+                $objectId = \spl_object_id($handle);
+                if (!isset($this->parsed[$objectId])) {
+                    yield $id => new ResponseError(
+                        $requests[$id],
+                        \curl_error($handle),
+                        \curl_errno($handle),
+                        $info
+                    );
+                    unset($handles[$id]);
+                    break;
+                }
+                yield $id => new Response(
+                    $requests[$id],
+                    $this->parsed[$objectId]['protocol'],
+                    $this->parsed[$objectId]['code'],
+                    $this->parsed[$objectId]['reason'],
+                    $this->parsed[$objectId]['headers'],
+                    (string) \curl_multi_getcontent($message['handle']),
+                    $info
+                );
+                unset($this->parsed[$objectId], $handles[$id]);
+                break;
+            }
+            \curl_multi_remove_handle($multiHandle, $message['handle']);
         } while ($stillRunning && $status === \CURLM_OK);
         \curl_multi_close($multiHandle);
     }
