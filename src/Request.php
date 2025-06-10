@@ -371,11 +371,11 @@ class Request extends Message implements RequestInterface
      * Set the Content-Type header.
      *
      * @param string $mime
-     * @param string $charset
+     * @param string|null $charset
      *
      * @return static
      */
-    public function setContentType(string $mime, string $charset = 'UTF-8') : static
+    public function setContentType(string $mime, ?string $charset = 'UTF-8') : static
     {
         $this->setHeader(
             RequestHeader::CONTENT_TYPE,
