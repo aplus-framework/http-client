@@ -108,6 +108,12 @@ final class RequestTest extends TestCase
         self::assertNull($this->request->getHeader('content-type'));
         $this->request->setContentType('text/html');
         self::assertSame('text/html; charset=UTF-8', $this->request->getHeader('content-type'));
+        $this->request->setContentType('text/html', '');
+        self::assertSame('text/html', $this->request->getHeader('content-type'));
+        $this->request->setContentType('text/html', '0');
+        self::assertSame('text/html', $this->request->getHeader('content-type'));
+        $this->request->setContentType('text/html', null);
+        self::assertSame('text/html', $this->request->getHeader('content-type'));
     }
 
     public function testFiles() : void
