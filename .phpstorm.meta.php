@@ -252,6 +252,27 @@ expectedArguments(
     argumentsSet('json_encode_flags')
 );
 registerArgumentsSet(
+    'content_types',
+    'application/json',
+    'application/octet-stream',
+    'application/x-www-form-urlencoded',
+    'application/xml',
+    'multipart/form-data',
+    'text/css',
+    'text/html',
+    'text/javascript',
+    'text/markdown',
+    'text/plain',
+    'text/x-php',
+    'text/x-rst',
+    'text/xml',
+);
+expectedArguments(
+    \Framework\HTTP\Client\Request::setContentType(),
+    0,
+    argumentsSet('content_types')
+);
+registerArgumentsSet(
     'response_headers',
     \Framework\HTTP\ResponseHeader::ACCEPT_RANGES,
     \Framework\HTTP\ResponseHeader::ACCESS_CONTROL_ALLOW_CREDENTIALS,
