@@ -11,7 +11,6 @@ namespace Framework\HTTP\Client;
 
 use Exception;
 use Framework\HTTP\Cookie;
-use Framework\HTTP\Header;
 use Framework\HTTP\Message;
 use Framework\HTTP\ResponseHeader;
 use Framework\HTTP\ResponseInterface;
