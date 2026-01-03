@@ -39,7 +39,7 @@ The HTTP Client library is very simple and powerful which can be used as follows
     $request->setBasicAuth('johndoe', 'abc123'); // static
     $request->setJson(['name' => 'John Doe']); // static
 
-    $response = $client->run($request); // Framework\HTTP\Client\Response
+    $response = $client->send($request); // Framework\HTTP\Client\Response
 
     echo $response->getStatus();
     echo $response->getBody();
@@ -248,13 +248,13 @@ Let's see how to instantiate it:
 Synchronous Requests
 ####################
 
-A request can be made by passing a Request instance in the ``run`` method, which
+A request can be made by passing a Request instance in the ``send`` method, which
 will return a `Response`_ or throw an ``Framework\HTTP\Client\RequestException``
 if it fails:
 
 .. code-block:: php
 
-    $response = $client->run($request); // Framework\HTTP\Client\Response
+    $response = $client->send($request); // Framework\HTTP\Client\Response
 
 If you call the Request's ``setGetInfo`` method, it will be possible to obtain
 information from Curl through the exception's ``getInfo`` method:
@@ -264,7 +264,7 @@ information from Curl through the exception's ``getInfo`` method:
     $request->setGetInfo();
     
     try {
-        $response = $client->run($request); // Framework\HTTP\Client\Response
+        $response = $client->send($request); // Framework\HTTP\Client\Response
     } catch (Framework\HTTP\Client\RequestException $exception) {
         echo $exception->getMessage(); // string
         var_dump($exception->getInfo()); // array
@@ -273,10 +273,10 @@ information from Curl through the exception's ``getInfo`` method:
 Asynchronous Requests
 #####################
 
-To perform asynchronous requests use the ``runMulti`` method, passing an array
+To perform asynchronous requests use the ``sendMulti`` method, passing an array
 with request identifiers as keys and Requests as values.
 
-The ``runMulti`` method will return a
+The ``sendMulti`` method will return a
 `Generator <https://www.php.net/manual/en/language.generators.php>`_ with the
 request id in the key and a `Response`_, or `Response Error`_, instance as a value.
 
@@ -295,7 +295,7 @@ Responses will be delivered as requests are finalized:
         2 => new Request('https://aplus-framework.tld'),
     ];
 
-    foreach($client->runMulti($requests) as $id => $response) {
+    foreach($client->sendMulti($requests) as $id => $response) {
         if ($response instanceof ResponseError) {
             echo "Request $id has error: ";
             echo $response->getError() . '.<br>';
@@ -305,8 +305,8 @@ Responses will be delivered as requests are finalized:
         echo '<pre>' . htmlentities((string) $response) . '</pre>';
     }
 
-In the ``run`` method, the ``Framework\HTTP\Client\RequestException`` exception
-is thrown if the connection fails. On the other hand, the ``runMulti`` method
+In the ``send`` method, the ``Framework\HTTP\Client\RequestException`` exception
+is thrown if the connection fails. On the other hand, the ``sendMulti`` method
 does not throw exceptions so that requests are not interrupted.
 
 To find out if a request failed, perform a check similar to the code example
