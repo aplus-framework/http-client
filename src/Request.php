@@ -641,6 +641,7 @@ class Request extends Message implements RequestInterface
             Protocol::HTTP_1_1 => \CURL_HTTP_VERSION_1_1,
             Protocol::HTTP_2_0 => \CURL_HTTP_VERSION_2_0,
             Protocol::HTTP_2 => \CURL_HTTP_VERSION_2,
+            Protocol::HTTP_3 => \CURL_HTTP_VERSION_3,
             default => throw new InvalidArgumentException(
                 'Invalid Request Protocol: ' . $this->getProtocol()
             )
