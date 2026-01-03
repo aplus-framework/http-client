@@ -340,7 +340,7 @@ final class RequestTest extends TestCase
         $request->setDownloadFile($filename, true);
         self::assertFileDoesNotExist($filename);
         $client = new Client();
-        $client->run($request);
+        $client->send($request);
         self::assertFileExists($filename);
         self::assertStringContainsString(
             'Aplus Framework',
@@ -356,7 +356,7 @@ final class RequestTest extends TestCase
         $request->setDownloadFile($filename);
         self::assertFileDoesNotExist($filename);
         $client = new Client();
-        $client->run($request);
+        $client->send($request);
         self::assertFileExists($filename);
         self::assertStringContainsString(
             'Aplus Framework',

@@ -40,7 +40,7 @@ final class ClientTest extends TestCase
     {
         $request = new Request('https://www.google.com');
         $request->setHeader('Content-Type', 'text/html');
-        $response = $this->client->run($request);
+        $response = $this->client->send($request);
         self::assertSame($request, $response->getRequest());
         self::assertInstanceOf(Response::class, $response);
         self::assertGreaterThan(100, \strlen($response->getBody()));
@@ -48,7 +48,7 @@ final class ClientTest extends TestCase
         $request->setOption(\CURLOPT_RETURNTRANSFER, false);
         \ob_start(); // Avoid terminal output
         $request->setGetInfo();
-        $response = $this->client->run($request);
+        $response = $this->client->send($request);
         self::assertInstanceOf(Response::class, $response);
         self::assertSame('', $response->getBody());
         self::assertGreaterThan(100, \strlen((string) \ob_get_contents()));
@@ -61,17 +61,17 @@ final class ClientTest extends TestCase
         $request = new Request('https://www.google.com');
         $request->setProtocol('HTTP/1.1');
         self::assertSame('HTTP/1.1', $request->getProtocol());
-        $response = $this->client->run($request);
+        $response = $this->client->send($request);
         self::assertSame('HTTP/1.1', $response->getProtocol());
         self::assertSame('OK', $response->getStatusReason());
         $request->setProtocol('HTTP/2.0');
         self::assertSame('HTTP/2.0', $request->getProtocol());
-        $response = $this->client->run($request);
+        $response = $this->client->send($request);
         self::assertSame('HTTP/2', $response->getProtocol());
         self::assertSame('OK', $response->getStatusReason());
         $request->setProtocol('HTTP/2');
         self::assertSame('HTTP/2', $request->getProtocol());
-        $response = $this->client->run($request);
+        $response = $this->client->send($request);
         self::assertSame('HTTP/2', $response->getProtocol());
         // HTTP/1.0 is failing:
         // OpenSSL SSL_read: error:0A000126:SSL routines::unexpected eof while reading, errno 0
@@ -87,11 +87,11 @@ final class ClientTest extends TestCase
         $request = new Request('https://www.google.com');
         $request->setMethod('post');
         self::assertSame('POST', $request->getMethod());
-        $response = $this->client->run($request);
+        $response = $this->client->send($request);
         self::assertInstanceOf(Response::class, $response);
         $request->setMethod('put');
         self::assertSame('PUT', $request->getMethod());
-        $response = $this->client->run($request);
+        $response = $this->client->send($request);
         self::assertInstanceOf(Response::class, $response);
     }
 
@@ -99,7 +99,7 @@ final class ClientTest extends TestCase
     {
         $request = new Request('http://domain.tld');
         try {
-            $this->client->run($request);
+            $this->client->send($request);
         } catch (RequestException $exception) {
             $expected = \str_starts_with($exception->getMessage(), 'Could')
                 ? 0
@@ -123,7 +123,7 @@ final class ClientTest extends TestCase
         $request = new Request('http://domain.tld');
         $request->setGetInfo();
         try {
-            $this->client->run($request);
+            $this->client->send($request);
         } catch (RequestException $exception) {
             self::assertSame(0, $exception->getInfo()['http_code']);
         }
@@ -138,7 +138,7 @@ final class ClientTest extends TestCase
             self::assertInstanceOf(\CurlHandle::class, $handle);
             $page .= $data;
         });
-        $response = $this->client->run($request);
+        $response = $this->client->send($request);
         self::assertSame('', $response->getBody());
         self::assertStringContainsString('<!doctype html>', $page);
         self::assertStringContainsString('</html>', $page);
@@ -159,7 +159,7 @@ final class ClientTest extends TestCase
             'req3' => $req3,
         ];
         $finished = [];
-        $responses = $this->client->runMulti($requests);
+        $responses = $this->client->sendMulti($requests);
         while ($responses->valid()) {
             $key = $responses->key();
             self::assertArrayHasKey($key, $requests);
@@ -181,7 +181,7 @@ final class ClientTest extends TestCase
         ];
         $requests[0]->setGetInfo();
         $requests[1]->setGetInfo();
-        $responses = $this->client->runMulti($requests);
+        $responses = $this->client->sendMulti($requests);
         $returned = [];
         while ($responses->valid()) {
             $key = $responses->key();
@@ -205,7 +205,7 @@ final class ClientTest extends TestCase
             3 => new Request('https://aplus-framework.com/xxx'),
         ];
         $responses = [];
-        foreach ($this->client->runMulti($requests) as $id => $response) {
+        foreach ($this->client->sendMulti($requests) as $id => $response) {
             $responses[$id] = $response;
         }
         self::assertInstanceOf(Response::class, $responses[1]);
@@ -225,7 +225,7 @@ final class ClientTest extends TestCase
         $requests = [
             new Request('https://aplus-framework.tld'),
         ];
-        foreach ($this->client->runMulti($requests) as $response) {
+        foreach ($this->client->sendMulti($requests) as $response) {
             self::assertInstanceOf(ResponseError::class, $response);
             self::assertSame(
                 'Error 6: Could not resolve host: aplus-framework.tld',

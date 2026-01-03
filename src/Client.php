@@ -44,7 +44,7 @@ class Client
     }
 
     /**
-     * Run the Request.
+     * Send a Request.
      *
      * @param Request $request
      *
@@ -53,7 +53,7 @@ class Client
      *
      * @return Response
      */
-    public function run(Request $request) : Response
+    public function send(Request $request) : Response
     {
         $handle = \curl_init();
         $options = $request->getOptions();
@@ -93,7 +93,7 @@ class Client
     }
 
     /**
-     * Run multiple HTTP Requests.
+     * Send multiple HTTP Requests.
      *
      * @param Request[] $requests An associative array of Request instances
      * with ids as keys
@@ -101,7 +101,7 @@ class Client
      * @return Generator<Response|ResponseError> The Requests ids as keys and
      * its respective Response or ResponseError as values
      */
-    public function runMulti(array $requests) : Generator
+    public function sendMulti(array $requests) : Generator
     {
         $multiHandle = \curl_multi_init();
         $handles = [];

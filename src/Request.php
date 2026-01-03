@@ -550,7 +550,7 @@ class Request extends Message implements RequestInterface
      * Used to write data to files, databases, etc...
      *
      * NOTE: Using this function makes the Response body, returned in the
-     * {@see Client::run()} method, be set with an empty string.
+     * {@see Client::send()} method, be set with an empty string.
      *
      * @param callable $callback A callback with the response body $data chunk
      * as first argument and the CurlHandle as the second. Return is not
