@@ -366,7 +366,6 @@ class Request extends Message implements RequestInterface
         if ($this->isMethod(Method::GET)) {
             $this->setMethod(Method::POST);
         }
-        $this->setContentType('multipart/form-data');
         $this->files = $files;
         return $this;
     }
