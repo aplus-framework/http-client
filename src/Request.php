@@ -651,7 +651,6 @@ class Request extends Message implements RequestInterface
         };
         switch ($this->getMethod()) {
             case Method::POST:
-                $options[\CURLOPT_POST] = true;
                 $options[\CURLOPT_POSTFIELDS] = $this->getPostAndFiles();
                 break;
             case Method::DELETE:
