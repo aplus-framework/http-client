@@ -649,14 +649,12 @@ class Request extends Message implements RequestInterface
                 'Invalid Request Protocol: ' . $this->getProtocol()
             )
         };
-        switch ($this->getMethod()) {
-            case Method::POST:
-                $options[\CURLOPT_POSTFIELDS] = $this->getPostAndFiles();
-                break;
-            case Method::PATCH:
-            case Method::PUT:
-                $options[\CURLOPT_POSTFIELDS] = $this->getBody();
-                break;
+        if (\in_array($this->getMethod(), [
+            Method::PATCH,
+            Method::POST,
+            Method::PUT,
+        ], true)) {
+            $options[\CURLOPT_POSTFIELDS] = $this->getPostAndFiles();
         }
         $options[\CURLOPT_CUSTOMREQUEST] = $this->getMethod();
         $options[\CURLOPT_HEADER] = false;
