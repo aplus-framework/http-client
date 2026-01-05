@@ -314,6 +314,9 @@ class Request extends Message implements RequestInterface
         $data = \json_encode($data, $flags | \JSON_THROW_ON_ERROR, $depth);
         $this->setContentType('application/json');
         $this->setBody($data);
+        if ($this->isMethod(Method::GET)) {
+            $this->setMethod(Method::POST);
+        }
         return $this;
     }
 

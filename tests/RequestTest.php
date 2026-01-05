@@ -146,13 +146,18 @@ final class RequestTest extends TestCase
 
     public function testJSON() : void
     {
+        self::assertSame('GET', $this->request->getMethod());
         self::assertNull($this->request->getHeader('content-type'));
         $this->request->setJson(['a' => 1]);
+        self::assertSame('POST', $this->request->getMethod());
         self::assertSame(
             'application/json; charset=UTF-8',
             $this->request->getHeader('content-type')
         );
         self::assertSame('{"a":1}', $this->request->getBody());
+        $this->request->setMethod('PUT');
+        $this->request->setJson(['a' => 1]);
+        self::assertSame('PUT', $this->request->getMethod());
     }
 
     public function testJsonFlags() : void
