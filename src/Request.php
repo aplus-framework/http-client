@@ -650,6 +650,7 @@ class Request extends Message implements RequestInterface
             )
         };
         if (\in_array($this->getMethod(), [
+            Method::DELETE,
             Method::PATCH,
             Method::POST,
             Method::PUT,
