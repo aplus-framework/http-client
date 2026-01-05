@@ -121,7 +121,14 @@ final class RequestTest extends TestCase
         self::assertFalse($this->request->hasFiles());
         self::assertSame('GET', $this->request->getMethod());
         self::assertSame([], $this->request->getFiles());
+        self::assertNull($this->request->getHeader('content-type'));
+        $this->request->setFiles([]);
+        self::assertNull($this->request->getHeader('content-type'));
         $this->request->setFiles(['upload' => __FILE__]);
+        self::assertSame(
+            'multipart/form-data; charset=UTF-8',
+            $this->request->getHeader('content-type')
+        );
         self::assertTrue($this->request->hasFiles());
         self::assertSame('POST', $this->request->getMethod());
         $this->request->setMethod('PUT');
@@ -225,10 +232,7 @@ final class RequestTest extends TestCase
         self::assertNull($this->request->getHeader('Accept-Encoding'));
     }
 
-    /**
-     * TODO: Update this test!
-     */
-    public function disabledTestToStringMultipart() : void
+    public function testToStringMultipart() : void
     {
         $file = __DIR__ . '/support/foo.txt';
         $request = new Request('http://localhost');
