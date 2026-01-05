@@ -274,7 +274,11 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Set body with JSON data.
+     * Prepare the Request to send JSON data.
+     *
+     * If the HTTP method is GET, it will be upgraded to POST.
+     * Set Content-Type header to application/json.
+     * Set request body with JSON-string data.
      *
      * @param mixed $data
      * @param int|null $flags [optional] <p>
@@ -366,6 +370,7 @@ class Request extends Message implements RequestInterface
      * Set files for upload.
      *
      * If the HTTP method is GET, it will be updated to POST.
+     * Set Content-Type header to multipart/form-data.
      *
      * @param array<mixed> $files Fields as keys, files
      * (CURLFile, CURLStringFile or string filename) as values.
@@ -686,13 +691,15 @@ class Request extends Message implements RequestInterface
 
     /**
      * Returns string if the Request has not files and curl will set the
-     * Content-Type header to application/x-www-form-urlencoded. If the Request
-     * has files, returns an array and curl will set the Content-Type to
-     * multipart/form-data.
+     * Content-Type header to application/x-www-form-urlencoded if it is not set.
+     *
+     * If the Request has files, returns an array and curl will set the
+     * Content-Type to multipart/form-data if it is not set. If it's already
+     * multipart/form-data, curl will append the boundary.
      *
      * If the Request has files, the $post and $files arrays are converted to
      * the array_simple format. Because curl does not understand the PHP
-     * multi-dimensional arrays.
+     * multidimensional arrays.
      *
      * @see https://www.php.net/manual/en/function.curl-setopt.php CURLOPT_POSTFIELDS
      * @see ArraySimple::convert()
