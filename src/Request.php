@@ -654,7 +654,7 @@ class Request extends Message implements RequestInterface
             Method::POST,
             Method::PUT,
         ], true)) {
-            $options[\CURLOPT_POSTFIELDS] = $this->getPostAndFiles();
+            $options[\CURLOPT_POSTFIELDS] = $this->getFormData();
         }
         $options[\CURLOPT_CUSTOMREQUEST] = $this->getMethod();
         $options[\CURLOPT_HEADER] = false;
@@ -683,7 +683,7 @@ class Request extends Message implements RequestInterface
      *
      * @return array<string,mixed>|string
      */
-    public function getPostAndFiles() : array | string
+    public function getFormData() : array | string
     {
         if (!$this->hasFiles()) {
             return $this->getBody();
