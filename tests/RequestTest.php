@@ -123,6 +123,7 @@ final class RequestTest extends TestCase
         self::assertSame([], $this->request->getFiles());
         self::assertNull($this->request->getHeader('content-type'));
         $this->request->setFiles([]);
+        self::assertSame('GET', $this->request->getMethod());
         self::assertNull($this->request->getHeader('content-type'));
         $this->request->setFiles(['upload' => __FILE__]);
         self::assertSame(

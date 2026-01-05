@@ -314,6 +314,17 @@ class Request extends Message implements RequestInterface
         $data = \json_encode($data, $flags | \JSON_THROW_ON_ERROR, $depth);
         $this->setContentType('application/json');
         $this->setBody($data);
+        $this->tryUpgradeFromGetToPost();
+        return $this;
+    }
+
+    /**
+     * If the HTTP method is GET, it will be upgraded to POST.
+     *
+     * @return static
+     */
+    protected function tryUpgradeFromGetToPost() : static
+    {
         if ($this->isMethod(Method::GET)) {
             $this->setMethod(Method::POST);
         }
@@ -366,9 +377,7 @@ class Request extends Message implements RequestInterface
      */
     public function setFiles(array $files) : static
     {
-        if ($this->isMethod(Method::GET)) {
-            $this->setMethod(Method::POST);
-        }
+        $this->tryUpgradeFromGetToPost();
         if ($files) {
             $this->setContentType('multipart/form-data');
         }
