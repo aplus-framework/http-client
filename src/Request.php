@@ -377,8 +377,8 @@ class Request extends Message implements RequestInterface
      */
     public function setFiles(array $files) : static
     {
-        $this->tryUpgradeFromGetToPost();
         if ($files) {
+            $this->tryUpgradeFromGetToPost();
             $this->setContentType('multipart/form-data');
         }
         $this->files = $files;
