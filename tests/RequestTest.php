@@ -124,6 +124,9 @@ final class RequestTest extends TestCase
         $this->request->setFiles(['upload' => __FILE__]);
         self::assertTrue($this->request->hasFiles());
         self::assertSame('POST', $this->request->getMethod());
+        $this->request->setMethod('PUT');
+        $this->request->setFiles(['upload' => __FILE__]);
+        self::assertSame('PUT', $this->request->getMethod());
     }
 
     public function testPOST() : void

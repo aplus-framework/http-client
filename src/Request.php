@@ -351,9 +351,11 @@ class Request extends Message implements RequestInterface
     /**
      * Set files for upload.
      *
-     * @param array<mixed> $files Fields as keys, files (CURLFile,
-     * CURLStringFile or string filename) as values.
-     * Multi-dimensional array is allowed.
+     * If the HTTP method is GET, it will be updated to POST.
+     *
+     * @param array<mixed> $files Fields as keys, files
+     * (CURLFile, CURLStringFile or string filename) as values.
+     * Multidimensional array is allowed.
      *
      * @throws InvalidArgumentException for invalid file path
      *
@@ -361,7 +363,9 @@ class Request extends Message implements RequestInterface
      */
     public function setFiles(array $files) : static
     {
-        $this->setMethod(Method::POST);
+        if ($this->isMethod(Method::GET)) {
+            $this->setMethod(Method::POST);
+        }
         $this->setContentType('multipart/form-data');
         $this->files = $files;
         return $this;
