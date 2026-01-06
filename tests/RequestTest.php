@@ -387,12 +387,12 @@ final class RequestTest extends TestCase
         self::assertTrue($request->hasFiles());
     }
 
-    public function testGetFormData() : void
+    public function testGetBodyData() : void
     {
         $request = new Request('http://foo.com');
-        self::assertSame('', $request->getFormData());
+        self::assertSame('', $request->getBodyData());
         $request->setBody(['foo' => 123]);
-        self::assertSame('foo=123', $request->getFormData());
+        self::assertSame('foo=123', $request->getBodyData());
         $request->setFiles([
             'one' => __FILE__,
             'two' => [
@@ -405,7 +405,7 @@ final class RequestTest extends TestCase
                 ],
             ],
         ]);
-        $postAndFiles = $request->getFormData();
+        $postAndFiles = $request->getBodyData();
         self::assertSame('123', $postAndFiles['foo']); // @phpstan-ignore-line
         self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']); // @phpstan-ignore-line
         self::assertInstanceOf(\CURLFile::class, $postAndFiles['two[three]']); // @phpstan-ignore-line
@@ -418,7 +418,7 @@ final class RequestTest extends TestCase
         $this->expectExceptionMessage(
             "Field 'foo' does not match a file: bar.war"
         );
-        $request->getFormData();
+        $request->getBodyData();
     }
 
     public function testSetAndGetOptions() : void
