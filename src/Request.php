@@ -147,7 +147,7 @@ class Request extends Message implements RequestInterface
         $boundary = \str_repeat('-', 24) . \substr(\md5(\implode("\r\n", $bodyParts)), 0, 16);
         $this->setHeader(
             RequestHeader::CONTENT_TYPE,
-            'multipart/form-data; charset=UTF-8; boundary=' . $boundary
+            'multipart/form-data; boundary=' . $boundary
         );
         foreach ($bodyParts as &$part) {
             $part = "--{$boundary}\r\n{$part}";
@@ -384,7 +384,7 @@ class Request extends Message implements RequestInterface
     {
         if ($files) {
             $this->tryUpgradeFromGetToPost();
-            $this->setContentType('multipart/form-data');
+            $this->setContentType('multipart/form-data', null);
         }
         $this->files = $files;
         return $this;

@@ -127,7 +127,7 @@ final class RequestTest extends TestCase
         self::assertNull($this->request->getHeader('content-type'));
         $this->request->setFiles(['upload' => __FILE__]);
         self::assertSame(
-            'multipart/form-data; charset=UTF-8',
+            'multipart/form-data',
             $this->request->getHeader('content-type')
         );
         self::assertTrue($this->request->hasFiles());
@@ -252,7 +252,7 @@ final class RequestTest extends TestCase
         ]);
         $message = (string) $request;
         self::assertStringContainsString(
-            'Content-Type: multipart/form-data; charset=UTF-8; boundary=',
+            'Content-Type: multipart/form-data; boundary=',
             $message
         );
         self::assertStringContainsString(
