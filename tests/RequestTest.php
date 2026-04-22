@@ -312,7 +312,8 @@ final class RequestTest extends TestCase
 
     public function testInvalidProtocol() : void
     {
-        $request = new class() extends Request {
+        $request = new class() extends Request
+        {
             public function __construct(URL | string $url = 'http://localhost')
             {
                 parent::__construct($url);
