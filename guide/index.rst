@@ -232,6 +232,21 @@ second parameter:
 Note that when these functions are set the Response body will be set as an empty
 string.
 
+Persistence
+###########
+
+Persistence allows PHP scripts to eliminate the overhead of establishing a
+connection on subsequent requests, which can improve performance and
+reliability.
+
+With the ``setPersistence`` method is possible to use the
+`persistent cURL share handle <https://www.php.net/manual/en/function.curl-share-init-persistent.php>`_
+to share DNS lookups, SSL session IDs, and connections:
+
+.. code-block:: php
+
+    $request->setPersistence();
+
 Client
 ------
 

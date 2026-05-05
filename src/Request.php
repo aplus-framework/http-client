@@ -617,6 +617,31 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Set a persistent curl share handler as a curl option.
+     *
+     * This method eliminate the overhead of establishing a connection on
+     * subsequent requests, which can improve performance and reliability.
+     *
+     * @see https://www.php.net/manual/en/function.curl-share-init-persistent.php
+     *
+     * @param array<int> $options An array of CURL_LOCK_DATA_* options
+     *
+     * @return static
+     */
+    public function setPersistence(array $options = [
+        \CURL_LOCK_DATA_CONNECT,
+        \CURL_LOCK_DATA_DNS,
+        \CURL_LOCK_DATA_SSL_SESSION,
+    ]) : static
+    {
+        $this->setOption(
+            \CURLOPT_SHARE,
+            \curl_share_init_persistent($options)
+        );
+        return $this;
+    }
+
+    /**
      * Set curl options.
      *
      * @param int $option A curl constant

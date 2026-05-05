@@ -14,6 +14,8 @@ use Framework\HTTP\Client\Request;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\URL;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use ValueError;
 
 final class RequestTest extends TestCase
 {
@@ -344,7 +346,7 @@ final class RequestTest extends TestCase
         $request = new Request('https://aplus-framework.com');
         $filename = \sys_get_temp_dir() . '/index.html';
         \touch($filename);
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('File path already exists: ' . $filename);
         $request->setDownloadFile($filename);
     }
@@ -545,5 +547,32 @@ final class RequestTest extends TestCase
             'Invalid curl constant option: 123456'
         );
         $this->request->setOption(123456, 'foo');
+    }
+
+    public function testPersistentOptions() : void
+    {
+        $client = new Client();
+        $req1 = new Request('https://www.google.com/');
+        $req1->setGetInfo();
+        $info1 = $client->send($req1)->getInfo();
+        self::assertGreaterThan(0.0, $info1['connect_time']);
+        $req2 = new Request('https://www.google.com/');
+        $req2->setPersistence();
+        $req2->setGetInfo();
+        $info2 = $client->send($req2)->getInfo();
+        self::assertGreaterThan(0.0, $info2['connect_time']);
+        $req3 = new Request('https://www.google.com/');
+        $req3->setPersistence();
+        $req3->setGetInfo();
+        $info3 = $client->send($req3)->getInfo();
+        self::assertSame(0.0, $info3['connect_time']);
+        self::assertGreaterThan($info3['namelookup_time'], $info1['namelookup_time']);
+        self::assertGreaterThan($info3['pretransfer_time'], $info1['pretransfer_time']);
+        self::assertGreaterThan($info3['total_time'], $info1['total_time']);
+        $this->expectException(ValueError::class);
+        $this->expectExceptionMessage(
+            'curl_share_init_persistent(): Argument #1 ($share_options) must not be empty'
+        );
+        $req3->setPersistence([]);
     }
 }
