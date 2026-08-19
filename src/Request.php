@@ -178,7 +178,6 @@ class Request extends Message implements RequestInterface
                 'mime' => $file->getMimeType() ?: 'application/octet-stream',
             ];
         }
-        // @phpstan-ignore-next-line
         if ($file instanceof CURLStringFile) {
             return [
                 'filename' => $file->postname,
@@ -744,7 +743,6 @@ class Request extends Message implements RequestInterface
         unset($value);
         $files = ArraySimple::convert($this->getFiles());
         foreach ($files as $field => &$file) {
-            // @phpstan-ignore-next-line
             if ($file instanceof CURLFile || $file instanceof CURLStringFile) {
                 continue;
             }

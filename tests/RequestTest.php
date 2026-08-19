@@ -409,11 +409,11 @@ final class RequestTest extends TestCase
             ],
         ]);
         $postAndFiles = $request->getBodyData();
-        self::assertSame('123', $postAndFiles['foo']); // @phpstan-ignore-line
-        self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']); // @phpstan-ignore-line
-        self::assertInstanceOf(\CURLFile::class, $postAndFiles['two[three]']); // @phpstan-ignore-line
-        self::assertInstanceOf(\CURLFile::class, $postAndFiles['four']); // @phpstan-ignore-line
-        self::assertInstanceOf(\CURLStringFile::class, $postAndFiles['five[six][0]']); // @phpstan-ignore-line
+        self::assertSame('123', $postAndFiles['foo']);
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']);
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['two[three]']);
+        self::assertInstanceOf(\CURLFile::class, $postAndFiles['four']);
+        self::assertInstanceOf(\CURLStringFile::class, $postAndFiles['five[six][0]']);
         $request->setFiles([
             'foo' => 'bar.war',
         ]);
