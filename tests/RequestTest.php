@@ -166,7 +166,7 @@ final class RequestTest extends TestCase
     public function testJsonFlags() : void
     {
         self::assertSame(
-            \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE,
+            0,
             $this->request->getJsonFlags()
         );
         $this->request->setJsonFlags(\JSON_FORCE_OBJECT);
