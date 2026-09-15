@@ -83,7 +83,7 @@ class Request extends Message implements RequestInterface
     }
 
     #[Override]
-    public function __toString() : string
+    public function toString() : string
     {
         if ($this->parseContentType() === 'multipart/form-data') {
             $this->setBody($this->getMultipartBody());
@@ -101,7 +101,7 @@ class Request extends Message implements RequestInterface
                 : $options[\CURLOPT_ENCODING];
             $this->setHeader(RequestHeader::ACCEPT_ENCODING, $encoding);
         }
-        $message = parent::__toString();
+        $message = parent::toString();
         if (isset($accept)) {
             $this->removeHeader(RequestHeader::ACCEPT);
         }
