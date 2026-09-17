@@ -10,7 +10,9 @@
 namespace Tests\HTTP\Client;
 
 use Framework\HTTP\Client\Client;
+use Framework\HTTP\Client\File;
 use Framework\HTTP\Client\Request;
+use Framework\HTTP\Client\StringFile;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\URL;
 use PHPUnit\Framework\TestCase;
@@ -248,8 +250,8 @@ final class RequestTest extends TestCase
         $request->setFiles([
             'upload' => $file,
             'foo' => [
-                'bar' => new \CURLFile($file, posted_filename: 'chikorita.ppk'),
-                'baz' => new \CURLStringFile('eval', 'xxx.php', 'text/plain'),
+                'bar' => new File($file, posted_filename: 'chikorita.ppk'),
+                'baz' => new StringFile('eval', 'xxx.php', 'text/plain'),
             ],
         ]);
         $message = (string) $request;
@@ -401,19 +403,19 @@ final class RequestTest extends TestCase
             'two' => [
                 'three' => __FILE__,
             ],
-            'four' => new \CURLFile(__FILE__),
+            'four' => new File(__FILE__),
             'five' => [
                 'six' => [
-                    new \CURLStringFile('foo', 'foo.txt', 'text/plain'),
+                    new StringFile('foo', 'foo.txt', 'text/plain'),
                 ],
             ],
         ]);
         $postAndFiles = $request->getBodyData();
         self::assertSame('123', $postAndFiles['foo']);
-        self::assertInstanceOf(\CURLFile::class, $postAndFiles['one']);
-        self::assertInstanceOf(\CURLFile::class, $postAndFiles['two[three]']);
-        self::assertInstanceOf(\CURLFile::class, $postAndFiles['four']);
-        self::assertInstanceOf(\CURLStringFile::class, $postAndFiles['five[six][0]']);
+        self::assertInstanceOf(File::class, $postAndFiles['one']);
+        self::assertInstanceOf(File::class, $postAndFiles['two[three]']);
+        self::assertInstanceOf(File::class, $postAndFiles['four']);
+        self::assertInstanceOf(StringFile::class, $postAndFiles['five[six][0]']);
         $request->setFiles([
             'foo' => 'bar.war',
         ]);

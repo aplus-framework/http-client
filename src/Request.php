@@ -9,8 +9,6 @@
  */
 namespace Framework\HTTP\Client;
 
-use CURLFile;
-use CURLStringFile;
 use Framework\Helpers\ArraySimple;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\Message;
@@ -128,7 +126,7 @@ class Request extends Message implements RequestInterface
             ]);
         }
         /**
-         * @var array<string,CURLFile|string> $files
+         * @var array<string,File|string> $files
          */
         $files = ArraySimple::convert($this->getFiles());
         foreach ($files as $field => $file) {
@@ -164,21 +162,21 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * @param CURLFile|CURLStringFile|string $file
+     * @param File|StringFile|string $file
      *
      * @return array<string,string>
      */
     #[ArrayShape(['filename' => 'string', 'data' => 'string', 'mime' => 'string'])]
-    protected function getFileInfo(CURLFile | CURLStringFile | string $file) : array
+    protected function getFileInfo(File | StringFile | string $file) : array
     {
-        if ($file instanceof CURLFile) {
+        if ($file instanceof File) {
             return [
                 'filename' => $file->getPostFilename(),
                 'data' => (string) \file_get_contents($file->getFilename()),
                 'mime' => $file->getMimeType() ?: 'application/octet-stream',
             ];
         }
-        if ($file instanceof CURLStringFile) {
+        if ($file instanceof StringFile) {
             return [
                 'filename' => $file->postname,
                 'data' => $file->data,
@@ -372,7 +370,7 @@ class Request extends Message implements RequestInterface
      * Set Content-Type header to multipart/form-data.
      *
      * @param array<mixed> $files Fields as keys, files
-     * (CURLFile, CURLStringFile or string filename) as values.
+     * (File, StringFile or string filename) as values.
      * Multidimensional array is allowed.
      *
      * @throws InvalidArgumentException for invalid file path
@@ -743,7 +741,7 @@ class Request extends Message implements RequestInterface
         unset($value);
         $files = ArraySimple::convert($this->getFiles());
         foreach ($files as $field => &$file) {
-            if ($file instanceof CURLFile || $file instanceof CURLStringFile) {
+            if ($file instanceof File || $file instanceof StringFile) {
                 continue;
             }
             if (!\is_file($file)) {
@@ -751,7 +749,7 @@ class Request extends Message implements RequestInterface
                     "Field '{$field}' does not match a file: {$file}"
                 );
             }
-            $file = new CURLFile(
+            $file = new File(
                 $file,
                 \mime_content_type($file) ?: 'application/octet-stream',
                 \basename($file)

@@ -196,16 +196,19 @@ Request with Upload
 You can upload files with the ``setFiles`` method.
 
 In it, you set the name of the array keys as field names and the values can be
-the path to a file, an instance of **CURLFile** or **CURLStringFile**:
+the path to a file, an instance of **Framework\HTTP\Client\File** or
+**Framework\HTTP\Client\StringFile**:
 
 .. code-block:: php
+
+    use Framework\HTTP\Client\StringFile;
 
     $request->setFiles([
         'invoices' => [
             __DIR__ . '/foo/invoice-10001.pdf',
             __DIR__ . '/foo/invoice-10002.pdf',
         ],
-        'foo' => new CURLStringFile('foo', 'foo.txt', 'text/plain')
+        'foo' => new StringFile('foo', 'foo.txt', 'text/plain')
     ]); // static
 
 Request to Download
