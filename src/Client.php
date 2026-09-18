@@ -27,7 +27,12 @@ use InvalidArgumentException;
 class Client
 {
     /**
-     * @var array<mixed>
+     * @var array<int,array{
+     *      protocol: string,
+     *      code: int,
+     *      reason: string,
+     *      headers: array<string,array<int,string>>,
+     * }>
      */
     protected array $parsed = [];
 
