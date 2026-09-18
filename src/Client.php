@@ -171,6 +171,14 @@ class Client
             return $lineLength;
         }
         $id = \spl_object_id($curlHandle);
+        if (empty($this->parsed[$id])) {
+            $this->parsed[$id] = [
+                'protocol' => 'HTTP/1.1',
+                'code' => 200,
+                'reason' => 'OK',
+                'headers' => [],
+            ];
+        }
         if (!\str_contains($trimmedLine, ':')) {
             if (\str_starts_with($trimmedLine, 'HTTP/')) {
                 $parts = \explode(' ', $trimmedLine, 3);
