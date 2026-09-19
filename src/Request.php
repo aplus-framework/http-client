@@ -18,7 +18,6 @@ use Framework\HTTP\RequestHeader;
 use Framework\HTTP\RequestInterface;
 use Framework\HTTP\URL;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
 use OutOfBoundsException;
@@ -164,9 +163,12 @@ class Request extends Message implements RequestInterface
     /**
      * @param File|StringFile|string $file
      *
-     * @return array<string,string>
+     * @return array{
+     *      filename: string,
+     *      data: string,
+     *      mime: string,
+     * }
      */
-    #[ArrayShape(['filename' => 'string', 'data' => 'string', 'mime' => 'string'])]
     protected function getFileInfo(File | StringFile | string $file) : array
     {
         if ($file instanceof File) {
@@ -257,7 +259,7 @@ class Request extends Message implements RequestInterface
     /**
      * Set the request body.
      *
-     * @param array<string,mixed>|string $body
+     * @param array<mixed>|string $body
      *
      * @return static
      */
@@ -335,7 +337,7 @@ class Request extends Message implements RequestInterface
     /**
      * Set POST data simulating a browser request.
      *
-     * @param array<string,mixed> $data
+     * @param array<mixed> $data
      *
      * @return static
      */
@@ -369,9 +371,8 @@ class Request extends Message implements RequestInterface
      * If the HTTP method is GET, it will be updated to POST.
      * Set Content-Type header to multipart/form-data.
      *
-     * @param array<mixed> $files Fields as keys, files
-     * (File, StringFile or string filename) as values.
-     * Multidimensional array is allowed.
+     * @param array<mixed> $files Fields as keys, files (File, StringFile or
+     * string filename) as values. Multidimensional array is allowed.
      *
      * @throws InvalidArgumentException for invalid file path
      *
@@ -418,7 +419,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * @param array<int,Cookie> $cookies
+     * @param array<Cookie> $cookies
      *
      * @return static
      */
@@ -442,7 +443,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * @param array<int,string> $names
+     * @param array<string> $names
      *
      * @return static
      */
@@ -726,7 +727,7 @@ class Request extends Message implements RequestInterface
      * @see https://www.php.net/manual/en/function.curl-setopt.php CURLOPT_POSTFIELDS
      * @see ArraySimple::convert()
      *
-     * @return array<string,mixed>|string
+     * @return array<string,File|StringFile>|string
      */
     public function getBodyData() : array | string
     {

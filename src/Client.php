@@ -100,7 +100,7 @@ class Client
     /**
      * Send multiple HTTP Requests.
      *
-     * @param Request[] $requests An associative array of Request instances
+     * @param array<Request> $requests An associative array of Request instances
      * with ids as keys
      *
      * @return Generator<Response|ResponseError> The Requests ids as keys and
