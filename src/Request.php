@@ -18,7 +18,6 @@ use Framework\HTTP\RequestHeader;
 use Framework\HTTP\RequestInterface;
 use Framework\HTTP\URL;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\Pure;
 use JsonException;
 use OutOfBoundsException;
 use Override;
@@ -208,14 +207,12 @@ class Request extends Message implements RequestInterface
     }
 
     #[Override]
-    #[Pure]
     public function getUrl() : URL
     {
         return parent::getUrl();
     }
 
     #[Override]
-    #[Pure]
     public function getMethod() : string
     {
         return parent::getMethod();
@@ -348,7 +345,6 @@ class Request extends Message implements RequestInterface
         return $this;
     }
 
-    #[Pure]
     public function hasFiles() : bool
     {
         return !empty($this->files);
@@ -359,7 +355,6 @@ class Request extends Message implements RequestInterface
      *
      * @return array<mixed>
      */
-    #[Pure]
     public function getFiles() : array
     {
         return $this->files;

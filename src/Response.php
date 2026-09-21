@@ -16,7 +16,6 @@ use Framework\HTTP\ResponseHeader;
 use Framework\HTTP\ResponseInterface;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Pure;
 use Override;
 
 /**
@@ -126,7 +125,6 @@ class Response extends Message implements ResponseInterface
     }
 
     #[Override]
-    #[Pure]
     public function getStatusCode() : int
     {
         return parent::getStatusCode();
@@ -145,7 +143,6 @@ class Response extends Message implements ResponseInterface
         return parent::isStatusCode($code);
     }
 
-    #[Pure]
     public function getStatusReason() : string
     {
         return $this->statusReason;
@@ -218,13 +215,11 @@ class Response extends Message implements ResponseInterface
         return $body;
     }
 
-    #[Pure]
     public function isJson() : bool
     {
         return $this->parseContentType() === 'application/json';
     }
 
-    #[Pure]
     public function getStatus() : string
     {
         return $this->getStatusCode() . ' ' . $this->getStatusReason();
