@@ -272,6 +272,9 @@ class Request extends Message implements RequestInterface
     {
         if (\is_array($body)) {
             $body = \http_build_query($body);
+            if (!$this->hasHeader(RequestHeader::CONTENT_TYPE)) {
+               $this->setContentType('application/x-www-form-urlencoded');
+            }
         }
         return parent::setBody($body);
     }

@@ -98,13 +98,22 @@ final class RequestTest extends TestCase
         self::assertSame('j=jota; m=eme', $this->request->getHeader('cookie'));
     }
 
-    public function testBody() : void
+    public function testBodyAndAutoContentType() : void
     {
         self::assertSame('', $this->request->getBody());
+        self::assertNull($this->request->getHeader('content-type'));
         $this->request->setBody('body');
         self::assertSame('body', $this->request->getBody());
+        self::assertNull($this->request->getHeader('content-type'));
         $this->request->setBody(['a' => 1]);
         self::assertSame('a=1', $this->request->getBody());
+        self::assertSame(
+            'application/x-www-form-urlencoded; charset=UTF-8',
+            $this->request->getHeader('content-type')
+        );
+        $this->request->setContentType('foo/bar', null);
+        $this->request->setBody(['a' => 1]);
+        self::assertSame('foo/bar', $this->request->getHeader('content-type'));
     }
 
     public function testContentType() : void
