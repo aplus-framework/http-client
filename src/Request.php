@@ -1024,18 +1024,16 @@ class Request extends Message implements RequestInterface
                     return;
                 }
                 $message = match ($type) {
-                    'bool' => 'The value of option %s (%d) should be of bool type',
-                    'int' => 'The value of option %s (%d) should be of int type',
-                    'string' => 'The value of option %s (%d) should be of string type',
-                    'array' => 'The value of option %s (%d) should be of array type',
-                    'fopen' => 'The value of option %s (%d) should be a fopen() resource',
-                    'function' => 'The value of option %s (%d) should be a callable',
-                    'curl_share_init' => 'The value of option %s (%d) should be a result of curl_share_init()'
+                    'bool' => 'The value of the %s option should be of type bool',
+                    'int' => 'The value of the %s option should be of type int',
+                    'string' => 'The value of the %s option should be of type string',
+                    'array' => 'The value of the %s option should be of type array',
+                    'fopen' => 'The value of the %s option should be an fopen() resource',
+                    'function' => 'The value of the %s option should be a callable',
+                    'curl_share_init' => 'The value of the %s option should be a result of curl_share_init()'
                 };
                 $name = $this->getConstantName($option);
-                throw new InvalidArgumentException(
-                    \sprintf($message, $name, $option)
-                );
+                throw new InvalidArgumentException(\sprintf($message, $name));
             }
         }
         throw new OutOfBoundsException('Invalid curl constant option: ' . $option);

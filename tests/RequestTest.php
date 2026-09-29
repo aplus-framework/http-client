@@ -484,7 +484,7 @@ final class RequestTest extends TestCase
         $this->request->setOption(\CURLOPT_AUTOREFERER, true);
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'The value of option CURLOPT_AUTOREFERER (58) should be of bool type'
+            'The value of the CURLOPT_AUTOREFERER option should be of type bool'
         );
         $this->request->setOption(\CURLOPT_AUTOREFERER, 1);
     }
@@ -495,7 +495,7 @@ final class RequestTest extends TestCase
         $this->request->setOption(\CURLOPT_TIMEOUT, 1000);
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'The value of option CURLOPT_TIMEOUT (13) should be of int type'
+            'The value of the CURLOPT_TIMEOUT option should be of type int'
         );
         $this->request->setOption(\CURLOPT_TIMEOUT, '1000');
     }
@@ -506,7 +506,7 @@ final class RequestTest extends TestCase
         $this->request->setOption(\CURLOPT_URL, 'http://foo.com');
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'The value of option CURLOPT_URL (10002) should be of string type'
+            'The value of the CURLOPT_URL option should be of type string'
         );
         $this->request->setOption(\CURLOPT_URL, true);
     }
@@ -517,7 +517,7 @@ final class RequestTest extends TestCase
         $this->request->setOption(\CURLOPT_HTTPHEADER, ['Accept: */*']);
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'The value of option CURLOPT_HTTPHEADER (10023) should be of array type'
+            'The value of the CURLOPT_HTTPHEADER option should be of type array'
         );
         $this->request->setOption(\CURLOPT_HTTPHEADER, 'Accept: */*');
     }
@@ -530,7 +530,7 @@ final class RequestTest extends TestCase
         \fclose($file); // @phpstan-ignore-line
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'The value of option CURLOPT_FILE (10001) should be a fopen() resource'
+            'The value of the CURLOPT_FILE option should be an fopen() resource'
         );
         $this->request->setOption(\CURLOPT_FILE, __FILE__);
     }
@@ -542,7 +542,7 @@ final class RequestTest extends TestCase
         });
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'The value of option CURLOPT_HEADERFUNCTION (20079) should be a callable',
+            'The value of the CURLOPT_HEADERFUNCTION option should be a callable',
         );
         $this->request->setOption(\CURLOPT_HEADERFUNCTION, 23);
     }
@@ -553,7 +553,7 @@ final class RequestTest extends TestCase
         $this->request->setOption(\CURLOPT_SHARE, \curl_share_init());
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'The value of option CURLOPT_SHARE (10100) should be a result of curl_share_init()'
+            'The value of the CURLOPT_SHARE option should be a result of curl_share_init()'
         );
         $this->request->setOption(\CURLOPT_SHARE, 'foo');
     }
