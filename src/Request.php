@@ -1024,17 +1024,34 @@ class Request extends Message implements RequestInterface
                     return;
                 }
                 $message = match ($type) {
-                    'bool' => 'The value of option %d should be of bool type',
-                    'int' => 'The value of option %d should be of int type',
-                    'string' => 'The value of option %d should be of string type',
-                    'array' => 'The value of option %d should be of array type',
-                    'fopen' => 'The value of option %d should be a fopen() resource',
-                    'function' => 'The value of option %d should be a callable',
-                    'curl_share_init' => 'The value of option %d should be a result of curl_share_init()'
+                    'bool' => 'The value of option %s (%d) should be of bool type',
+                    'int' => 'The value of option %s (%d) should be of int type',
+                    'string' => 'The value of option %s (%d) should be of string type',
+                    'array' => 'The value of option %s (%d) should be of array type',
+                    'fopen' => 'The value of option %s (%d) should be a fopen() resource',
+                    'function' => 'The value of option %s (%d) should be a callable',
+                    'curl_share_init' => 'The value of option %s (%d) should be a result of curl_share_init()'
                 };
-                throw new InvalidArgumentException(\sprintf($message, $option));
+                $name = $this->getConstantName($option);
+                throw new InvalidArgumentException(
+                    \sprintf($message, $name, $option)
+                );
             }
         }
         throw new OutOfBoundsException('Invalid curl constant option: ' . $option);
+    }
+
+    protected function getConstantName(int $value) : string
+    {
+        $constants = \get_defined_constants(true);
+        $constants = $constants['curl'];
+        foreach ($constants as $name => $v) {
+            if($v === $value) {
+                return $name;
+            }
+        }
+        throw new InvalidArgumentException(
+            "Constant with value {$value} not found"
+        );
     }
 }

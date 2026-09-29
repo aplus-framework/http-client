@@ -15,6 +15,7 @@ use Framework\HTTP\Client\Request;
 use Framework\HTTP\Client\StringFile;
 use Framework\HTTP\Cookie;
 use Framework\HTTP\URL;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use ValueError;
@@ -42,7 +43,7 @@ final class RequestTest extends TestCase
         $this->request->setMethod('post');
         self::assertTrue($this->request->isMethod('post'));
         self::assertSame('POST', $this->request->getMethod());
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid request method: Foo');
         $this->request->setMethod('Foo');
     }
@@ -356,7 +357,7 @@ final class RequestTest extends TestCase
                 return 'HTTP/1.5';
             }
         };
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid Request Protocol: HTTP/1.5');
         $request->getOptions();
     }
@@ -447,7 +448,7 @@ final class RequestTest extends TestCase
         $request->setFiles([
             'foo' => 'bar.war',
         ]);
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             "Field 'foo' does not match a file: bar.war"
         );
@@ -481,9 +482,9 @@ final class RequestTest extends TestCase
     {
         $this->request->setCheckOptions();
         $this->request->setOption(\CURLOPT_AUTOREFERER, true);
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            \sprintf('The value of option %d should be of bool type', \CURLOPT_AUTOREFERER)
+            'The value of option CURLOPT_AUTOREFERER (58) should be of bool type'
         );
         $this->request->setOption(\CURLOPT_AUTOREFERER, 1);
     }
@@ -492,9 +493,9 @@ final class RequestTest extends TestCase
     {
         $this->request->setCheckOptions();
         $this->request->setOption(\CURLOPT_TIMEOUT, 1000);
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            \sprintf('The value of option %d should be of int type', \CURLOPT_TIMEOUT)
+            'The value of option CURLOPT_TIMEOUT (13) should be of int type'
         );
         $this->request->setOption(\CURLOPT_TIMEOUT, '1000');
     }
@@ -503,9 +504,9 @@ final class RequestTest extends TestCase
     {
         $this->request->setCheckOptions();
         $this->request->setOption(\CURLOPT_URL, 'http://foo.com');
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            \sprintf('The value of option %d should be of string type', \CURLOPT_URL)
+            'The value of option CURLOPT_URL (10002) should be of string type'
         );
         $this->request->setOption(\CURLOPT_URL, true);
     }
@@ -514,9 +515,9 @@ final class RequestTest extends TestCase
     {
         $this->request->setCheckOptions();
         $this->request->setOption(\CURLOPT_HTTPHEADER, ['Accept: */*']);
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            \sprintf('The value of option %d should be of array type', \CURLOPT_HTTPHEADER)
+            'The value of option CURLOPT_HTTPHEADER (10023) should be of array type'
         );
         $this->request->setOption(\CURLOPT_HTTPHEADER, 'Accept: */*');
     }
@@ -527,9 +528,9 @@ final class RequestTest extends TestCase
         $file = \fopen(__FILE__, 'rb');
         $this->request->setOption(\CURLOPT_FILE, $file);
         \fclose($file); // @phpstan-ignore-line
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            \sprintf('The value of option %d should be a fopen() resource', \CURLOPT_FILE)
+            'The value of option CURLOPT_FILE (10001) should be a fopen() resource'
         );
         $this->request->setOption(\CURLOPT_FILE, __FILE__);
     }
@@ -539,9 +540,9 @@ final class RequestTest extends TestCase
         $this->request->setCheckOptions();
         $this->request->setOption(\CURLOPT_HEADERFUNCTION, static function () : void {
         });
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            \sprintf('The value of option %d should be a callable', \CURLOPT_HEADERFUNCTION)
+            'The value of option CURLOPT_HEADERFUNCTION (20079) should be a callable',
         );
         $this->request->setOption(\CURLOPT_HEADERFUNCTION, 23);
     }
@@ -550,12 +551,9 @@ final class RequestTest extends TestCase
     {
         $this->request->setCheckOptions();
         $this->request->setOption(\CURLOPT_SHARE, \curl_share_init());
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            \sprintf(
-                'The value of option %d should be a result of curl_share_init()',
-                \CURLOPT_SHARE
-            )
+            'The value of option CURLOPT_SHARE (10100) should be a result of curl_share_init()'
         );
         $this->request->setOption(\CURLOPT_SHARE, 'foo');
     }
@@ -577,6 +575,21 @@ final class RequestTest extends TestCase
             'Invalid curl constant option: 123456'
         );
         $this->request->setOption(123456, 'foo');
+    }
+
+    public function testGetConstantName() : void
+    {
+        $request = new class('http://foo.tld') extends Request
+        {
+            public function getConstantName(int $value) : string
+            {
+                return parent::getConstantName($value);
+            }
+        };
+        self::assertSame('CURLOPT_HEADER', $request->getConstantName(\CURLOPT_HEADER));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Constant with value 123456789 not found');
+        $request->getConstantName(123456789);
     }
 
     public function testPersistentOptions() : void
