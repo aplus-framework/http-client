@@ -583,17 +583,14 @@ final class RequestTest extends TestCase
     {
         $client = new Client();
         $req1 = new Request('https://www.google.com/');
-        $req1->setGetInfo();
         $info1 = $client->send($req1)->getInfo();
         self::assertGreaterThan(0.0, $info1['connect_time']);
         $req2 = new Request('https://www.google.com/');
         $req2->setPersistence();
-        $req2->setGetInfo();
         $info2 = $client->send($req2)->getInfo();
         self::assertGreaterThan(0.0, $info2['connect_time']);
         $req3 = new Request('https://www.google.com/');
         $req3->setPersistence();
-        $req3->setGetInfo();
         $info3 = $client->send($req3)->getInfo();
         self::assertSame(0.0, $info3['connect_time']);
         self::assertGreaterThan($info3['namelookup_time'], $info1['namelookup_time']);

@@ -44,10 +44,8 @@ final class ClientTest extends TestCase
         self::assertSame($request, $response->getRequest());
         self::assertInstanceOf(Response::class, $response);
         self::assertGreaterThan(100, \strlen($response->getBody()));
-        self::assertEmpty($response->getInfo());
         $request->setOption(\CURLOPT_RETURNTRANSFER, false);
         \ob_start(); // Avoid terminal output
-        $request->setGetInfo();
         $response = $this->client->send($request);
         self::assertInstanceOf(Response::class, $response);
         self::assertSame('', $response->getBody());
@@ -114,14 +112,13 @@ final class ClientTest extends TestCase
             ];
             self::assertSame($messages[$expected], $exception->getMessage());
             self::assertSame($codes[$expected], $exception->getCode());
-            self::assertEmpty($exception->getInfo());
+            self::assertNotEmpty($exception->getInfo());
         }
     }
 
     public function testRunErrorWithInfo() : void
     {
         $request = new Request('http://domain.tld');
-        $request->setGetInfo();
         try {
             $this->client->send($request);
         } catch (RequestException $exception) {
@@ -179,8 +176,6 @@ final class ClientTest extends TestCase
             new Request('http://not-exist.tld'),
             new Request('https://www.google.com'),
         ];
-        $requests[0]->setGetInfo();
-        $requests[1]->setGetInfo();
         $responses = $this->client->sendMulti($requests);
         $returned = [];
         while ($responses->valid()) {
@@ -217,7 +212,7 @@ final class ClientTest extends TestCase
             $responses[2]->getError()
         );
         self::assertSame(6, $responses[2]->getErrorNumber());
-        self::assertSame([], $responses[2]->getInfo());
+        self::assertSame(0, $responses[2]->getInfo()['http_code']);
     }
 
     public function testResponseErrorToString() : void

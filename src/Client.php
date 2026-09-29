@@ -65,10 +65,7 @@ class Client
         $options[\CURLOPT_HEADERFUNCTION] = [$this, 'parseHeaderLine'];
         \curl_setopt_array($handle, $options);
         $body = \curl_exec($handle);
-        $info = [];
-        if ($request->isGettingInfo()) {
-            $info = (array) \curl_getinfo($handle);
-        }
+        $info = (array) \curl_getinfo($handle);
         if ($body === false) {
             $error = \curl_error($handle);
             $errno = \curl_errno($handle);
@@ -128,10 +125,7 @@ class Client
                 if ($message['handle'] !== $handle) {
                     continue;
                 }
-                $info = [];
-                if ($requests[$id]->isGettingInfo()) {
-                    $info = (array) \curl_getinfo($handle);
-                }
+                $info = (array) \curl_getinfo($handle);
                 $objectId = \spl_object_id($handle);
                 if (!isset($this->parsed[$objectId])) {
                     yield $id => new ResponseError(

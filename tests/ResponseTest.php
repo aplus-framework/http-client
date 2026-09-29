@@ -29,7 +29,8 @@ final class ResponseTest extends TestCase
                 'content-Type' => ['text/html'],
                 'set-cookie' => ['foo=bar; expires=Thu, 11-Jul-2019 04:57:19 GMT; Max-Age=0'],
             ],
-            'body'
+            'body',
+            []
         );
     }
 
@@ -76,7 +77,8 @@ final class ResponseTest extends TestCase
             200,
             'OK',
             ['content-type' => ['application/json']],
-            '{"a":1}'
+            '{"a":1}',
+            []
         );
         self::assertTrue($this->response->isJson());
         self::assertIsObject($this->response->getJson());
@@ -127,7 +129,8 @@ final class ResponseTest extends TestCase
                     'baz=baba',
                 ],
             ],
-            '{"a":1}'
+            '{"a":1}',
+            []
         );
         self::assertSame(['foo', 'baz'], \array_keys($response->getCookies()));
     }
@@ -148,7 +151,8 @@ final class ResponseTest extends TestCase
             [
                 'link' => [$header],
             ],
-            ''
+            '',
+            []
         );
         self::assertSame($links, $response->getLinks());
     }
