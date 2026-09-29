@@ -211,7 +211,7 @@ final class RequestTest extends TestCase
     {
         self::assertEmpty($this->request->getHeader('user-agent'));
         $this->request->setUserAgent();
-        self::assertSame('Aplus HTTP Client', $this->request->getHeader('user-agent'));
+        self::assertSame('Aplus/6.0', $this->request->getHeader('user-agent'));
         $this->request->setUserAgent('Other');
         self::assertSame('Other', $this->request->getHeader('user-agent'));
     }

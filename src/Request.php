@@ -574,7 +574,7 @@ class Request extends Message implements RequestInterface
      */
     public function setUserAgent(?string $userAgent = null) : static
     {
-        $userAgent ??= 'Aplus HTTP Client';
+        $userAgent ??= 'Aplus/6.0';
         return $this->setHeader(RequestHeader::USER_AGENT, $userAgent);
     }
 
