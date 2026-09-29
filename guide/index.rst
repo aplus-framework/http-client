@@ -163,7 +163,7 @@ is also possible to pass a name to it:
 .. code-block:: php
 
     $request->setUserAgent(); // static
-    $request->setUserAgent('Aplus HTTP Client'); // static
+    $request->setUserAgent('Aplus/6.0'); // static
 
 Cookies
 """""""
@@ -196,8 +196,8 @@ Request with Upload
 You can upload files with the ``setFiles`` method.
 
 In it, you set the name of the array keys as field names and the values can be
-the path to a file, an instance of **Framework\HTTP\Client\File** or
-**Framework\HTTP\Client\StringFile**:
+the path to a file, an instance of ``Framework\HTTP\Client\File`` or
+``Framework\HTTP\Client\StringFile``:
 
 .. code-block:: php
 
@@ -274,13 +274,11 @@ if it fails:
 
     $response = $client->send($request); // Framework\HTTP\Client\Response
 
-If you call the Request's ``setGetInfo`` method, it will be possible to obtain
-information from Curl through the exception's ``getInfo`` method:
+It is also possible to obtain cURL information via the exception's ``getInfo``
+method:
 
 .. code-block:: php
-    
-    $request->setGetInfo();
-    
+
     try {
         $response = $client->send($request); // Framework\HTTP\Client\Response
     } catch (Framework\HTTP\Client\RequestException $exception) {
@@ -418,8 +416,7 @@ error on the connection.
 With it is possible to obtain the instance of the Request that ran it with the
 ``getRequest`` method and the error with the ``getError`` method.
 
-If the Request is getting info, it is possible to obtain more information with
-the ``getInfo`` method.
+It is also possible to obtain cURL information using the ``getInfo`` method.
 
 Conclusion
 ----------
