@@ -1044,6 +1044,9 @@ class Request extends Message implements RequestInterface
         $constants = \get_defined_constants(true);
         $constants = $constants['curl'];
         foreach ($constants as $name => $v) {
+            if (!\str_starts_with($name, 'CURLOPT_')) {
+                continue;
+            }
             if($v === $value) {
                 return $name;
             }
