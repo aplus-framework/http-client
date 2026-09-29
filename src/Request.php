@@ -81,6 +81,13 @@ class Request extends Message implements RequestInterface
     #[Override]
     public function toString() : string
     {
+        $body = $this->getBody();
+        if($body !== '') {
+            $this->setHeader(
+                RequestHeader::CONTENT_LENGTH,
+                (string) \strlen($body)
+            );
+        }
         if ($this->parseContentType() === 'multipart/form-data') {
             $this->setBody($this->getMultipartBody());
         }

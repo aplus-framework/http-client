@@ -306,6 +306,16 @@ final class RequestTest extends TestCase
         );
     }
 
+    public function testToStringContentLength() : void
+    {
+        $request = new Request('http://localhost');
+        $request->setJson([
+            'foo' => 'bar', // {"foo":"bar"} - 13 chars
+        ]);
+        $message = $request->toString();
+        self::assertStringContainsString('Content-Length: 13', $message);
+    }
+
     public function testOptions() : void
     {
         $options = $this->request->getOptions();
