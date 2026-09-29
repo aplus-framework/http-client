@@ -401,6 +401,24 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Set the Accept header.
+     *
+     * @param array<string>|string $type
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept
+     *
+     * @return static
+     */
+    public function setAccept(array | string $type) : static
+    {
+        if (\is_array($type)) {
+            $type = \implode(', ', $type);
+        }
+        $this->setHeader(RequestHeader::ACCEPT, $type);
+        return $this;
+    }
+
+    /**
      * @param Cookie $cookie
      *
      * @return static

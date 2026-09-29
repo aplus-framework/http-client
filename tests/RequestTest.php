@@ -120,6 +120,15 @@ final class RequestTest extends TestCase
         self::assertSame('text/html', $this->request->getHeader('content-type'));
     }
 
+    public function testAccept() : void
+    {
+        self::assertNull($this->request->getHeader('accept'));
+        $this->request->setAccept('application/json');
+        self::assertSame('application/json', $this->request->getHeader('accept'));
+        $this->request->setAccept(['text/html', 'application/xhtml+xml']);
+        self::assertSame('text/html, application/xhtml+xml', $this->request->getHeader('accept'));
+    }
+
     public function testFiles() : void
     {
         self::assertFalse($this->request->hasFiles());
