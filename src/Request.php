@@ -719,6 +719,7 @@ class Request extends Message implements RequestInterface
             Method::PATCH,
             Method::POST,
             Method::PUT,
+            Method::QUERY,
         ], true)) {
             $options[\CURLOPT_POSTFIELDS] = $this->getBodyData();
         }
