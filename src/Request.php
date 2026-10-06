@@ -662,6 +662,89 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Set to true to follow any `Location:` header that the server sends as
+     * part of the HTTP header. Default is false. See also {@see Framework\HTTP\Client\Request::setMaxRedirects()}.
+     *
+     * @param bool $enable
+     *
+     * @see https://www.php.net/manual/en/curl.constants.php#constant.curlopt-followlocation
+     *
+     * @return static
+     */
+    public function setFollowLocation(bool $enable = true) : static
+    {
+        $this->setOption(\CURLOPT_FOLLOWLOCATION, $enable);
+        return $this;
+    }
+
+    /**
+     * Set the maximum amount of HTTP redirects to follow.
+     * Use this option alongside {@see Framework\HTTP\Client\Request::setFollowLocation()}.
+     * Default is `1` redirect. Setting to `-1` allows infinite redirects, and
+     * `0` refuses all redirects.
+     *
+     * @param int $maxRedirects
+     *
+     * @see https://www.php.net/manual/en/curl.constants.php#constant.curlopt-maxredirs
+     *
+     * @return static
+     */
+    public function setMaxRedirects(int $maxRedirects) : static
+    {
+        $this->setOption(\CURLOPT_MAXREDIRS, $maxRedirects); // 1
+        return $this;
+    }
+
+    /**
+     * Set true to automatically set the `Referer:` field in requests where it
+     * follows a `Location:` redirect. Defaults to true.
+     *
+     * @param bool $enable
+     *
+     * @see https://www.php.net/manual/en/curl.constants.php#constant.curlopt-autoreferer
+     *
+     * @return static
+     */
+    public function setAutoReferer(bool $enable = true) : static
+    {
+        $this->setOption(\CURLOPT_AUTOREFERER, $enable);
+        return $this;
+    }
+
+    /**
+     * Set the number of seconds to wait while trying to connect.
+     * Use `0` to wait indefinitely. Defaults to `10`.
+     *
+     * @param int $seconds
+     *
+     * @see https://www.php.net/manual/en/curl.constants.php#constant.curlopt-connecttimeout
+     *
+     * @return static
+     */
+    public function setConnectTimeout(int $seconds) : static
+    {
+        $this->setOption(\CURLOPT_CONNECTTIMEOUT, $seconds);
+        return $this;
+    }
+
+    /**
+     * Set the maximum number of seconds to allow cURL functions to execute.
+     * Defaults to `60`. Set to `0` so that functions never timeout during the
+     * transfer.
+     *
+     * @param int $seconds
+     *
+     * @see https://www.php.net/manual/en/curl.constants.php#constant.curlopt-timeout
+     *
+     * @return static
+     */
+    public function setTimeout(int $seconds) : static
+    {
+        $this->setOption(\CURLOPT_TIMEOUT, $seconds);
+        return $this;
+    }
+
+    /**
      * Set curl options.
      *
      * @param int $option A curl constant

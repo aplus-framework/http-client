@@ -615,4 +615,39 @@ final class RequestTest extends TestCase
         );
         $req3->setPersistence([]);
     }
+
+    public function testFollowLocation() : void
+    {
+        self::assertFalse($this->request->getOption(\CURLOPT_FOLLOWLOCATION));
+        $this->request->setFollowLocation();
+        self::assertTrue($this->request->getOption(\CURLOPT_FOLLOWLOCATION));
+    }
+
+    public function testMaxRedirects() : void
+    {
+        self::assertSame(1, $this->request->getOption(\CURLOPT_MAXREDIRS));
+        $this->request->setMaxRedirects(3);
+        self::assertSame(3, $this->request->getOption(\CURLOPT_MAXREDIRS));
+    }
+
+    public function testAutoReferer() : void
+    {
+        self::assertTrue($this->request->getOption(\CURLOPT_AUTOREFERER));
+        $this->request->setAutoReferer(false);
+        self::assertFalse($this->request->getOption(\CURLOPT_AUTOREFERER));
+    }
+
+    public function testConnectTimeout() : void
+    {
+        self::assertSame(10, $this->request->getOption(\CURLOPT_CONNECTTIMEOUT));
+        $this->request->setConnectTimeout(30);
+        self::assertSame(30, $this->request->getOption(\CURLOPT_CONNECTTIMEOUT));
+    }
+
+    public function testTimeout() : void
+    {
+        self::assertSame(60, $this->request->getOption(\CURLOPT_TIMEOUT));
+        $this->request->setTimeout(0);
+        self::assertSame(0, $this->request->getOption(\CURLOPT_TIMEOUT));
+    }
 }
