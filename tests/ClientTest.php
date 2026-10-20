@@ -7,15 +7,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\HTTP\Client;
+namespace Tests\Http\Client;
 
-use Framework\HTTP\Client\Client;
-use Framework\HTTP\Client\Request;
-use Framework\HTTP\Client\RequestException;
-use Framework\HTTP\Client\Response;
-use Framework\HTTP\Client\ResponseError;
-use Framework\HTTP\Protocol;
-use Framework\HTTP\URL;
+use Aplus\Http\Client\Client;
+use Aplus\Http\Client\Request;
+use Aplus\Http\Client\RequestException;
+use Aplus\Http\Client\Response;
+use Aplus\Http\Client\ResponseError;
+use Aplus\Http\Protocol;
+use Aplus\Http\Url;
 use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase
@@ -30,7 +30,7 @@ final class ClientTest extends TestCase
     public function testCreateRequest() : void
     {
         $r1 = $this->client->createRequest('http://domain.tld');
-        $r2 = $this->client->createRequest(new URL('http://domain.tld'));
+        $r2 = $this->client->createRequest(new Url('http://domain.tld'));
         self::assertInstanceOf(Request::class, $r1);
         self::assertInstanceOf(Request::class, $r2);
         self::assertNotSame($r1, $r2);

@@ -7,13 +7,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\HTTP\Client;
+namespace Aplus\Http\Client;
 
+use Aplus\Http\Cookie;
+use Aplus\Http\Message;
+use Aplus\Http\ResponseHeader;
+use Aplus\Http\ResponseInterface;
 use Exception;
-use Framework\HTTP\Cookie;
-use Framework\HTTP\Message;
-use Framework\HTTP\ResponseHeader;
-use Framework\HTTP\ResponseInterface;
 use InvalidArgumentException;
 use Override;
 

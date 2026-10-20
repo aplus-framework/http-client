@@ -7,16 +7,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\HTTP\Client;
+namespace Aplus\Http\Client;
 
-use Framework\Helpers\ArraySimple;
-use Framework\HTTP\Cookie;
-use Framework\HTTP\Message;
-use Framework\HTTP\Method;
-use Framework\HTTP\Protocol;
-use Framework\HTTP\RequestHeader;
-use Framework\HTTP\RequestInterface;
-use Framework\HTTP\URL;
+use Aplus\Helpers\ArraySimple;
+use Aplus\Http\Cookie;
+use Aplus\Http\Message;
+use Aplus\Http\Method;
+use Aplus\Http\Protocol;
+use Aplus\Http\RequestHeader;
+use Aplus\Http\RequestInterface;
+use Aplus\Http\Url;
 use InvalidArgumentException;
 use JsonException;
 use OutOfBoundsException;
@@ -38,7 +38,7 @@ class Request extends Message implements RequestInterface
     /**
      * HTTP Request URL.
      */
-    protected URL $url;
+    protected Url $url;
     /**
      * POST files.
      *
@@ -70,9 +70,9 @@ class Request extends Message implements RequestInterface
     /**
      * Request constructor.
      *
-     * @param URL|string $url
+     * @param Url|string $url
      */
-    public function __construct(URL | string $url)
+    public function __construct(Url | string $url)
     {
         $this->setUrl($url);
     }
@@ -198,22 +198,22 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * @param URL|string $url
+     * @param Url|string $url
      *
      * @return static
      */
     #[Override]
-    public function setUrl(URL | string $url) : static
+    public function setUrl(Url | string $url) : static
     {
-        if (!$url instanceof URL) {
-            $url = new URL($url);
+        if (!$url instanceof Url) {
+            $url = new Url($url);
         }
         $this->setHeader(RequestHeader::HOST, $url->getHost());
         return parent::setUrl($url);
     }
 
     #[Override]
-    public function getUrl() : URL
+    public function getUrl() : Url
     {
         return parent::getUrl();
     }

@@ -7,10 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\HTTP\Client;
+namespace Tests\Http\Client;
 
-use Framework\HTTP\Client\Request;
-use Framework\HTTP\Client\Response;
+use Aplus\Http\Client\Request;
+use Aplus\Http\Client\Response;
 use PHPUnit\Framework\TestCase;
 
 final class ResponseTest extends TestCase

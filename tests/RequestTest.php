@@ -7,14 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Tests\HTTP\Client;
+namespace Tests\Http\Client;
 
-use Framework\HTTP\Client\Client;
-use Framework\HTTP\Client\File;
-use Framework\HTTP\Client\Request;
-use Framework\HTTP\Client\StringFile;
-use Framework\HTTP\Cookie;
-use Framework\HTTP\URL;
+use Aplus\Http\Client\Client;
+use Aplus\Http\Client\File;
+use Aplus\Http\Client\Request;
+use Aplus\Http\Client\StringFile;
+use Aplus\Http\Cookie;
+use Aplus\Http\Url;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -48,7 +48,7 @@ final class RequestTest extends TestCase
         $this->request->setMethod('Foo');
     }
 
-    public function testURL() : void
+    public function testUrl() : void
     {
         self::assertSame('http://localhost/', (string) $this->request->getUrl());
     }
@@ -347,7 +347,7 @@ final class RequestTest extends TestCase
     {
         $request = new class() extends Request
         {
-            public function __construct(URL | string $url = 'http://localhost')
+            public function __construct(Url | string $url = 'http://localhost')
             {
                 parent::__construct($url);
             }

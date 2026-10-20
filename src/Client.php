@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Framework\HTTP\Client;
+namespace Aplus\Http\Client;
 
+use Aplus\Http\Status;
+use Aplus\Http\Url;
 use CurlHandle;
-use Framework\HTTP\Status;
-use Framework\HTTP\URL;
 use Generator;
 use InvalidArgumentException;
 
@@ -39,11 +39,11 @@ class Client
     /**
      * Create a new Request instance.
      *
-     * @param URL|string $url
+     * @param Url|string $url
      *
      * @return Request
      */
-    public function createRequest(URL | string $url) : Request
+    public function createRequest(Url | string $url) : Request
     {
         return new Request($url);
     }
