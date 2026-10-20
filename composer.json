@@ -54,12 +54,12 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Framework\\HTTP\\Client\\": "src/"
+            "Aplus\\Http\\Client\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\HTTP\\Client\\": "tests/"
+            "Tests\\Http\\Client\\": "tests/"
         }
     },
     "config": {
