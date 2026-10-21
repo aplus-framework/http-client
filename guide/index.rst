@@ -29,8 +29,8 @@ The HTTP Client library is very simple and powerful which can be used as follows
 
 .. code-block:: php
 
-    use Framework\HTTP\Client\Client;
-    use Framework\HTTP\Client\Request;
+    use Aplus\Http\Client\Client;
+    use Aplus\Http\Client\Request;
 
     $client = new Client();
 
@@ -39,7 +39,7 @@ The HTTP Client library is very simple and powerful which can be used as follows
     $request->setBasicAuth('johndoe', 'abc123'); // static
     $request->setJson(['name' => 'John Doe']); // static
 
-    $response = $client->send($request); // Framework\HTTP\Client\Response
+    $response = $client->send($request); // Aplus\Http\Client\Response
 
     echo $response->getStatus();
     echo $response->getBody();
@@ -55,7 +55,7 @@ The object can be instantiated by passing the URL in the constructor:
 
 .. code-block:: php
 
-    use Framework\HTTP\Client\Request;
+    use Aplus\Http\Client\Request;
 
     $request = new Request('http://domain.tld');
 
@@ -84,7 +84,7 @@ protocol, through a string or a constant of the Protocol class:
 
 .. code-block:: php
 
-    use Framework\HTTP\Protocol;
+    use Aplus\Http\Protocol;
 
     $request->setProtocol('HTTP/2'); // static
     $request->setProtocol(Protocol::HTTP_2); // static
@@ -97,7 +97,7 @@ By default, the request method is ``GET``. And, it can be changed through the
 
 .. code-block:: php
 
-    use Framework\HTTP\Method;
+    use Aplus\Http\Method;
 
     $request->setMethod('post'); // static
     $request->setMethod(Method::POST); // static
@@ -111,7 +111,7 @@ Below we see an example using string and a constant of the RequestHeader class:
 
 .. code-block:: php
 
-    use Framework\HTTP\RequestHeader;
+    use Aplus\Http\RequestHeader;
 
     $request->setHeader('Content-Type', 'application/json'); // static
     $request->setHeader(RequestHeader::CONTENT_TYPE, 'application/json'); // static
@@ -172,7 +172,7 @@ Cookies can be set by the ``setCookie`` method:
 
 .. code-block:: php
 
-    use Framework\HTTP\Cookie;
+    use Aplus\Http\Cookie;
 
     $cookie = new Cookie('session_id', 'abc123');
     $request->setCookie($cookie); // static
@@ -196,12 +196,12 @@ Request with Upload
 You can upload files with the ``setFiles`` method.
 
 In it, you set the name of the array keys as field names and the values can be
-the path to a file, an instance of ``Framework\HTTP\Client\File`` or
-``Framework\HTTP\Client\StringFile``:
+the path to a file, an instance of ``Aplus\Http\Client\File`` or
+``Aplus\Http\Client\StringFile``:
 
 .. code-block:: php
 
-    use Framework\HTTP\Client\StringFile;
+    use Aplus\Http\Client\StringFile;
 
     $request->setFiles([
         'invoices' => [
@@ -259,7 +259,7 @@ Let's see how to instantiate it:
 
 .. code-block:: php
 
-    use Framework\HTTP\Client\Client;
+    use Aplus\Http\Client\Client;
 
     $client = new Client();
 
@@ -267,12 +267,12 @@ Synchronous Requests
 ####################
 
 A request can be made by passing a Request instance in the ``send`` method, which
-will return a `Response`_ or throw an ``Framework\HTTP\Client\RequestException``
+will return a `Response`_ or throw an ``Aplus\Http\Client\RequestException``
 if it fails:
 
 .. code-block:: php
 
-    $response = $client->send($request); // Framework\HTTP\Client\Response
+    $response = $client->send($request); // Aplus\Http\Client\Response
 
 It is also possible to obtain cURL information via the exception's ``getInfo``
 method:
@@ -280,8 +280,8 @@ method:
 .. code-block:: php
 
     try {
-        $response = $client->send($request); // Framework\HTTP\Client\Response
-    } catch (Framework\HTTP\Client\RequestException $exception) {
+        $response = $client->send($request); // Aplus\Http\Client\Response
+    } catch (Aplus\Http\Client\RequestException $exception) {
         echo $exception->getMessage(); // string
         var_dump($exception->getInfo()); // array
     }
@@ -300,9 +300,9 @@ Responses will be delivered as requests are finalized:
 
 .. code-block:: php
 
-    use Framework\HTTP\Client\Client;
-    use Framework\HTTP\Client\Request;
-    use Framework\HTTP\Client\ResponseError;
+    use Aplus\Http\Client\Client;
+    use Aplus\Http\Client\Request;
+    use Aplus\Http\Client\ResponseError;
     
     $client = new Client();
     
@@ -321,7 +321,7 @@ Responses will be delivered as requests are finalized:
         echo '<pre>' . htmlentities((string) $response) . '</pre>';
     }
 
-In the ``send`` method, the ``Framework\HTTP\Client\RequestException`` exception
+In the ``send`` method, the ``Aplus\Http\Client\RequestException`` exception
 is thrown if the connection fails. On the other hand, the ``sendMulti`` method
 does not throw exceptions so that requests are not interrupted.
 
@@ -367,7 +367,7 @@ Or, get the headers individually:
 
 .. code-block:: php
 
-    use Framework\HTTP\ResponseHeader;
+    use Aplus\Http\ResponseHeader;
 
     $response->getHeader('Content-Type'); // string or null
     $response->getHeader(ResponseHeader::CONTENT_TYPE); // string or null
@@ -410,7 +410,7 @@ format and it is compatible with the
 Response Error
 --------------
 
-The ``Framework\HTTP\Client\ResponseError`` class is used when there is an
+The ``Aplus\Http\Client\ResponseError`` class is used when there is an
 error on the connection.
 
 With it is possible to obtain the instance of the Request that ran it with the
