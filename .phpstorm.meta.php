@@ -196,12 +196,12 @@ registerArgumentsSet(
     //\CURLOPT_HEADERFUNCTION,
 );
 expectedArguments(
-    \Framework\HTTP\Client\Request::getOption(),
+    \Aplus\Http\Client\Request::getOption(),
     0,
     argumentsSet('curl_options')
 );
 expectedArguments(
-    \Framework\HTTP\Client\Request::setOption(),
+    \Aplus\Http\Client\Request::setOption(),
     0,
     argumentsSet('curl_options')
 );
@@ -214,12 +214,12 @@ registerArgumentsSet(
     \JSON_THROW_ON_ERROR,
 );
 expectedArguments(
-    \Framework\HTTP\Client\Response::getJson(),
+    \Aplus\Http\Client\Response::getJson(),
     1,
     argumentsSet('json_decode_flags')
 );
 expectedArguments(
-    \Framework\HTTP\Client\Response::setJsonFlags(),
+    \Aplus\Http\Client\Response::setJsonFlags(),
     0,
     argumentsSet('json_decode_flags')
 );
@@ -242,12 +242,12 @@ registerArgumentsSet(
     \JSON_UNESCAPED_UNICODE,
 );
 expectedArguments(
-    \Framework\HTTP\Client\Request::setJson(),
+    \Aplus\Http\Client\Request::setJson(),
     1,
     argumentsSet('json_encode_flags')
 );
 expectedArguments(
-    \Framework\HTTP\Client\Request::setJsonFlags(),
+    \Aplus\Http\Client\Request::setJsonFlags(),
     0,
     argumentsSet('json_encode_flags')
 );
@@ -268,67 +268,67 @@ registerArgumentsSet(
     'text/xml',
 );
 expectedArguments(
-    \Framework\HTTP\Client\Request::setContentType(),
+    \Aplus\Http\Client\Request::setContentType(),
     0,
     argumentsSet('content_types')
 );
 registerArgumentsSet(
     'response_headers',
-    \Framework\HTTP\ResponseHeader::ACCEPT_RANGES,
-    \Framework\HTTP\ResponseHeader::ACCESS_CONTROL_ALLOW_CREDENTIALS,
-    \Framework\HTTP\ResponseHeader::ACCESS_CONTROL_ALLOW_HEADERS,
-    \Framework\HTTP\ResponseHeader::ACCESS_CONTROL_ALLOW_METHODS,
-    \Framework\HTTP\ResponseHeader::ACCESS_CONTROL_ALLOW_ORIGIN,
-    \Framework\HTTP\ResponseHeader::ACCESS_CONTROL_EXPOSE_HEADERS,
-    \Framework\HTTP\ResponseHeader::ACCESS_CONTROL_MAX_AGE,
-    \Framework\HTTP\ResponseHeader::AGE,
-    \Framework\HTTP\ResponseHeader::ALLOW,
-    \Framework\HTTP\ResponseHeader::CACHE_CONTROL,
-    \Framework\HTTP\ResponseHeader::CLEAR_SITE_DATA,
-    \Framework\HTTP\ResponseHeader::CONNECTION,
-    \Framework\HTTP\ResponseHeader::CONTENT_DISPOSITION,
-    \Framework\HTTP\ResponseHeader::CONTENT_ENCODING,
-    \Framework\HTTP\ResponseHeader::CONTENT_LANGUAGE,
-    \Framework\HTTP\ResponseHeader::CONTENT_LENGTH,
-    \Framework\HTTP\ResponseHeader::CONTENT_LOCATION,
-    \Framework\HTTP\ResponseHeader::CONTENT_RANGE,
-    \Framework\HTTP\ResponseHeader::CONTENT_SECURITY_POLICY,
-    \Framework\HTTP\ResponseHeader::CONTENT_SECURITY_POLICY_REPORT_ONLY,
-    \Framework\HTTP\ResponseHeader::CONTENT_TYPE,
-    \Framework\HTTP\ResponseHeader::DATE,
-    \Framework\HTTP\ResponseHeader::ETAG,
-    \Framework\HTTP\ResponseHeader::EXPECT_CT,
-    \Framework\HTTP\ResponseHeader::EXPIRES,
-    \Framework\HTTP\ResponseHeader::FEATURE_POLICY,
-    \Framework\HTTP\ResponseHeader::KEEP_ALIVE,
-    \Framework\HTTP\ResponseHeader::LAST_MODIFIED,
-    \Framework\HTTP\ResponseHeader::LINK,
-    \Framework\HTTP\ResponseHeader::LOCATION,
-    \Framework\HTTP\ResponseHeader::PRAGMA,
-    \Framework\HTTP\ResponseHeader::PROXY_AUTHENTICATE,
-    \Framework\HTTP\ResponseHeader::PUBLIC_KEY_PINS,
-    \Framework\HTTP\ResponseHeader::PUBLIC_KEY_PINS_REPORT_ONLY,
-    \Framework\HTTP\ResponseHeader::REFERRER_POLICY,
-    \Framework\HTTP\ResponseHeader::RETRY_AFTER,
-    \Framework\HTTP\ResponseHeader::SERVER,
-    \Framework\HTTP\ResponseHeader::SET_COOKIE,
-    \Framework\HTTP\ResponseHeader::SOURCEMAP,
-    \Framework\HTTP\ResponseHeader::STRICT_TRANSPORT_SECURITY,
-    \Framework\HTTP\ResponseHeader::TIMING_ALLOW_ORIGIN,
-    \Framework\HTTP\ResponseHeader::TK,
-    \Framework\HTTP\ResponseHeader::TRAILER,
-    \Framework\HTTP\ResponseHeader::TRANSFER_ENCODING,
-    \Framework\HTTP\ResponseHeader::UPGRADE,
-    \Framework\HTTP\ResponseHeader::VARY,
-    \Framework\HTTP\ResponseHeader::VIA,
-    \Framework\HTTP\ResponseHeader::WARNING,
-    \Framework\HTTP\ResponseHeader::WWW_AUTHENTICATE,
-    \Framework\HTTP\ResponseHeader::X_CONTENT_TYPE_OPTIONS,
-    \Framework\HTTP\ResponseHeader::X_DNS_PREFETCH_CONTROL,
-    \Framework\HTTP\ResponseHeader::X_FRAME_OPTIONS,
-    \Framework\HTTP\ResponseHeader::X_POWERED_BY,
-    \Framework\HTTP\ResponseHeader::X_REQUEST_ID,
-    \Framework\HTTP\ResponseHeader::X_XSS_PROTECTION,
+    \Aplus\Http\ResponseHeader::ACCEPT_RANGES,
+    \Aplus\Http\ResponseHeader::ACCESS_CONTROL_ALLOW_CREDENTIALS,
+    \Aplus\Http\ResponseHeader::ACCESS_CONTROL_ALLOW_HEADERS,
+    \Aplus\Http\ResponseHeader::ACCESS_CONTROL_ALLOW_METHODS,
+    \Aplus\Http\ResponseHeader::ACCESS_CONTROL_ALLOW_ORIGIN,
+    \Aplus\Http\ResponseHeader::ACCESS_CONTROL_EXPOSE_HEADERS,
+    \Aplus\Http\ResponseHeader::ACCESS_CONTROL_MAX_AGE,
+    \Aplus\Http\ResponseHeader::AGE,
+    \Aplus\Http\ResponseHeader::ALLOW,
+    \Aplus\Http\ResponseHeader::CACHE_CONTROL,
+    \Aplus\Http\ResponseHeader::CLEAR_SITE_DATA,
+    \Aplus\Http\ResponseHeader::CONNECTION,
+    \Aplus\Http\ResponseHeader::CONTENT_DISPOSITION,
+    \Aplus\Http\ResponseHeader::CONTENT_ENCODING,
+    \Aplus\Http\ResponseHeader::CONTENT_LANGUAGE,
+    \Aplus\Http\ResponseHeader::CONTENT_LENGTH,
+    \Aplus\Http\ResponseHeader::CONTENT_LOCATION,
+    \Aplus\Http\ResponseHeader::CONTENT_RANGE,
+    \Aplus\Http\ResponseHeader::CONTENT_SECURITY_POLICY,
+    \Aplus\Http\ResponseHeader::CONTENT_SECURITY_POLICY_REPORT_ONLY,
+    \Aplus\Http\ResponseHeader::CONTENT_TYPE,
+    \Aplus\Http\ResponseHeader::DATE,
+    \Aplus\Http\ResponseHeader::ETAG,
+    \Aplus\Http\ResponseHeader::EXPECT_CT,
+    \Aplus\Http\ResponseHeader::EXPIRES,
+    \Aplus\Http\ResponseHeader::FEATURE_POLICY,
+    \Aplus\Http\ResponseHeader::KEEP_ALIVE,
+    \Aplus\Http\ResponseHeader::LAST_MODIFIED,
+    \Aplus\Http\ResponseHeader::LINK,
+    \Aplus\Http\ResponseHeader::LOCATION,
+    \Aplus\Http\ResponseHeader::PRAGMA,
+    \Aplus\Http\ResponseHeader::PROXY_AUTHENTICATE,
+    \Aplus\Http\ResponseHeader::PUBLIC_KEY_PINS,
+    \Aplus\Http\ResponseHeader::PUBLIC_KEY_PINS_REPORT_ONLY,
+    \Aplus\Http\ResponseHeader::REFERRER_POLICY,
+    \Aplus\Http\ResponseHeader::RETRY_AFTER,
+    \Aplus\Http\ResponseHeader::SERVER,
+    \Aplus\Http\ResponseHeader::SET_COOKIE,
+    \Aplus\Http\ResponseHeader::SOURCEMAP,
+    \Aplus\Http\ResponseHeader::STRICT_TRANSPORT_SECURITY,
+    \Aplus\Http\ResponseHeader::TIMING_ALLOW_ORIGIN,
+    \Aplus\Http\ResponseHeader::TK,
+    \Aplus\Http\ResponseHeader::TRAILER,
+    \Aplus\Http\ResponseHeader::TRANSFER_ENCODING,
+    \Aplus\Http\ResponseHeader::UPGRADE,
+    \Aplus\Http\ResponseHeader::VARY,
+    \Aplus\Http\ResponseHeader::VIA,
+    \Aplus\Http\ResponseHeader::WARNING,
+    \Aplus\Http\ResponseHeader::WWW_AUTHENTICATE,
+    \Aplus\Http\ResponseHeader::X_CONTENT_TYPE_OPTIONS,
+    \Aplus\Http\ResponseHeader::X_DNS_PREFETCH_CONTROL,
+    \Aplus\Http\ResponseHeader::X_FRAME_OPTIONS,
+    \Aplus\Http\ResponseHeader::X_POWERED_BY,
+    \Aplus\Http\ResponseHeader::X_REQUEST_ID,
+    \Aplus\Http\ResponseHeader::X_XSS_PROTECTION,
     'Accept-Ranges',
     'Access-Control-Allow-Credentials',
     'Access-Control-Allow-Headers',
@@ -386,12 +386,12 @@ registerArgumentsSet(
     'X-XSS-Protection',
 );
 expectedArguments(
-    \Framework\HTTP\Client\Response::getHeader(),
+    \Aplus\Http\Client\Response::getHeader(),
     0,
     argumentsSet('response_headers')
 );
 expectedArguments(
-    \Framework\HTTP\Client\Response::getHeaderLine(),
+    \Aplus\Http\Client\Response::getHeaderLine(),
     0,
     argumentsSet('response_headers')
 );
